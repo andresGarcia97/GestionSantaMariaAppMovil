@@ -5,6 +5,13 @@
 export const environment = {
   production: false
 };
+const LOCALHOST = 'http://localhost:8080/';
+
+export const LOGIN = LOCALHOST.concat('login');
+
+export const ENDPOINT_USUARIOS = LOCALHOST.concat('usuario/');
+export const ACTUALIZAR_USUARIO = ENDPOINT_USUARIOS.concat('actualizarusuario');
+
 
 /*
  * For easier debugging in development mode, you can import the following file

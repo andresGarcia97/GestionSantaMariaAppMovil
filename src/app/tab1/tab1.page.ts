@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Componente } from '../interfaces/interfaces';
 
 @Component({
   selector: 'app-tab1',
@@ -7,6 +8,18 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
-  constructor() {}
+  menuUsuarios: Componente[] = [
+    {
+      icon: 'finger-print-outline',
+      name: 'Actualizar Usuario',
+      redirectTo: '/updateuser'
+    },
+    {
+      icon: 'cloud-upload-outline',
+      name: 'Agregar firma Y universidad',
+      redirectTo: '/datos-estudiante'
+    }
+  ];
 
+  constructor() { }
 }
