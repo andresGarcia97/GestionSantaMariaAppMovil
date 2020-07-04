@@ -2,10 +2,10 @@
 
 <ion-content>
 
-  <form #formulario="ngForm" (ngSubmit)="onSubmitTemplate()">
+  <form #formulario="ngForm">
     <ion-list>
       <ion-list-header>
-        <ion-label>Actualizar Datos Usuario</ion-label>
+        <ion-label>Por Favor ingrese los nuevos datos</ion-label>
       </ion-list-header>
 
       <ion-item>
@@ -37,9 +37,10 @@
 
     </ion-list>
 
-    <ion-button expand="full" type="submit" [disabled]="formulario.invalid">
+    <ion-button expand="full" type="submit" [disabled]="formulario.invalid" (click)="update()">
       Enviar
     </ion-button>
 
   </form>
+
 </ion-content>

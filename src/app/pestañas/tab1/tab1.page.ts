@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Componente } from '../interfaces/interfaces';
+import { Componente } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-tab1',
