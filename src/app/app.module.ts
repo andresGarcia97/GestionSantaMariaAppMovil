@@ -5,12 +5,13 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { IonicStorageModule } from '@ionic/storage';
 
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule} from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UsuarioService } from './services/services/user/usuario.service';
+import { UsuarioService } from './services/user/usuario.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,6 +19,7 @@ import { UsuarioService } from './services/services/user/usuario.service';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     HttpClientModule
   ],

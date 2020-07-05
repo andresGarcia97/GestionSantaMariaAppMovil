@@ -1,0 +1,46 @@
+<ion-content>
+
+  <ion-slides class="mainSlide">
+
+    <ion-slide>
+
+      <form #formulario="ngForm" (ngSubmit)="login()">
+        <ion-grid fixed>
+
+          <ion-row>
+            <ion-col>
+              <img src="../../../assets/img/logouco.png">
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-list>
+                <ion-item>
+                  <ion-input placeholder="Identificación" name="identificacion" type="number" required required minlength='3'
+                    [(ngModel)]="autenticacion.identificacion"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-input placeholder="Contraseña"name="password" type="password" required minlength='4'
+                    [(ngModel)]="autenticacion.contrasena"></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" color="secondary" shape="round" [disabled]="formulario.invalid">
+                Login
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+      </form>
+
+    </ion-slide>
+
+  </ion-slides>
+
+</ion-content>

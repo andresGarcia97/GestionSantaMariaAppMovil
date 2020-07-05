@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/interfaces';
-import { UsuarioService } from '../../services/services/user/usuario.service';
-import { ToastController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/user/usuario.service';
+import { ACTUALIZACION_USUARIO_EXITOSA, ACTUALIZACION_USUARIO_ERRONEA, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { AlertsService } from '../../services/alerts/alerts.service';
+import { LoginService } from '../../services/login/login.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-updateuser',
@@ -10,36 +13,32 @@ import { ToastController } from '@ionic/angular';
 })
 export class UpdateuserPage implements OnInit {
 
-  usuario: User = new User();
-  mensaje: string;
+  public usuario: User = new User();
+  private usuarioAutenticado: any;
 
-  constructor(private userService: UsuarioService, public toastController: ToastController) { }
+  constructor(private userService: UsuarioService, public alerts: AlertsService
+            , private autenticado: LoginService, private navCtrl: NavController) { }
 
   ngOnInit() {
+    this.usuarioAutenticado = this.autenticado.obtenerUsuario();
+    if (this.usuarioAutenticado != null) {
+      this.usuario.identificacion = this.usuarioAutenticado.identificacion;
+    }
+    else{
+      this.navCtrl.navigateRoot('/login', { animated: true });
+    }
+    console.log(this.usuarioAutenticado);
+    console.log(this.usuario);
   }
 
   public update() {
-    // valor quemado hasta implementar el login
-    this.usuario.identificacion = 1234;
-    console.log(this.usuario);
     this.userService.update(this.usuario)
       .subscribe(data => {
-        this.mensaje = ACTUALIZACION_USUARIO_EXITOSA;
-        this.showToast(this.mensaje, 'success');
+        this.alerts.showToast(ACTUALIZACION_USUARIO_EXITOSA, 'success');
+        this.navCtrl.navigateRoot('/main/tabs/tab1', { animated: true });
       }, err => {
-        this.mensaje = ACTUALIZACION_USUARIO_ERRONEA;
-        this.showToast(this.mensaje, 'warning');
+        this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_USUARIO_ERRONEA);
       });
-  }
-
-  async showToast(mensaje: string, color: string) {
-    const toast = await this.toastController.create({
-      color: (color),
-      message: mensaje,
-      duration: 2000,
-      position: 'bottom',
-    });
-    toast.present();
   }
 
 }

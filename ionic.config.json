@@ -1,5 +1,7 @@
 {
   "name": "GestionSM",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
