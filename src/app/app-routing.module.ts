@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes, CanActivate } from '@angular/router';
+import { UsuarioGuard } from './guards/guards/usuario-guard.guard';
 
 const routes: Routes = [
   {
     path: 'main',
-    loadChildren: () => import('./pestañas/tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./pestañas/tabs/tabs.module').then(m => m.TabsPageModule),
+    canLoad: [UsuarioGuard]
   },
   {
     path: 'updateuser',
-    loadChildren: () => import('./pages/updateuser/updateuser.module').then( m => m.UpdateuserPageModule)
+    loadChildren: () => import('./pages/updateuser/updateuser.module').then( m => m.UpdateuserPageModule),
+    canLoad: [UsuarioGuard]
   },
   {
     path: 'datos-estudiante',
-    loadChildren: () => import('./pages/datos-estudiante/datos-estudiante.module').then( m => m.DatosEstudiantePageModule)
+    loadChildren: () => import('./pages/datos-estudiante/datos-estudiante.module').then( m => m.DatosEstudiantePageModule),
+    canLoad: [UsuarioGuard]
   },
   {
     path: 'login',
@@ -21,9 +25,8 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login'
+    redirectTo: 'main/tabs/tab1'
   }
-
 
 ];
 @NgModule({

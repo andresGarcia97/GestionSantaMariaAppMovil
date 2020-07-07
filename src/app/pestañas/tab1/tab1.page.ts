@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Componente } from 'src/app/models/interfaces';
+import { LoginService } from 'src/app/services/login/login.service';
+import { AlertsService } from '../../services/alerts/alerts.service';
+import { LOGOUT_EXITOSO } from 'src/app/models/mensajes';
 
 @Component({
   selector: 'app-tab1',
@@ -21,5 +24,10 @@ export class Tab1Page {
     }
   ];
 
-  constructor() { }
+  constructor(private login: LoginService, private notificaciones: AlertsService) { }
+
+  public logout(){
+    this.login.logout();
+    this.notificaciones.showToast(LOGOUT_EXITOSO, 'success');
+  }
 }

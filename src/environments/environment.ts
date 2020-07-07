@@ -10,7 +10,11 @@ const LOCALHOST = 'http://localhost:8080/';
 export const LOGIN = LOCALHOST.concat('login');
 
 export const ENDPOINT_USUARIOS = LOCALHOST.concat('usuario/');
+export const ENDPOINT_ESTUDIANTE = LOCALHOST.concat('estudiante/');
+
 export const ACTUALIZAR_USUARIO = ENDPOINT_USUARIOS.concat('actualizarusuario');
+export const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
+
 
 
 /*

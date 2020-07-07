@@ -1,6 +1,11 @@
-<ion-header>
+<ion-header no-border>
   <ion-toolbar color="primary">
-    <ion-title>Menú Usuarios</ion-title>
+    <ion-buttons >
+      <ion-title slot="start">Menú Usuarios</ion-title>
+      <ion-button slot="end" (click)="logout()">
+        <ion-icon name="exit-outline"></ion-icon>Salir
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,4 +16,5 @@
       <ion-label>{{ c.name }}</ion-label>
     </ion-item>
   </ion-list>
+
 </ion-content>
