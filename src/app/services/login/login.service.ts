@@ -1,12 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Storage } from '@ionic/storage';
-import { User } from '../../models/interfaces';
-import { LOGIN } from 'src/environments/environment';
+import { Injectable } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { LOGIN } from 'src/environments/environment';
+import { User } from '../../models/interfaces';
 import { AlertsService } from '../alerts/alerts.service';
-import { MENSAJE_ERROR, LOGIN_ERRONEO, LOGIN_EXITOSO } from 'src/app/models/mensajes';
-import { EstudianteService } from '../estudiante/estudiante.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class LoginService {
 
   constructor(private http: HttpClient, private storage: Storage
     , private navCrtl: NavController, private alertas: AlertsService,
-      ) { }
+  ) { }
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -45,7 +44,7 @@ export class LoginService {
     this.token = await this.storage.get('token') || null;
   }
 
-  public async obtenerValorToken(): Promise<string>{
+  public async obtenerValorToken(): Promise<string> {
     await this.cargarToken();
     return this.token.toString();
   }
@@ -60,7 +59,7 @@ export class LoginService {
     }
 
     return new Promise<boolean>(resolve => {
-      if (this.token === null ) {
+      if (this.token === null) {
         this.navCrtl.navigateRoot('/login', { animated: true });
         resolve(false);
       }

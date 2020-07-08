@@ -15,12 +15,16 @@ export class Estudiante {
     horariosLoza: LavadoLoza[];
     labores: Labor[];
     salidas: Salida[];
-    constructor(estudiante: Estudiante) {
+    constructor() {
+
+    }
+    public crear(estudiante: Estudiante){
         this.identificacion = estudiante.identificacion;
         this.nombre = estudiante.nombre;
         this.apellido = estudiante.apellido;
         this.telefono = estudiante.telefono;
         this.correo = estudiante.correo;
         this.tipoUsuario = estudiante.tipoUsuario;
+        return estudiante;
     }
 }

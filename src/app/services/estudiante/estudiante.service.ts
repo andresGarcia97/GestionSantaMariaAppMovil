@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Estudiante } from "src/app/models/Estudiante";
+import { Estudiante } from 'src/app/models/Estudiante';
 import { OBTENER_ESTUDIANTE } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 import { User } from '../../models/interfaces';
-import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +11,7 @@ import { promise } from 'protractor';
 export class EstudianteService {
 
   public estudiante: Estudiante;
+  public instancia = new Estudiante();
   public estudianteString = '';
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -39,8 +39,7 @@ export class EstudianteService {
 
   public async obtenerEstudiante(): Promise<Estudiante> {
       await this.cargarEstudiante();
-      this.estudiante = new Estudiante(JSON.parse(this.estudianteString));
-      console.log(this.estudiante);
+      this.estudiante = this.instancia.crear(JSON.parse(this.estudianteString));
       return this.estudiante;
   }
 

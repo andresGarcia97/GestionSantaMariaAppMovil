@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/interfaces';
-import { Estudiante } from "../../models/Estudiante";
-import { UsuarioService } from 'src/app/services/user/usuario.service';
-import { ACTUALIZACION_USUARIO_EXITOSA, ACTUALIZACION_USUARIO_ERRONEA, MENSAJE_ERROR } from 'src/app/models/mensajes';
-import { AlertsService } from '../../services/alerts/alerts.service';
-import { LoginService } from '../../services/login/login.service';
 import { NavController } from '@ionic/angular';
+import { ACTUALIZACION_USUARIO_ERRONEA, ACTUALIZACION_USUARIO_EXITOSA, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { UsuarioService } from 'src/app/services/user/usuario.service';
+import { Estudiante } from '../../models/Estudiante';
+import { User } from '../../models/interfaces';
+import { AlertsService } from '../../services/alerts/alerts.service';
 
 @Component({
   selector: 'app-updateuser',
@@ -15,34 +14,50 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 })
 export class UpdateuserPage implements OnInit {
 
-  public usuario: Estudiante;
-  public retorno: Estudiante;
+  protected usuario: Estudiante;
+  protected actualizacion = new User();
 
   constructor(private userService: UsuarioService, public alerts: AlertsService
-    , private autenticado: LoginService, private navCtrl: NavController
-    , private datosEstudiante: EstudianteService) { }
+    , private navCtrl: NavController, private datosEstudiante: EstudianteService) { }
 
-  ngOnInit() {
-    this.retorno = JSON.stringify(this.datosEstudiante.obtenerEstudiante());
-    console.log(this.retorno);
-    this.usuario = this.retorno;
-    console.log(this.usuario);
+  async ngOnInit() {
+    await this.datosEstudiante.obtenerEstudiante();
+    this.usuario = this.datosEstudiante.estudiante;
+    this.usuarioValido();
+  }
 
-    /*this.identificacion = parseInt(this.autenticado.token, 10);
-    console.log(this.identificacion);
-    this.usuario.identificacion = this.identificacion;
-    console.log(this.usuario);*/
+  public usuarioValido(): User {
+    this.actualizacion.identificacion = this.usuario.identificacion;
+    if (!this.actualizacion.nombre) {
+      this.actualizacion.nombre = this.usuario.nombre;
+    }
+    if (!this.actualizacion.apellido) {
+      this.actualizacion.apellido = this.usuario.apellido;
+    }
+    if (!this.actualizacion.telefono) {
+      this.actualizacion.telefono = this.usuario.telefono;
+    }
+    if (!this.actualizacion.correo) {
+      this.actualizacion.correo = this.usuario.correo;
+    }
+    return this.actualizacion;
   }
 
   public update() {
-    console.log(this.usuario);
-    this.userService.update(this.usuario)
+    console.log(this.actualizacion);
+    this.usuarioValido();
+    this.userService.update(this.actualizacion)
       .subscribe(data => {
         this.alerts.showToast(ACTUALIZACION_USUARIO_EXITOSA, 'success');
+        this.datosEstudiante.getEstudiante(this.actualizacion);
         this.navCtrl.navigateRoot('/main/tabs/tab1', { animated: true });
       }, err => {
         this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_USUARIO_ERRONEA);
       });
+  }
+
+  public devolverse() {
+    this.navCtrl.navigateRoot('/main/tabs/tab1', { animated: true });
   }
 
 }

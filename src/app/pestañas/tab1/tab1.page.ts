@@ -24,10 +24,6 @@ export class Tab1Page {
     }
   ];
 
-  constructor(private login: LoginService, private notificaciones: AlertsService) { }
+  constructor() { }
 
-  public logout(){
-    this.login.logout();
-    this.notificaciones.showToast(LOGOUT_EXITOSO, 'success');
-  }
 }
