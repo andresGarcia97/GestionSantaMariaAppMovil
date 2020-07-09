@@ -8,6 +8,7 @@ import { UpdateuserPageRoutingModule } from './updateuser-routing.module';
 
 import { UpdateuserPage } from './updateuser.page';
 import { HeaderComponent } from 'src/app/components/header/header.component';
+import { ComponentsModule } from '../../components/components.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
     FormsModule,
     IonicModule,
     UpdateuserPageRoutingModule,
+    ComponentsModule
   ],
-  declarations: [UpdateuserPage, HeaderComponent]
+  declarations: [UpdateuserPage]
 })
 export class UpdateuserPageModule {}

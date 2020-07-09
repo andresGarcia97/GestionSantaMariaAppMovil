@@ -30,7 +30,7 @@ export class Materia {
 
 export class InasistenciaAlimentacion {
     estudiante: User;
-    horaAlimentación: string;
+    horaAlimentacion: string;
     fecha: Date;
     motivo: string;
     constructor(){}

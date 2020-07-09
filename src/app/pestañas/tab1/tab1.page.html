@@ -1,10 +1,5 @@
-<app-sub-header [subMenu]="'Consultas y Datos'"></app-sub-header>
+<app-sub-header subMenu="Salidas"></app-sub-header>
 
 <ion-content>
-  <ion-list *ngFor="let c of menuUsuarios">
-    <ion-item [routerLink]="c.redirectTo">
-      <ion-icon slot="start" [name]="c.icon"></ion-icon>
-      <ion-label>{{ c.name }}</ion-label>
-    </ion-item>
-  </ion-list>
+
 </ion-content>

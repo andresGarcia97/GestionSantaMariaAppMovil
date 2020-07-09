@@ -4,11 +4,6 @@ import { UsuarioGuard } from './guards/guards/usuario-guard.guard';
 
 const routes: Routes = [
   {
-    path: 'main',
-    loadChildren: () => import('./pestañas/tabs/tabs.module').then(m => m.TabsPageModule),
-    canLoad: [UsuarioGuard]
-  },
-  {
     path: 'updateuser',
     loadChildren: () => import('./pages/updateuser/updateuser.module').then( m => m.UpdateuserPageModule),
     canLoad: [UsuarioGuard]
@@ -16,6 +11,11 @@ const routes: Routes = [
   {
     path: 'datos-estudiante',
     loadChildren: () => import('./pages/datos-estudiante/datos-estudiante.module').then( m => m.DatosEstudiantePageModule),
+    canLoad: [UsuarioGuard]
+  },
+  {
+    path: 'main',
+    loadChildren: () => import('./pestañas/tabs/tabs.module').then(m => m.TabsPageModule),
     canLoad: [UsuarioGuard]
   },
   {

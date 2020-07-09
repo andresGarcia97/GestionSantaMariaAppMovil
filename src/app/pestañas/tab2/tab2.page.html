@@ -1,16 +1,28 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-</ion-content>
+<app-sub-header subMenu="Inasistencias"></app-sub-header>
+<ion-content>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Nueva Inasistencia</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item (click)="openPicker(2,3)" color="primary">
+            Motivo y Hora a Faltar
+          </ion-item>
+          <ion-item>
+            <ion-label>Fecha de salida</ion-label>
+            <ion-datetime placeholder="Fecha Inasitencia" display-format="YYYY MMM DD" [min]="yearMInimo"
+              cancelText="Cancelar!" done-text="Aceptar" [ngModel]="fechaInasistencia.toISOString()"
+              (ionChange)="cambioFecha( $event )"
+              monthNames="ENERO,FEBRERO, MARZO, ABRIL, MAYO,JUNIO,JULIO, AGOSTO,SEPTIEMBRE,OCTUBRE, NOVIEMBRE, DICIEMBRE">
+            </ion-datetime>
+          </ion-item>
+          <ion-item class="centrado">
+            <ion-button size="default" expand="full" shape="round" (click)=CrearInansistencia()>
+              Crear Inansistancia
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
