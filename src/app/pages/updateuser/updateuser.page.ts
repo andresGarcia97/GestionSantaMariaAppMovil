@@ -3,7 +3,7 @@ import { NavController } from '@ionic/angular';
 import { ACTUALIZACION_USUARIO_ERRONEA, ACTUALIZACION_USUARIO_EXITOSA, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { UsuarioService } from 'src/app/services/user/usuario.service';
-import { Estudiante } from '../../models/Estudiante';
+import { Estudent } from '../../models/Estudiante';
 import { User } from '../../models/interfaces';
 import { AlertsService } from '../../services/alerts/alerts.service';
 
@@ -14,7 +14,7 @@ import { AlertsService } from '../../services/alerts/alerts.service';
 })
 export class UpdateuserPage implements OnInit {
 
-  protected usuario: Estudiante;
+  protected usuario: Estudent;
   protected actualizacion = new User();
 
   constructor(private userService: UsuarioService, public alerts: AlertsService

@@ -17,11 +17,11 @@
             <ion-col>
               <ion-list>
                 <ion-item>
-                  <ion-input placeholder="Identificación" name="identificacion" type="number" required required minlength='3'
-                    [(ngModel)]="autenticacion.identificacion"></ion-input>
+                  <ion-input placeholder="Identificación" name="identificacion" type="number" required required
+                    minlength='3' [(ngModel)]="autenticacion.identificacion"></ion-input>
                 </ion-item>
                 <ion-item>
-                  <ion-input placeholder="Contraseña"name="password" type="password" required minlength='4'
+                  <ion-input placeholder="Contraseña" name="password" type="password" required minlength='4'
                     [(ngModel)]="autenticacion.contrasena"></ion-input>
                 </ion-item>
               </ion-list>
@@ -39,6 +39,40 @@
         </ion-grid>
       </form>
 
+    </ion-slide>
+
+    <ion-slide>
+      <ion-card>
+        <ion-card-header color="warning">
+          Aviso
+        </ion-card-header>
+        <ion-card-content>
+          para actualizar información ajena a los cambios del estudiante
+          es preciso salir y volver a loguearse
+        </ion-card-content>
+        <ion-card-header color="primary">
+          Realizadores
+        </ion-card-header>
+        <ion-list>
+          <ion-item>
+            Andres garcia - Ingenierio de sistemas UCO
+          </ion-item>
+          <ion-item>
+            Brayan Erazo - Ingeniero de sistemas UCO
+          </ion-item>
+        </ion-list>
+        <ion-card-header color="secondary">
+          Licencias de Codigo Abierto
+        </ion-card-header>
+        <ion-list>
+          <ion-item>
+            Ionic 5 con licencia MIT
+          </ion-item>
+          <ion-item>
+            Apache Cordova
+          </ion-item>
+        </ion-list>
+      </ion-card>
     </ion-slide>
 
   </ion-slides>

@@ -47,6 +47,7 @@ export class Labor {
     estudiante: User;
     descripcion: string;
     espacio: string;
+    frecuencia: string;
     constructor(){}
 }
 

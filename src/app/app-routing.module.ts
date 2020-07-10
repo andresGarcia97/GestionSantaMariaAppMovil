@@ -4,6 +4,10 @@ import { UsuarioGuard } from './guards/guards/usuario-guard.guard';
 
 const routes: Routes = [
   {
+    path: 'labor',
+    loadChildren: () => import('./pages/labor/labor.module').then( m => m.LaborPageModule)
+  },
+  {
     path: 'updateuser',
     loadChildren: () => import('./pages/updateuser/updateuser.module').then( m => m.UpdateuserPageModule),
     canLoad: [UsuarioGuard]
@@ -26,7 +30,7 @@ const routes: Routes = [
     path: '',
     pathMatch: 'full',
     redirectTo: 'main/tabs/tab1'
-  }
+  },
 
 ];
 @NgModule({

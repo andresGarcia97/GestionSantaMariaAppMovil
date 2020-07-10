@@ -1,6 +1,6 @@
 import { Materia, InasistenciaAlimentacion, LavadoLoza, Labor, Salida } from './interfaces';
 
-export class Estudiante {
+export class Estudent {
     identificacion: number;
     nombre: string;
     apellido: string;
@@ -18,7 +18,7 @@ export class Estudiante {
     constructor() {
 
     }
-    public crear(estudiante: Estudiante){
+    public crear(estudiante: Estudent){
         this.identificacion = estudiante.identificacion;
         this.nombre = estudiante.nombre;
         this.apellido = estudiante.apellido;

@@ -1,0 +1,18 @@
+<app-header titulo='Información de la labor'></app-header>
+
+<ion-content>
+  
+  <ion-list *ngFor="let labor of listaLabores">
+      <ion-item>
+        <ion-card>
+          <ion-card-header color="primary">Espacio:</ion-card-header>
+          <ion-card-content>{{labor.espacio}}</ion-card-content>
+          <ion-card-header color="primary">Descripcion:</ion-card-header>
+          <ion-card-content>{{labor.descripcion}}</ion-card-content>
+          <ion-card-header color="primary">Frecuencia:</ion-card-header>
+          <ion-card-content>{{labor.frecuencia}}</ion-card-content>
+        </ion-card>
+      </ion-item>
+  </ion-list>
+
+</ion-content>

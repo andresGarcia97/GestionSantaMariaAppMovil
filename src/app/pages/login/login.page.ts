@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../models/interfaces';
-import { LoginService } from 'src/app/services/login/login.service';
-import { AlertsService } from '../../services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
+import { User } from '../../models/interfaces';
+import { AlertsService } from '../../services/alerts/alerts.service';
 
 @Component({
   selector: 'app-login',

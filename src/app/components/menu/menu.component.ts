@@ -23,6 +23,11 @@ export class MenuComponent implements OnInit {
       icon: 'cloud-upload-outline',
       name: 'Agregar firma Y universidad',
       redirectTo: '/datos-estudiante'
+    },
+    {
+      icon: 'calendar-outline',
+      name: 'Consultar info Labor',
+      redirectTo: '/labor'
     }
   ];
 
