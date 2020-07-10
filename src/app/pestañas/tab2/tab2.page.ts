@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { InasistenciaAlimentacion, User } from '../../models/interfaces';
 import { PickerController } from '@ionic/angular';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { MENSAJE_ERROR, GUARDAR_INASISTENCIA_EXITO, GUARDAR_INASISTENCIA_ERROR } from 'src/app/models/mensajes';
+import { MENSAJE_ERROR, GUARDAR_INASISTENCIA_EXITO, GUARDAR_INASISTENCIA_ERROR, ERROR_HORA_INASITENCIA } from 'src/app/models/mensajes';
 import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES } from '../../models/mensajes';
+import {
+  HORA_DESAYUNO, HORA_ALMUERZO, HORA_CENA, MOTIVO_PERSONAL, MOMENTO_DESAYUNO, MOMENTO_ALMUERZO,
+  MOMENTO_CENA, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO
+} from '../../models/constanstes';
 
 @Component({
   selector: 'app-tab2',
@@ -15,16 +19,18 @@ import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES } from '../../models/me
 export class Tab2Page implements OnInit {
 
   diaYHora = [
-    ['PERSONAL', 'ACADEMICO', 'RECREATIVO'],
-    ['DESAYUNO', 'ALMUERZO', 'CENA']
+    [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO],
+    [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA]
   ];
 
   public saveInasistencias: InasistenciaAlimentacion[] = [];
+  public InasistenciasUsuario: InasistenciaAlimentacion[] = [];
   public fechaInasistencia = new Date();
   public yearMInimo = this.fechaInasistencia.getFullYear();
   public mesMInimo = this.fechaInasistencia.getMonth();
   public diaMinimo = this.fechaInasistencia.getDate();
   public inasistencia = new InasistenciaAlimentacion();
+  public mostrarLista = false;
   public usuario = new User();
 
   constructor(private pickerController: PickerController, private alerta: AlertsService,
@@ -35,26 +41,47 @@ export class Tab2Page implements OnInit {
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.inasistencia.estudiante = this.usuario;
+    this.obtenerListaInasistencias();
   }
 
-  cambioFecha(event) {
+  public mostrarListaButton(){
+    this.obtenerListaInasistencias();
+    this.mostrarLista = !this.mostrarLista;
+  }
+
+  public cambioFecha(event) {
     this.inasistencia.fecha = new Date(event.detail.value);
   }
 
-  public validarFecha(): boolean {
+  private async  obtenerListaInasistencias(){
+    await this.datosEstudiante.obtenerInasistencias();
+    this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+  }
+
+  private validarFecha(): boolean {
     if (this.inasistencia.fecha.getMonth() < this.mesMInimo ||
       this.inasistencia.fecha.getDate() < this.diaMinimo) {
       this.inasistencia.fecha = this.fechaInasistencia;
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
-  public validarCampos(): boolean {
+  private validarCampos(): boolean {
     if (!this.inasistencia.motivo || !this.inasistencia.horaAlimentacion) {
-      return false;
+      return true;
     }
-    return true;
+    return false;
+  }
+
+  private validarHoras(): boolean {
+    if ((((HORA_DESAYUNO - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_DESAYUNO)) ||
+      ((HORA_ALMUERZO - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_ALMUERZO)) ||
+      ((HORA_CENA - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_CENA)))
+      && this.inasistencia.fecha.getDate() === this.diaMinimo && this.inasistencia.fecha.getMonth() === this.mesMInimo ) {
+      return true;
+    }
+    return false;
   }
 
   public async openPicker(numColumns: number, numOptions: number) {
@@ -77,7 +104,7 @@ export class Tab2Page implements OnInit {
     await picker.present();
   }
 
-  public getColumns(numColumns, numOptions, columnOptions) {
+  private getColumns(numColumns, numOptions, columnOptions) {
     const columns = [];
     for (let i = 0; i < numColumns; i++) {
       columns.push({
@@ -88,7 +115,7 @@ export class Tab2Page implements OnInit {
     return columns;
   }
 
-  public getColumnOptions(columnIndex, numOptions, columnOptions) {
+  private getColumnOptions(columnIndex, numOptions, columnOptions) {
     const options = [];
     for (let i = 0; i < numOptions; i++) {
       options.push({
@@ -100,19 +127,25 @@ export class Tab2Page implements OnInit {
   }
 
   public CrearInansistencia() {
-    if (!this.validarFecha()) {
+    if (this.validarFecha()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
     }
-    else if (!this.validarCampos()) {
+    else if (this.validarCampos()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_HORA_FALTANTES);
+    }
+    else if (this.validarHoras()) {
+      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
     }
     else {
       this.saveInasistencias.push(this.inasistencia);
-      console.log(this.saveInasistencias);
+      if (this.saveInasistencias.length > 1){
+        this.saveInasistencias.pop();
+      }
       this.inasitenciaService.createInasistencia(this.saveInasistencias)
         .subscribe(async (data: string) => {
           this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
-          console.log(data);
+          this.datosEstudiante.getEstudiante(this.usuario);
+          this.mostrarLista = false;
         }, async error => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
           console.log(error);

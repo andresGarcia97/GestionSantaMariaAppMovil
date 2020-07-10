@@ -9,6 +9,7 @@ export const GUARDAR_INASISTENCIA_EXITO = 'Inaisistencia creada exitosamente';
 export const GUARDAR_INASISTENCIA_ERROR = 'Error al crear la inasistencia';
 export const ERROR_FECHA_PASADA = 'La fecha seleccionada ya paso';
 export const ERROR_MOTIVO_HORA_FALTANTES = 'faltan el motivo y la hora';
+export const ERROR_HORA_INASITENCIA = 'la hora actual no permite la reservacion para: ';
 
 
 
