@@ -1,6 +1,9 @@
 export const HORA_DESAYUNO = 6;
 export const HORA_ALMUERZO = 12;
 export const HORA_CENA = 19;
+export const HORA_MAXIMA_SALIDA = 22;
+export const HORA_MINIMA_SALIDA =  4;
+
 export const MOMENTO_DESAYUNO = 'DESAYUNO';
 export const MOMENTO_ALMUERZO = 'ALMUERZO';
 export const MOMENTO_CENA = 'CENA';

@@ -22,7 +22,8 @@
           Modo Oscuro
         </ion-label>
         <ion-toggle slot="end" color="secondary"
-        [checked]="darkMode"(ionChange)="cambiarModo($event)"></ion-toggle>
+        (ionChange)="this.toggleDarkMode()">
+      </ion-toggle>
       </ion-item>
       <ion-item (click)="logout()">
         <ion-icon slot="start" name="exit-outline" color="danger"></ion-icon>

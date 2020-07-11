@@ -5,11 +5,11 @@ import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { MENSAJE_ERROR, GUARDAR_INASISTENCIA_EXITO, GUARDAR_INASISTENCIA_ERROR, ERROR_HORA_INASITENCIA } from 'src/app/models/mensajes';
 import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
-import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES } from '../../models/mensajes';
+import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
 import {
   HORA_DESAYUNO, HORA_ALMUERZO, HORA_CENA, MOTIVO_PERSONAL, MOMENTO_DESAYUNO, MOMENTO_ALMUERZO,
   MOMENTO_CENA, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO
-} from '../../models/constanstes';
+} from '../../models/constantes';
 
 @Component({
   selector: 'app-tab2',
@@ -44,16 +44,22 @@ export class Tab2Page implements OnInit {
     this.obtenerListaInasistencias();
   }
 
-  public mostrarListaButton(){
+  public mostrarListaButton() {
     this.obtenerListaInasistencias();
-    this.mostrarLista = !this.mostrarLista;
+    if (this.InasistenciasUsuario.length === 0) {
+      this.mostrarLista = false;
+      this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
+    }
+    else{
+      this.mostrarLista = !this.mostrarLista;
+    }
   }
 
   public cambioFecha(event) {
     this.inasistencia.fecha = new Date(event.detail.value);
   }
 
-  private async  obtenerListaInasistencias(){
+  private async obtenerListaInasistencias() {
     await this.datosEstudiante.obtenerInasistencias();
     this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
   }
@@ -78,7 +84,7 @@ export class Tab2Page implements OnInit {
     if ((((HORA_DESAYUNO - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_DESAYUNO)) ||
       ((HORA_ALMUERZO - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_ALMUERZO)) ||
       ((HORA_CENA - this.inasistencia.fecha.getHours()) <= 1 && this.inasistencia.horaAlimentacion.includes(MOMENTO_CENA)))
-      && this.inasistencia.fecha.getDate() === this.diaMinimo && this.inasistencia.fecha.getMonth() === this.mesMInimo ) {
+      && this.inasistencia.fecha.getDate() === this.diaMinimo && this.inasistencia.fecha.getMonth() === this.mesMInimo) {
       return true;
     }
     return false;
@@ -138,7 +144,7 @@ export class Tab2Page implements OnInit {
     }
     else {
       this.saveInasistencias.push(this.inasistencia);
-      if (this.saveInasistencias.length > 1){
+      if (this.saveInasistencias.length > 1) {
         this.saveInasistencias.pop();
       }
       this.inasitenciaService.createInasistencia(this.saveInasistencias)

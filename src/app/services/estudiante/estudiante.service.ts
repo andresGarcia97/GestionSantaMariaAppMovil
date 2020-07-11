@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
 import { OBTENER_ESTUDIANTE } from 'src/environments/environment';
-import { InasistenciaAlimentacion, User, Labor } from '../../models/interfaces';
+import { InasistenciaAlimentacion, User, Labor, Salida } from '../../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,11 @@ export class EstudianteService {
 
   public estudiante: Estudent;
   public instancia = new Estudent();
+  public estudianteString = '';
+
   public inasistencias: InasistenciaAlimentacion[] = [];
   public labores: Labor[] = [];
-  public estudianteString = '';
+  public salidas: Salida[] = [];
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -54,6 +56,12 @@ export class EstudianteService {
     await this.cargarEstudiante();
     this.labores = JSON.parse(this.estudianteString).labores;
     return this.labores;
+  }
+
+  public async obtenerSalidas(): Promise<Salida[]> {
+    await this.cargarEstudiante();
+    this.salidas = JSON.parse(this.estudianteString).salidas;
+    return this.salidas;
   }
 
   public async borrarEstudiante() {

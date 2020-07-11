@@ -12,7 +12,6 @@ import { Componente } from '../../models/interfaces';
 })
 export class MenuComponent implements OnInit {
 
-  darkMode: boolean;
   menuUsuarios: Componente[] = [
     {
       icon: 'finger-print-outline',
@@ -32,26 +31,21 @@ export class MenuComponent implements OnInit {
   ];
 
   constructor(private login: LoginService, private notificaciones: AlertsService,
-              private menuCtrl: MenuController) {
+    private menuCtrl: MenuController) {
   }
 
   ngOnInit() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    this.darkMode = prefersDark.matches;
+
   }
 
-  cambiarModo(event) {
-    this.darkMode = !this.darkMode;
-    if (this.darkMode) {
-      document.body.classList.toggle('dark');
-      console.log(this.darkMode);
-    }
+  toggleDarkMode = () => {
+    document.body.classList.toggle('dark');
   }
 
   public logout() {
-    this.login.logout();
-    this.menuCtrl.close('first');
-    this.notificaciones.showToast(LOGOUT_EXITOSO, 'success');
-  }
+  this.login.logout();
+  this.menuCtrl.close('first');
+  this.notificaciones.showToast(LOGOUT_EXITOSO, 'success');
+}
 
 }
