@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Labor, User } from '../../models/interfaces';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
-import { AlertsService } from 'src/app/services/alerts/alerts.service';
+import { Labor, User } from '../../models/interfaces';
 
 @Component({
   selector: 'app-labor',
@@ -18,6 +17,5 @@ export class LaborPage implements OnInit {
   async ngOnInit() {
     await this.labores.obtenerLabores();
     this.listaLabores = this.labores.labores;
-    console.log(this.listaLabores);
   }
 }

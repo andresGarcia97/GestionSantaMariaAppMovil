@@ -29,7 +29,7 @@ export class Materia {
 }
 
 export class InasistenciaAlimentacion {
-    estudiante: User;
+    estudianteInasistencia: User;
     horaAlimentacion: string;
     fecha: Date;
     motivo: string;
@@ -44,7 +44,7 @@ export class LavadoLoza {
 }
 
 export class Labor {
-    estudiante: User;
+    estudianteLabor: User;
     descripcion: string;
     espacio: string;
     frecuencia: string;
@@ -52,10 +52,19 @@ export class Labor {
 }
 
 export class Salida {
-    estudiante: User;
+    estudianteSalida: User;
     fechaSalida: Date;
     razon: string;
     fechaLlegada: Date;
     lugar: string;
+    constructor(){}
+}
+
+export class Reserva {
+    usuario: User;
+    fechaInicial: Date;
+    actividad: string;
+    fechaFinal: Date;
+    espacio: string;
     constructor(){}
 }

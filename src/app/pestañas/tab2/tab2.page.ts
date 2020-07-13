@@ -18,7 +18,7 @@ import {
 })
 export class Tab2Page implements OnInit {
 
-  diaYHora = [
+  motivoYHora = [
     [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO],
     [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA]
   ];
@@ -37,20 +37,20 @@ export class Tab2Page implements OnInit {
     private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
+    await this.obtenerListaInasistencias();
     this.inasistencia.fecha = new Date();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
-    this.inasistencia.estudiante = this.usuario;
-    this.obtenerListaInasistencias();
+    this.inasistencia.estudianteInasistencia = this.usuario;
   }
 
-  public mostrarListaButton() {
-    this.obtenerListaInasistencias();
+  public async mostrarListaButton() {
+    await this.obtenerListaInasistencias();
     if (this.InasistenciasUsuario.length === 0) {
       this.mostrarLista = false;
       this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
     }
-    else{
+    else {
       this.mostrarLista = !this.mostrarLista;
     }
   }
@@ -61,7 +61,9 @@ export class Tab2Page implements OnInit {
 
   private async obtenerListaInasistencias() {
     await this.datosEstudiante.obtenerInasistencias();
-    this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+    if (this.datosEstudiante.inasistencias !== null) {
+      this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+    }
   }
 
   private validarFecha(): boolean {
@@ -92,7 +94,7 @@ export class Tab2Page implements OnInit {
 
   public async openPicker(numColumns: number, numOptions: number) {
     const picker = await this.pickerController.create({
-      columns: this.getColumns(numColumns, numOptions, this.diaYHora),
+      columns: this.getColumns(numColumns, numOptions, this.motivoYHora),
       buttons: [
         {
           text: 'Cancelar',

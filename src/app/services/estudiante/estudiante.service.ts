@@ -26,6 +26,7 @@ export class EstudianteService {
     return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, { headers: this.headersjson })
       .subscribe(async (data: Estudent) => {
         await this.guardarEstudiante(data);
+        console.log(data);
       }, async error => {
         console.log(error);
         await this.borrarEstudiante();
@@ -36,7 +37,7 @@ export class EstudianteService {
     await this.storage.set('estudiante', JSON.stringify(estudiante));
   }
 
-  public async cargarEstudiante() {
+  private async cargarEstudiante() {
     this.estudianteString = await this.storage.get('estudiante') || null;
   }
 

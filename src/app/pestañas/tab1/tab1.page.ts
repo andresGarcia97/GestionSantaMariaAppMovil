@@ -4,8 +4,8 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 import { MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO, HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA } from '../../models/constantes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { MENSAJE_ERROR, GUARDAR_SALIDA_ERROR, GUARDAR_SALIDA_EXITO } from 'src/app/models/mensajes';
-import { SalidasService } from 'src/app/services/salidas.service';
-import { ERROR_FECHAS_PASADAS, ERROR_MOTIVO_LUGAR_FALTANTES, ERROR_HORAS_INVALIDAS, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA, 
+import { SalidasService } from 'src/app/services/salidas/salidas.service';
+import { ERROR_FECHAS_PASADAS, ERROR_MOTIVO_LUGAR_FALTANTES, ERROR_HORAS_INVALIDAS, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA,
   INFO_LISTA_VACIA } from '../../models/mensajes';
 
 @Component({
@@ -31,12 +31,12 @@ export class Tab1Page implements OnInit {
     , private salidaService: SalidasService) { }
 
   async ngOnInit() {
+    await this.obtenerSalidas();
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
-    this.nuevaSalida.estudiante = this.usuario;
-    await this.obtenerSalidas();
+    this.nuevaSalida.estudianteSalida = this.usuario;
   }
 
   private async obtenerSalidas() {
@@ -90,7 +90,7 @@ export class Tab1Page implements OnInit {
       this.nuevaSalida.fechaSalida.getDate() < this.fechaComparacion.getDate() ||
       this.nuevaSalida.fechaSalida.getHours() < this.fechaComparacion.getHours()
       && (this.nuevaSalida.fechaSalida.getDate() === this.fechaComparacion.getDate()
-        && this.nuevaSalida.fechaLlegada.getMonth() === this.fechaComparacion.getMonth())) {
+        && this.nuevaSalida.fechaSalida.getMonth() === this.fechaComparacion.getMonth())) {
       return true;
     }
     // verificar que no haya pasado la fechaLlegada

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Salida } from '../models/interfaces';
+import { Salida } from '../../models/interfaces';
 import { Observable } from 'rxjs';
 import { CREAR_SALIDA } from 'src/environments/environment';
 
