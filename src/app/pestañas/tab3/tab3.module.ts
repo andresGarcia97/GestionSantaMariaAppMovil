@@ -6,6 +6,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { Tab3PageRoutingModule } from './tab3-routing.module';
 import { Tab3Page } from './tab3.page';
+import { UpdateReservaPageModule } from '../../pages/update-reserva/update-reserva.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { Tab3Page } from './tab3.page';
     FormsModule,
     Tab3PageRoutingModule,
     ComponentsModule,
-    PipesModule
+    PipesModule,
+    UpdateReservaPageModule
   ],
   declarations: [Tab3Page]
 })

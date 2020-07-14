@@ -3,6 +3,7 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 import { LoginService } from 'src/app/services/login/login.service';
 import { User } from '../../models/interfaces';
 import { AlertsService } from '../../services/alerts/alerts.service';
+import { Estudent } from '../../models/Estudiante';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +13,7 @@ import { AlertsService } from '../../services/alerts/alerts.service';
 export class LoginPage implements OnInit {
 
   autenticacion: User = new User();
+  estudianteLogin: Estudent = new Estudent();
   mensaje: string;
 
   constructor(private loginService: LoginService, private alertas: AlertsService,
@@ -20,9 +22,10 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  public login() {
+  public async login() {
     this.loginService.login(this.autenticacion);
-    this.estudiante.guardarEstudiante(this.estudiante.getEstudiante(this.autenticacion));
+    this.estudianteLogin = await this.estudiante.getEstudiante(this.autenticacion);
+    console.log(this.estudiante.obtenerEstudiante());
   }
 
 }

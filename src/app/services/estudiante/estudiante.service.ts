@@ -43,7 +43,7 @@ export class EstudianteService {
 
   public async obtenerEstudiante(): Promise<Estudent> {
       await this.cargarEstudiante();
-      this.estudiante = this.instancia.crear(JSON.parse(this.estudianteString));
+      this.estudiante = JSON.parse(this.estudianteString);
       return this.estudiante;
   }
 

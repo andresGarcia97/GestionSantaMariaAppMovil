@@ -21,6 +21,8 @@ export const CREAR_INASISTENCIA = ENDPOINT_INASISTENCIA.concat('crearinasistenci
 export const CREAR_SALIDA = ENDPOINT_SALIDA.concat('guardarsalida');
 export const OBTENER_RESERVAS_FUTURAS = ENDPOINT_RESERVA.concat('pordia');
 export const CREAR_RESERVA = ENDPOINT_RESERVA.concat('crearreserva');
+export const ACTUALIZAR_RESERVA = ENDPOINT_RESERVA.concat('actualizarreserva');
+export const ELIMINAR_RESERVA = ENDPOINT_RESERVA.concat('borrarreserva');
 
 /*
  * For easier debugging in development mode, you can import the following file

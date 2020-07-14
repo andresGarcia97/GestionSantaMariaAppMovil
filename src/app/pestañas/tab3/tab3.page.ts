@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { PickerController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonList, ModalController, PickerController, AlertController } from '@ionic/angular';
 import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from 'src/app/models/constantes';
 import { ERROR_MOTIVO_LUGAR_FALTANTES, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { UpdateReservaPage } from 'src/app/pages/update-reserva/update-reserva.page';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { ReservasService } from 'src/app/services/reservas/reservas.service';
 import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_TV, LUGAR_SALON3, LUGAR_SALON4, LUGAR_SALON_AMARILLO } from '../../models/constantes';
 import { Reserva, User } from '../../models/interfaces';
-import {ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL, 
-  ERROR_FECHA_INICIAL_PASADA, GUARDAR_RESERVA_ERROR, GUARDAR_RESERVA_EXITO} from '../../models/mensajes';
+import {
+  ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL,
+  ERROR_FECHA_INICIAL_PASADA, GUARDAR_RESERVA_ERROR, GUARDAR_RESERVA_EXITO
+} from '../../models/mensajes';
 
 @Component({
   selector: 'app-tab3',
@@ -16,6 +19,8 @@ import {ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit {
+
+  @ViewChild('lista') itemLista: IonList;
 
   motivoYLugar = [
     [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_ACADEMICO],
@@ -25,34 +30,33 @@ export class Tab3Page implements OnInit {
   lugar = ''; // muestra todas las reservas en el pipe
   reservas: Reserva[] = [];
   nuevaReserva = new Reserva();
+  reservaConsultas = new Reserva();
   usuario = new User();
   fechaInicial = new Date();
   fechaFinal = new Date();
   fechaComparacion = new Date();
-  academico = MOTIVO_ACADEMICO;
-  personal = MOTIVO_PERSONAL;
-  recreativo = MOTIVO_RECREATIVO;
   mostrarLista = false;
   yearMinimo = this.fechaInicial.getFullYear();
 
   constructor(private alerta: AlertsService, private datosEstudiante: EstudianteService
-    , private pickerController: PickerController, private reservasService: ReservasService) { }
+    , private pickerController: PickerController, private reservasService: ReservasService
+    , private modalCtrl: ModalController, private alertController: AlertController) { }
 
   async ngOnInit() {
     this.nuevaReserva.fechaInicial = new Date();
     this.nuevaReserva.fechaFinal = new Date();
-    this.reservasService.getReservas(this.nuevaReserva);
+    this.reservaConsultas.fechaInicial = new Date();
+    await this.reservasService.getReservas(this.reservaConsultas);
     await this.obtenerListaReservas();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaReserva.usuario = this.usuario;
   }
 
-  private async obtenerListaReservas() {
+  public async obtenerListaReservas(): Promise<Reserva[]> {
     await this.reservasService.ObtenerReservas();
-    if (this.reservasService.reservas !== null) {
-      this.reservas = this.reservasService.reservas;
-    }
+    this.reservas = this.reservasService.reservas;
+    return this.reservas;
   }
 
   public async mostrarListaButton() {
@@ -187,12 +191,12 @@ export class Tab3Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
+      console.log(this.nuevaReserva);
+      this.mostrarLista = false;
       this.reservasService.saveReserva(this.nuevaReserva)
         .subscribe(async (data: string) => {
           this.alerta.showToast(GUARDAR_RESERVA_EXITO, 'success');
-          this.reservasService.getReservas(this.nuevaReserva);
-          this.mostrarLista = false;
-          this.obtenerListaReservas();
+          this.reservas = [];
         }, async error => {
           if (error.status === 400) {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);
@@ -203,7 +207,57 @@ export class Tab3Page implements OnInit {
           console.log(error);
         });
     }
-    console.log(this.nuevaReserva);
   }
 
+  public async editarReserva(reserva: Reserva) {
+    this.itemLista.closeSlidingItems();
+    this.mostrarLista = false;
+    const modalUpdate = await this.modalCtrl.create({
+      component: UpdateReservaPage,
+      componentProps: {
+        viejaReserva: reserva
+      }
+    });
+    await modalUpdate.present();
+    console.log(reserva);
+  }
+  async eliminarReserva(reserva: Reserva) {
+    this.itemLista.closeSlidingItems();
+    const alert = await this.alertController.create({
+      header: 'Confirmación',
+      message: 'Seguro que quiere eliminar la reserva?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.reservasService.deleteReserva(reserva)
+              .subscribe(async (data: string) => {
+                this.alerta.showToast('exito con la burrada', 'secondary');
+              }, async error => {
+                if (error.status === 400) {
+                  this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+                }
+                else {
+                  this.alerta.presentAlert(MENSAJE_ERROR, 'no se pudo eliminar, debuenas');
+                }
+                console.log(error);
+              });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async actualizarContenido(event) {
+    setTimeout(async () => {
+      this.mostrarLista = false;
+      await this.ngOnInit();
+      event.target.complete();
+    }, 2000);
+  }
 }

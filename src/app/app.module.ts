@@ -12,7 +12,6 @@ import { ComponentsModule } from './components/components.module';
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),

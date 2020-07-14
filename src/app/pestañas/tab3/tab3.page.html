@@ -15,9 +15,8 @@
       <ion-list lines="full">
         <ion-item color="primary">
           <ion-label>Fecha Inicial</ion-label>
-          <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH mm" [min]="yearMinimo"
-            cancelText="Cancelar!" done-text="Aceptar" [ngModel]="fechaInicial.toISOString()"
-            (ionChange)="cambioFechaInicial( $event )"
+          <ion-datetime display-format="MMM DD HH mm" [min]="yearMinimo" cancelText="Cancelar!" done-text="Aceptar"
+            [ngModel]="fechaInicial.toISOString()" (ionChange)="cambioFechaInicial( $event )"
             monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
           </ion-datetime>
         </ion-item>
@@ -26,9 +25,8 @@
         </ion-item>
         <ion-item color="primary">
           <ion-label>Fecha Final</ion-label>
-          <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH mm" [min]="yearMinimo"
-            cancelText="Cancelar!" done-text="Aceptar" [ngModel]="fechaFinal.toISOString()"
-            (ionChange)="cambioFechaFinal( $event )"
+          <ion-datetime display-format="MMM DD HH mm" [min]="yearMinimo" cancelText="Cancelar!" done-text="Aceptar"
+            [ngModel]="fechaFinal.toISOString()" (ionChange)="cambioFechaFinal( $event )"
             monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
           </ion-datetime>
         </ion-item>
@@ -42,15 +40,15 @@
           </ion-col>
           <ion-col>
             <ion-button expand="full " shape="round" (click)="mostrarListaButton()">
-              Recientes
+              Futuras
             </ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
   </ion-card>
-  <ion-card>
-    <ion-card-content *ngIf="mostrarLista">
+  <ion-card  *ngIf="mostrarLista">
+    <ion-card-content>
       <ion-segment (ionChange)="segmentChanged($event)" color="secondary" scrollable>
         <ion-segment-button value="">
           <ion-label>TODAS</ion-label>
@@ -95,22 +93,42 @@
           </ion-item>
         </ion-list>
       </ion-card-header>
-      <ion-list *ngFor="let reserva of reservas | filtroReserva: lugar:'lugar'">
-        <ion-item>
-          <ion-grid>
-            <ion-row>
-              <ion-col>
-                <ion-label>{{reserva.espacio}}</ion-label>
-                <ion-label>{{reserva.usuario.nombre}} {{reserva.usuario.apellido}}</ion-label>
-              </ion-col>
-              <ion-col>
-                <ion-label>{{reserva.fechaInicial | date:'MM/dd HH:mm'}}</ion-label>
-                <ion-label>{{reserva.fechaFinal| date:'MM/dd HH:mm'}}</ion-label>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
+      <ion-list #lista>
+        <ion-item-sliding *ngFor="let reserva of reservas | filtroReserva: lugar:'lugar'">
+          <ion-item class="animated fadeIn fast">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <ion-label>{{reserva.espacio}}</ion-label>
+                  <ion-label>{{reserva.usuario.nombre}} {{reserva.usuario.apellido}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>{{reserva.fechaInicial | date:'MM/dd HH:mm'}}</ion-label>
+                  <ion-label>{{reserva.fechaFinal| date:'MM/dd HH:mm'}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+          <ion-item-options side="start" *ngIf="reserva.usuario.identificacion === nuevaReserva.usuario.identificacion">
+            <ion-item-option color="secondary" (click)="editarReserva(reserva)">
+              <ion-icon slot="icon-only" name="reader-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item-options side="end" *ngIf="reserva.usuario.identificacion === nuevaReserva.usuario.identificacion">
+            <ion-item-option color="danger" (click)="eliminarReserva(reserva)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
       </ion-list>
     </ion-card-content>
   </ion-card>
+  <ion-refresher slot="fixed" (ionRefresh)="actualizarContenido($event)">
+    <ion-refresher-content
+      pullingIcon ="chevron-down-circle-outline"
+      pullingText ="Actualizar Reservas"
+      refreshingSpinner ="circles"
+      refreshingText ="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
 </ion-content>

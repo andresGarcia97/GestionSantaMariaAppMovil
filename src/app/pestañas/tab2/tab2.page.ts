@@ -145,10 +145,8 @@ export class Tab2Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
     }
     else {
+      this.saveInasistencias = [];
       this.saveInasistencias.push(this.inasistencia);
-      if (this.saveInasistencias.length > 1) {
-        this.saveInasistencias.pop();
-      }
       this.inasitenciaService.createInasistencia(this.saveInasistencias)
         .subscribe(async (data: string) => {
           this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
