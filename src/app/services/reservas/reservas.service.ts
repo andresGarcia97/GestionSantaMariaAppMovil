@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Reserva } from 'src/app/models/interfaces';
-import { CREAR_RESERVA, OBTENER_RESERVAS_FUTURAS, ACTUALIZAR_RESERVA, ELIMINAR_RESERVA } from '../../../environments/environment';
+import { ACTUALIZAR_RESERVA, CREAR_RESERVA, ELIMINAR_RESERVA, OBTENER_RESERVAS_FUTURAS } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

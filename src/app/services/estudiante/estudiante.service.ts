@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
 import { OBTENER_ESTUDIANTE } from 'src/environments/environment';
-import { InasistenciaAlimentacion, User, Labor, Salida } from '../../models/interfaces';
+import { InasistenciaAlimentacion, User, Labor, Salida, Materia } from '../../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +17,7 @@ export class EstudianteService {
   public inasistencias: InasistenciaAlimentacion[] = [];
   public labores: Labor[] = [];
   public salidas: Salida[] = [];
+  public materias: Materia[] = [];
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -42,9 +43,9 @@ export class EstudianteService {
   }
 
   public async obtenerEstudiante(): Promise<Estudent> {
-      await this.cargarEstudiante();
-      this.estudiante = JSON.parse(this.estudianteString);
-      return this.estudiante;
+    await this.cargarEstudiante();
+    this.estudiante = JSON.parse(this.estudianteString);
+    return this.estudiante;
   }
 
   public async obtenerInasistencias(): Promise<InasistenciaAlimentacion[]> {
@@ -63,6 +64,12 @@ export class EstudianteService {
     await this.cargarEstudiante();
     this.salidas = JSON.parse(this.estudianteString).salidas;
     return this.salidas;
+  }
+
+  public async obtenerMaterias(): Promise<Materia[]> {
+    await this.cargarEstudiante();
+    this.materias = JSON.parse(this.estudianteString).materias;
+    return this.materias;
   }
 
   public async borrarEstudiante() {

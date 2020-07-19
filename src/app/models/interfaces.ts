@@ -25,6 +25,7 @@ export class Horario {
 export class Materia {
     nombreMateria: string;
     horarios: Horario[];
+    estudiante: User;
     constructor(){}
 }
 

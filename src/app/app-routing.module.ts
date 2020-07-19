@@ -32,6 +32,7 @@ const routes: Routes = [
     pathMatch: 'full',
     redirectTo: 'main/tabs/tab1'
   }
+
 ];
 @NgModule({
   imports: [

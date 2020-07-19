@@ -5,6 +5,8 @@ export const HORA_MAXIMA_SALIDA = 22;
 export const HORA_MINIMA_SALIDA = 4;
 export const HORA_MAXIMA_RESERVA = 21;
 export const HORA_MINIMA_RESERVA = 5;
+export const HORA_MINIMA_MATERIA = 6;
+export const HORA_MAXIMA_MATERIA = 22;
 
 export const MOMENTO_DESAYUNO = 'DESAYUNO';
 export const MOMENTO_ALMUERZO = 'ALMUERZO';
@@ -21,4 +23,10 @@ export const LUGAR_SALON_AMARILLO = 'SALON-AMARILLO';
 export const LUGAR_SALON4 = 'SALON#4';
 export const LUGAR_SALON3 = 'SALON#3';
 
-
+export const DIA_LUNES = 'LUNES';
+export const DIA_MARTES = 'MARTES';
+export const DIA_MIERCOLES = 'MIERCOLES';
+export const DIA_JUEVES = 'JUEVES';
+export const DIA_VIERNES = 'VIERNES';
+export const DIA_SABADO = 'SABADO';
+export const DIA_DOMINGO = 'DOMINGO';

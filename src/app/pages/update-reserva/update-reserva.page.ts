@@ -9,6 +9,7 @@ import {
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { ReservasService } from 'src/app/services/reservas/reservas.service';
 import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_TV, LUGAR_SALON3, LUGAR_SALON4, LUGAR_SALON_AMARILLO } from '../../models/constantes';
+import { ACTUALIZACION_RESERVA_ERRONEA, ACTUALIZACION_RESERVA_EXITOSA } from '../../models/mensajes';
 
 @Component({
   selector: 'app-update-reserva',
@@ -111,13 +112,13 @@ export class UpdateReservaPage implements OnInit {
       this.reservasService.updateReserva(this.reservas)
         .subscribe(async (data: string) => {
           this.reservasService.getReservas(this.actualizacionReserva);
-          this.alerta.showToast('actualizar exitoso', 'success');
+          this.alerta.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
         }, async error => {
           if (error.status === 400) {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, 'error faltal');
+            this.alerta.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
           }
           console.log(error);
         });
@@ -126,7 +127,6 @@ export class UpdateReservaPage implements OnInit {
   }
 
   cancelarUpdate() {
-    this.alerta.showToast('actualización cancelada', 'secondary');
     this.modalCtrl.dismiss();
   }
 

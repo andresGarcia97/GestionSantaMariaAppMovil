@@ -15,28 +15,30 @@ export class LoginService {
   token: string = null;
 
   constructor(private http: HttpClient, private storage: Storage
-    , private navCrtl: NavController, private alertas: AlertsService,
-  ) { }
+    , private navCrtl: NavController, private alertas: AlertsService) { }
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  public login(usuario: User): any {
+  public async login(usuario: User): Promise<boolean> {
     this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
       .subscribe(async (data: string) => {
         await this.guardarToken(data);
         this.alertas.showToast(LOGIN_EXITOSO, 'success');
         this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
+        return true;
       }, async error => {
-        await this.borrarToken();
+        await this.borrarStorage();
         this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
+        return false;
       });
+    return false;
   }
 
   public async guardarToken(token: string) {
     await this.storage.set('token', token);
   }
 
-  public async borrarToken() {
+  public async borrarStorage() {
     await this.storage.clear();
   }
 
@@ -71,7 +73,7 @@ export class LoginService {
 
   public logout() {
     this.token = null;
-    this.borrarToken();
+    this.borrarStorage();
     this.navCrtl.navigateRoot('/login', { animated: true });
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonList, ModalController, PickerController, AlertController } from '@ionic/angular';
+import { AlertController, IonList, ModalController, PickerController } from '@ionic/angular';
 import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from 'src/app/models/constantes';
-import { ERROR_MOTIVO_LUGAR_FALTANTES, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA, ERROR_MOTIVO_LUGAR_FALTANTES, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { UpdateReservaPage } from 'src/app/pages/update-reserva/update-reserva.page';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
@@ -10,7 +10,7 @@ import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_T
 import { Reserva, User } from '../../models/interfaces';
 import {
   ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL,
-  ERROR_FECHA_INICIAL_PASADA, GUARDAR_RESERVA_ERROR, GUARDAR_RESERVA_EXITO
+  ERROR_FECHA_INICIAL_PASADA, GUARDAR_RESERVA_ERROR, GUARDAR_RESERVA_EXITO, INFO_LISTA_VACIA_RESERVAS
 } from '../../models/mensajes';
 
 @Component({
@@ -43,11 +43,12 @@ export class Tab3Page implements OnInit {
     , private modalCtrl: ModalController, private alertController: AlertController) { }
 
   async ngOnInit() {
+    this.mostrarLista = false;
     this.nuevaReserva.fechaInicial = new Date();
     this.nuevaReserva.fechaFinal = new Date();
     this.reservaConsultas.fechaInicial = new Date();
     await this.reservasService.getReservas(this.reservaConsultas);
-    await this.obtenerListaReservas();
+    await this.mostrarListaButton();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaReserva.usuario = this.usuario;
@@ -55,7 +56,9 @@ export class Tab3Page implements OnInit {
 
   public async obtenerListaReservas(): Promise<Reserva[]> {
     await this.reservasService.ObtenerReservas();
-    this.reservas = this.reservasService.reservas;
+    if (this.reservasService.reservas !== null) {
+      this.reservas = this.reservasService.reservas;
+    }
     return this.reservas;
   }
 
@@ -63,7 +66,7 @@ export class Tab3Page implements OnInit {
     await this.obtenerListaReservas();
     if (this.reservas.length === 0) {
       this.mostrarLista = false;
-      this.alerta.showToast('No Hay Reservas Proximas', 'secondary');
+      this.alerta.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
     }
     else {
       this.mostrarLista = !this.mostrarLista;
@@ -225,7 +228,7 @@ export class Tab3Page implements OnInit {
     this.itemLista.closeSlidingItems();
     const alert = await this.alertController.create({
       header: 'Confirmación',
-      message: 'Seguro que quiere eliminar la reserva?',
+      message: CONFIRMACION_BORRAR_RESERVA,
       buttons: [
         {
           text: 'Cancelar',
@@ -236,13 +239,13 @@ export class Tab3Page implements OnInit {
           handler: () => {
             this.reservasService.deleteReserva(reserva)
               .subscribe(async (data: string) => {
-                this.alerta.showToast('exito con la burrada', 'secondary');
+                this.alerta.showToast(BORRADO_EXITOSO_RESERVA, 'secondary');
               }, async error => {
                 if (error.status === 400) {
                   this.alerta.presentAlert(MENSAJE_ERROR, error.error);
                 }
                 else {
-                  this.alerta.presentAlert(MENSAJE_ERROR, 'no se pudo eliminar, debuenas');
+                  this.alerta.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_RESERVA);
                 }
                 console.log(error);
               });
@@ -255,7 +258,6 @@ export class Tab3Page implements OnInit {
 
   async actualizarContenido(event) {
     setTimeout(async () => {
-      this.mostrarLista = false;
       await this.ngOnInit();
       event.target.complete();
     }, 2000);
