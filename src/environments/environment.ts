@@ -15,11 +15,13 @@ export const ENDPOINT_INASISTENCIA = LOCALHOST.concat('inasistencias/');
 export const ENDPOINT_SALIDA = LOCALHOST.concat('salidas/');
 export const ENDPOINT_RESERVA = LOCALHOST.concat('reservas/');
 export const ENDPOINT_MATERIA = LOCALHOST.concat('materia/');
+export const ENDPOINT_LAVADO_LOZA = LOCALHOST.concat('lavadoloza/');
 
 export const ACTUALIZAR_USUARIO = ENDPOINT_USUARIOS.concat('actualizarusuario');
 export const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
 export const CREAR_INASISTENCIA = ENDPOINT_INASISTENCIA.concat('crearinasistencias');
 export const CREAR_SALIDA = ENDPOINT_SALIDA.concat('guardarsalida');
+export const OBTENER_HORARIOS_LOZA = ENDPOINT_LAVADO_LOZA.concat('horarios');
 
 export const OBTENER_RESERVAS_FUTURAS = ENDPOINT_RESERVA.concat('pordia');
 export const CREAR_RESERVA = ENDPOINT_RESERVA.concat('crearreserva');

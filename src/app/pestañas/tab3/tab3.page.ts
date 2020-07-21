@@ -48,10 +48,10 @@ export class Tab3Page implements OnInit {
     this.nuevaReserva.fechaFinal = new Date();
     this.reservaConsultas.fechaInicial = new Date();
     await this.reservasService.getReservas(this.reservaConsultas);
-    await this.mostrarListaButton();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaReserva.usuario = this.usuario;
+    await this.mostrarListaButton();
   }
 
   public async obtenerListaReservas(): Promise<Reserva[]> {

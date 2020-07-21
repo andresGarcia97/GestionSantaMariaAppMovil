@@ -5,44 +5,6 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-content>
-      <ion-list>
-        <ion-item class="animated fadeIn fast">
-          <ion-label>{{viejaMateria.nombreMateria}}</ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-list>
-        <ion-item class="animated fadeIn fast" *ngFor="let horario of viejaMateria.horarios">
-          <ion-grid>
-            <ion-row>
-              <ion-col>
-                <ion-label>{{horario.dia}}</ion-label>
-              </ion-col>
-              <ion-col>
-                <ion-label>{{ horario.horaInicial | date:'HH':'-0500' }}</ion-label>
-              </ion-col>
-              <ion-col>
-                <ion-label>{{ horario.horaFinal | date:'HH':'-0500' }}</ion-label>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
-      </ion-list>
-      <ion-item>
-        <ion-grid>
-          <ion-row>
-            <ion-col>
-              <ion-button (click)="cancelarUpdate()" expand="full" shape="round">cancelar</ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button (click)="actualizarMateria()" expand="full" shape="round">Actualizar</ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
 
   <ion-card>
     <ion-card-header>
@@ -78,8 +40,8 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Nombre Materia</ion-label>
-          <ion-input type="text" name="nombre" [(ngModel)]="nuevaMateria.nombreMateria" 
-          minlength='2' maxlength='30' placeholder="Opcional">
+          <ion-input type="text" name="nombre" [(ngModel)]="nuevaMateria.nombreMateria" minlength='2' maxlength='30'
+            placeholder="Opcional">
           </ion-input>
         </ion-item>
         <ion-item>
@@ -88,6 +50,59 @@
           </ion-button>
         </ion-item>
       </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-card-header>
+        <ion-list>
+          <ion-item color="primary">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <ion-label>Dia</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>Hora Inicial</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label>Hora Final</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </ion-card-header>
+      <ion-list>
+        <ion-item class="animated fadeIn fast" *ngFor="let horario of viejaMateria.horarios">
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{horario.dia}}</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-label>{{ horario.horaInicial | date:'HH':'-0500' }}</ion-label>
+              </ion-col>
+              <ion-col>
+                <ion-label>{{ horario.horaFinal | date:'HH':'-0500' }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="cancelarUpdate()" expand="full" shape="round">cancelar</ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button (click)="actualizarMateria()" expand="full" shape="round">Actualizar</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 

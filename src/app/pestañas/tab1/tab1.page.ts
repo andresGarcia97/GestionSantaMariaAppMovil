@@ -31,10 +31,10 @@ export class Tab1Page implements OnInit {
     , private salidaService: SalidasService) { }
 
   async ngOnInit() {
-    await this.obtenerSalidas();
+    await this.datosEstudiante.obtenerEstudiante();
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
-    await this.datosEstudiante.obtenerEstudiante();
+    await this.obtenerSalidas();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaSalida.estudianteSalida = this.usuario;
   }

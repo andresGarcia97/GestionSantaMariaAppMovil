@@ -15,6 +15,12 @@ export interface Componente {
     redirectTo: string;
 }
 
+export class TurnoLoza {
+    dia: string;
+    turno: string;
+    constructor(){}
+}
+
 export class Horario {
     horaInicial: Date;
     dia: string;

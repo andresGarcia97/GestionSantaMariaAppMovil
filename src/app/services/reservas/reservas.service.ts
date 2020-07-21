@@ -20,7 +20,6 @@ export class ReservasService {
     return this.http.post<Reserva[]>(OBTENER_RESERVAS_FUTURAS, reserva, { headers: this.headersjson })
       .subscribe(async (data: Reserva[]) => {
         await this.guardarReservas(data);
-        console.log(data);
       }, async error => {
         console.log(error);
       });
