@@ -44,7 +44,6 @@ export class UpdateuserPage implements OnInit {
   }
 
   public update() {
-    console.log(this.actualizacion);
     this.usuarioValido();
     this.userService.update(this.actualizacion)
       .subscribe(data => {

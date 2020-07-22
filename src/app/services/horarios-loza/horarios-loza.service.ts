@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { LavadoLoza } from 'src/app/models/interfaces';
 import { OBTENER_HORARIOS_LOZA } from '../../../environments/environment';
+import { AlertsService } from '../alerts/alerts.service';
+import { INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA } from 'src/app/models/mensajes';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +16,14 @@ export class HorariosLozaService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient, private storage: Storage) { }
+  constructor(private http: HttpClient, private storage: Storage, private alerts: AlertsService) { }
 
   public async getHorariosLoza() {
     return this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, { headers: this.headersjson })
       .subscribe(async (data: LavadoLoza[]) => {
         await this.guardarHorarios(data);
-        console.log(data);
       }, async error => {
-        console.log(error);
+        this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'warning', 1000);
       });
   }
 

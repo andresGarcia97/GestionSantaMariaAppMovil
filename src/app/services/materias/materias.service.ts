@@ -23,7 +23,6 @@ export class MateriasService {
 
   public deleteMateria(materia: Materia): Observable<string> {
     const bodyMateria = JSON.stringify(materia);
-    console.log(bodyMateria);
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'

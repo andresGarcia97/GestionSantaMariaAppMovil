@@ -2,7 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Reserva } from 'src/app/models/interfaces';
+import { INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS } from 'src/app/models/mensajes';
 import { ACTUALIZAR_RESERVA, CREAR_RESERVA, ELIMINAR_RESERVA, OBTENER_RESERVAS_FUTURAS } from '../../../environments/environment';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +16,14 @@ export class ReservasService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient, private storage: Storage) { }
+  constructor(private http: HttpClient, private storage: Storage, private alerts: AlertsService) { }
 
   public async getReservas(reserva: Reserva) {
     return this.http.post<Reserva[]>(OBTENER_RESERVAS_FUTURAS, reserva, { headers: this.headersjson })
       .subscribe(async (data: Reserva[]) => {
         await this.guardarReservas(data);
       }, async error => {
-        console.log(error);
+        this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, 'warning', 1000);
       });
   }
 
@@ -48,7 +50,6 @@ export class ReservasService {
         espacio: reserva.espacio
       }
     };
-    console.log(options);
     return this.http.delete<string>(ELIMINAR_RESERVA, options);
   }
 

@@ -154,7 +154,6 @@ export class Tab2Page implements OnInit {
           this.mostrarLista = false;
         }, async error => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
-          console.log(error);
         });
     }
   }

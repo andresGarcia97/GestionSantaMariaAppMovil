@@ -41,6 +41,8 @@ export const ERROR_MATERIA_CANTIDAD_HORARIOS = 'La Materia debe tener como minim
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
 export const INFO_ADICION_HORARIO = 'Horario agregado A ';
+export const INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA = 'No se pudieron actualizar los horarios de lavado';
+export const INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS = 'No se pudieron actualizar las reservas';
 
 export const CONFIRMACION_BORRAR_RESERVA = '¿Seguro que quiere eliminar la Reserva?';
 export const CONFIRMACION_BORRAR_MATERIA = '¿Seguro que quiere eliminar la Materia?';

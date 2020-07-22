@@ -194,7 +194,6 @@ export class Tab3Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
-      console.log(this.nuevaReserva);
       this.mostrarLista = false;
       this.reservasService.saveReserva(this.nuevaReserva)
         .subscribe(async (data: string) => {
@@ -207,7 +206,6 @@ export class Tab3Page implements OnInit {
           else {
             this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_ERROR);
           }
-          console.log(error);
         });
     }
   }
@@ -222,7 +220,6 @@ export class Tab3Page implements OnInit {
       }
     });
     await modalUpdate.present();
-    console.log(reserva);
   }
   async eliminarReserva(reserva: Reserva) {
     this.itemLista.closeSlidingItems();
@@ -247,7 +244,6 @@ export class Tab3Page implements OnInit {
                 else {
                   this.alerta.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_RESERVA);
                 }
-                console.log(error);
               });
           }
         }

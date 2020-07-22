@@ -124,7 +124,6 @@ export class Tab1Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA);
     }
     else {
-      console.log(this.nuevaSalida);
       this.salidaService.createSalida(this.nuevaSalida)
         .subscribe(async (data: string) => {
           this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
@@ -132,7 +131,6 @@ export class Tab1Page implements OnInit {
           this.mostrarLista = false;
         }, async error => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
-          console.log(error);
         });
     }
   }

@@ -50,7 +50,7 @@ export class HorariosLozaPage implements OnInit {
     this.horariosLoza.forEach(horario => {
       horario.estudiantes.forEach(estudiante => {
         if (estudiante.identificacion === this.usuario.identificacion) {
-          let turno: TurnoLoza = new TurnoLoza();
+          const turno: TurnoLoza = new TurnoLoza();
           turno.dia = horario.dia;
           turno.turno = horario.turno;
           this.diasYTurnos.push(turno);
@@ -58,7 +58,6 @@ export class HorariosLozaPage implements OnInit {
         }
       });
     });
-    console.log(this.diasYTurnos);
     return horariosEstudiante;
   }
 

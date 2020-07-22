@@ -127,7 +127,7 @@ export class Tab4Page implements OnInit {
       this.nuevosHorarios.push(this.nuevoHorario);
       this.reiniciarHorario();
       this.nuevaMateria.horarios = this.nuevosHorarios;
-      this.alerta.showToastWithTime(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
+      this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
     }
   }
 
@@ -141,7 +141,6 @@ export class Tab4Page implements OnInit {
     else {
       this.mostrarListaMaterias = false;
       this.nuevaMateria.horarios = this.nuevosHorarios;
-      console.log(this.nuevaMateria);
       this.materiaService.createMateria(this.nuevaMateria).
         subscribe(async (data: string) => {
           this.alerta.showToast(GUARDAR_MATERIA_EXITO, 'success');
@@ -199,7 +198,6 @@ export class Tab4Page implements OnInit {
                 else {
                   this.alerta.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_MATERIA);
                 }
-                console.log(error);
               });
           }
         }

@@ -111,8 +111,7 @@ export class UpdateMateriaPage implements OnInit {
     else {
       this.nuevaMateria.horarios.push(this.nuevoHorario);
       this.reiniciarHorario();
-      this.alerta.showToastWithTime(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
-      console.log(this.nuevaMateria);
+      this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
       return this.nuevaMateria;
     }
   }
@@ -131,7 +130,6 @@ export class UpdateMateriaPage implements OnInit {
     else {
       this.materias.push(this.viejaMateria);
       this.materias.push(this.nuevaMateria);
-      console.log(this.materias);
       this.materiaService.updateMateria(this.materias).
         subscribe(async (data: string) => {
           this.alerta.showToast(ACTUALIZACION_MATERIA_EXITOSA, 'success');

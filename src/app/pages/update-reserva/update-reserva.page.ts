@@ -40,7 +40,6 @@ export class UpdateReservaPage implements OnInit {
     this.actualizacionReserva.actividad = this.viejaReserva.actividad;
     this.actualizacionReserva.espacio = this.viejaReserva.espacio;
     this.actualizacionReserva.usuario = this.viejaReserva.usuario;
-    console.log(this.actualizacionReserva);
   }
 
   public cambioFechaInicial(event) {
@@ -108,7 +107,6 @@ export class UpdateReservaPage implements OnInit {
     else {
       this.reservas.push(this.viejaReserva);
       this.reservas.push(this.actualizacionReserva);
-      console.log(this.reservas);
       this.reservasService.updateReserva(this.reservas)
         .subscribe(async (data: string) => {
           this.reservasService.getReservas(this.actualizacionReserva);
@@ -120,7 +118,6 @@ export class UpdateReservaPage implements OnInit {
           else {
             this.alerta.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
           }
-          console.log(error);
         });
       this.modalCtrl.dismiss();
     }
