@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
-import { OBTENER_ESTUDIANTE } from 'src/environments/environment';
+import { OBTENER_ESTUDIANTE, AGREGAR_FIRMA_ESTUDIANTE } from 'src/environments/environment';
 import { InasistenciaAlimentacion, User, Labor, Salida, Materia } from '../../models/interfaces';
 
 @Injectable({
@@ -30,6 +30,10 @@ export class EstudianteService {
       }, async error => {
         await this.borrarEstudiante();
       });
+  }
+
+  public agregarFirmaYUniversidad(estudiante: Estudent): any {
+    return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, { headers: this.headersjson });
   }
 
   public async guardarEstudiante(estudiante: Estudent) {

@@ -11,6 +11,7 @@ export const HORA_MAXIMA_MATERIA = 22;
 export const MOMENTO_DESAYUNO = 'DESAYUNO';
 export const MOMENTO_ALMUERZO = 'ALMUERZO';
 export const MOMENTO_CENA = 'CENA';
+
 export const MOTIVO_PERSONAL = 'PERSONAL';
 export const MOTIVO_RECREATIVO = 'RECREATIVO';
 export const MOTIVO_ACADEMICO = 'ACADEMICO';
@@ -30,3 +31,6 @@ export const DIA_JUEVES = 'JUEVES';
 export const DIA_VIERNES = 'VIERNES';
 export const DIA_SABADO = 'SABADO';
 export const DIA_DOMINGO = 'DOMINGO';
+
+export const UNIVERSIDAD_UCO = 'UCO';
+export const UNIVERSIDAD_UDEA = 'UdeA';
