@@ -1,12 +1,16 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { InasistenciaAlimentacion } from '../../models/interfaces';
-import { CREAR_INASISTENCIA } from '../../../environments/environment';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { InasistenciaAlimentacion } from '../../models/interfaces';
+
+const ENDPOINT_INASISTENCIA = environment.LOCALHOST.concat('inasistencias/');
+const CREAR_INASISTENCIA = ENDPOINT_INASISTENCIA.concat('crearinasistencias');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class InasistenciaService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });

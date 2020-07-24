@@ -2,11 +2,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Materia } from 'src/app/models/interfaces';
-import { ACTUALIZAR_MATERIA, CREAR_MATERIA, ELIMINAR_MATERIA } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
+
+const ENDPOINT_MATERIA = environment.LOCALHOST.concat('materia/');
+const CREAR_MATERIA = ENDPOINT_MATERIA.concat('agregarmateria');
+const ACTUALIZAR_MATERIA = ENDPOINT_MATERIA.concat('actualizarmateria');
+const ELIMINAR_MATERIA = ENDPOINT_MATERIA.concat('eliminarmateria');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class MateriasService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });

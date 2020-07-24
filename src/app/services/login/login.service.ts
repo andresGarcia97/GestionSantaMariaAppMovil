@@ -3,13 +3,16 @@ import { Injectable } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
-import { LOGIN } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { User } from '../../models/interfaces';
 import { AlertsService } from '../alerts/alerts.service';
+
+const LOGIN = environment.LOCALHOST.concat('login');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class LoginService {
 
   token: string = null;

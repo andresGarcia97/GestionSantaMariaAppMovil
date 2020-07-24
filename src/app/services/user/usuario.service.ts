@@ -1,16 +1,19 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient, HttpHandler } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { User } from '../../models/interfaces';
-import { ACTUALIZAR_USUARIO } from 'src/environments/environment';
+
+const ENDPOINT_USUARIOS = environment.LOCALHOST.concat('usuario/');
+const ACTUALIZAR_USUARIO = ENDPOINT_USUARIOS.concat('actualizarusuario');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class UsuarioService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
-
   constructor(private http: HttpClient) { }
 
   public update(usuario: User): Observable<User> {

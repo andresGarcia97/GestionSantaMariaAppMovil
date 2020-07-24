@@ -2,13 +2,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { LavadoLoza } from 'src/app/models/interfaces';
-import { OBTENER_HORARIOS_LOZA } from '../../../environments/environment';
-import { AlertsService } from '../alerts/alerts.service';
 import { INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA } from 'src/app/models/mensajes';
+import { environment } from 'src/environments/environment';
+import { AlertsService } from '../alerts/alerts.service';
+
+const ENDPOINT_LAVADO_LOZA = environment.LOCALHOST.concat('lavadoloza/');
+const OBTENER_HORARIOS_LOZA = ENDPOINT_LAVADO_LOZA.concat('horarios');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class HorariosLozaService {
 
   public horarios: LavadoLoza[] = [];

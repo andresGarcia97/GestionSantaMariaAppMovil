@@ -2,12 +2,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
-import { OBTENER_ESTUDIANTE, AGREGAR_FIRMA_ESTUDIANTE } from 'src/environments/environment';
-import { InasistenciaAlimentacion, User, Labor, Salida, Materia } from '../../models/interfaces';
+import { environment } from 'src/environments/environment';
+import { InasistenciaAlimentacion, Labor, Materia, Salida, User } from '../../models/interfaces';
+
+const ENDPOINT_ESTUDIANTE = environment.LOCALHOST.concat('estudiante/');
+const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
+const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class EstudianteService {
 
   public estudiante: Estudent;

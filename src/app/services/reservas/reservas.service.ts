@@ -3,12 +3,19 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Reserva } from 'src/app/models/interfaces';
 import { INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS } from 'src/app/models/mensajes';
-import { ACTUALIZAR_RESERVA, CREAR_RESERVA, ELIMINAR_RESERVA, OBTENER_RESERVAS_FUTURAS } from '../../../environments/environment';
+import { environment } from 'src/environments/environment';
 import { AlertsService } from '../alerts/alerts.service';
+
+const ENDPOINT_RESERVA = environment.LOCALHOST.concat('reservas/');
+const OBTENER_RESERVAS_FUTURAS = ENDPOINT_RESERVA.concat('pordia');
+const CREAR_RESERVA = ENDPOINT_RESERVA.concat('crearreserva');
+const ACTUALIZAR_RESERVA = ENDPOINT_RESERVA.concat('actualizarreserva');
+const ELIMINAR_RESERVA = ENDPOINT_RESERVA.concat('borrarreserva');
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ReservasService {
 
   public reservas: Reserva[] = [];
