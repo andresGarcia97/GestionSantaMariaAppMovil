@@ -35,9 +35,8 @@ export class Tab4Page implements OnInit {
   usuario = new User();
   mostrarListaMaterias = false;
 
-  constructor(private datosEstudiante: EstudianteService, private alerta: AlertsService
-    , private materiaService: MateriasService, private modalCtrl: ModalController
-    , private alertController: AlertController) { }
+  constructor(private datosEstudiante: EstudianteService, private alerta: AlertsService, private materiaService: MateriasService
+    , private modalCtrl: ModalController, private alertController: AlertController) { }
 
   async ngOnInit() {
     this.mostrarListaMaterias = false;

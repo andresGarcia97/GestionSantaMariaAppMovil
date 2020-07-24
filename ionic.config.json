@@ -1,7 +1,8 @@
 {
   "name": "GestionSM",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
   "type": "angular"
 }
