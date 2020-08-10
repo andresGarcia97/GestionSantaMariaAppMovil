@@ -9,13 +9,10 @@ export class Estudent {
     correo: string;
     tipoUsuario: string;
     universidad: string;
-    firma: ImageBitmap;
+    firma: ImageData;
     materias: Materia[];
     inasistencias: InasistenciaAlimentacion[];
-    horariosLoza: LavadoLoza[];
     labores: Labor[];
     salidas: Salida[];
-    constructor() {
-
-    }
+    constructor() { }
 }

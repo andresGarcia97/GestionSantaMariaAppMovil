@@ -17,15 +17,15 @@
             <ion-grid>
                <ion-row>
                   <ion-col>
-                     <ion-button shape="round" expand="full" (click) = "camara()">
-                        <ion-icon slot="start" name="camera-outline"> </ion-icon>
-                        <ion-label>Camara</ion-label>
+                     <ion-button shape="round" expand="full" (click)="galeria()">
+                        <ion-icon slot="start" name="images-outline"></ion-icon>
+                        <ion-label>Galeria</ion-label>
                      </ion-button>
                   </ion-col>
                   <ion-col>
-                     <ion-button shape="round" expand="full" (click) = "galeria()">
-                        <ion-icon slot="start" name="images-outline"></ion-icon>
-                        <ion-label>  Galeria</ion-label>
+                     <ion-button shape="round" expand="full" (click)="enviar()">
+                        <ion-icon name="send-outline"></ion-icon>
+                        <ion-label>Enviar</ion-label>
                      </ion-button>
                   </ion-col>
                </ion-row>
@@ -38,8 +38,8 @@
       <ion-content>
          <ion-grid>
             <ion-row>
-               <ion-col *ngFor="let img of tempImage">
-                  <img [src]="img">
+               <ion-col *ngFor="let image of tempImage">
+                  <img [src]="image">
                </ion-col>
             </ion-row>
          </ion-grid>

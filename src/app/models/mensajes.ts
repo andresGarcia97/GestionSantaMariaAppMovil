@@ -5,6 +5,8 @@ export const ACTUALIZACION_RESERVA_EXITOSA = 'Actualizacion exitosa de la Reserv
 export const ACTUALIZACION_RESERVA_ERRONEA = 'Error al Actualizar la Reserva';
 export const ACTUALIZACION_MATERIA_EXITOSA = 'Actualizacion exitosa de la Materia';
 export const ACTUALIZACION_MATERIA_ERRONEA = 'Error al Actualizar la Materia';
+export const ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA = 'Actualizacion exitosa de los datos';
+export const ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA = 'Error al Actualizar los datos';
 
 export const LOGIN_EXITOSO = 'Login Exitoso';
 export const LOGOUT_EXITOSO = 'Ha cerrado la sesión';
@@ -37,6 +39,7 @@ export const ERROR_DIA_VACIO = 'Falta Seleccionar el dia';
 export const ERROR_HORAS_INVALIDAS = 'Alguna de Las horas incumple las horas establecidas';
 export const ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL = 'La hora final debe ser despues de la hora inicial';
 export const ERROR_MATERIA_CANTIDAD_HORARIOS = 'La Materia debe tener como minimo un Horario';
+export const ERROR_FALTA_FIRMA_UNIVERSIDAD = 'Falta la firma o la universidad';
 
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
