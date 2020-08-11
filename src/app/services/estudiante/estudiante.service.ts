@@ -5,7 +5,6 @@ import { Estudent } from 'src/app/models/Estudiante';
 import { environment } from 'src/environments/environment';
 import { InasistenciaAlimentacion, Labor, Materia, Salida, User } from '../../models/interfaces';
 
-
 const ENDPOINT_ESTUDIANTE = environment.LOCALHOST.concat('estudiante/');
 const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
 const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
@@ -13,7 +12,6 @@ const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
 @Injectable({
   providedIn: 'root'
 })
-
 export class EstudianteService {
 
   public estudiante: Estudent;
@@ -83,4 +81,5 @@ export class EstudianteService {
   public async borrarEstudiante() {
     this.storage.remove('estudiante');
   }
+
 }

@@ -35,14 +35,14 @@
    </ion-card>
 
    <ion-card>
-      <ion-content>
+      <ion-card-content>
          <ion-grid>
             <ion-row>
-               <ion-col *ngFor="let image of tempImage">
-                  <img [src]="image">
+               <ion-col size="6">
+                  <img [src]="base64Image"><img>
                </ion-col>
             </ion-row>
          </ion-grid>
-      </ion-content>
+      </ion-card-content>
    </ion-card>
 </ion-content>
