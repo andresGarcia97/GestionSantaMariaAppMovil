@@ -51,9 +51,8 @@ export class DatosEstudiantePage implements OnInit {
         // imageData is either a base64 encoded string or a file URI
         // If it's base64 (DATA_URL):
         const base64Image = 'data:image/jpeg;base64,' + imageData;
-        console.log(base64Image);
         this.estudiante.firma = imageData;
-        return base64Image;
+        return this.estudiante;
       }, (err) => {
         // Handle error
       });
@@ -64,7 +63,6 @@ export class DatosEstudiantePage implements OnInit {
       this.alertas.presentAlert(MENSAJE_ERROR, ERROR_FALTA_FIRMA_UNIVERSIDAD);
     }
     else {
-      this.validarImagen(this.estudiante.firma);
       this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante)
         .subscribe(async (data: string) => {
           console.log(this.estudiante.firma);
@@ -74,15 +72,4 @@ export class DatosEstudiantePage implements OnInit {
         });
     }
   }
-
-  private validarImagen(obj) {
-    const uploadFile = obj.files[0];
-    if (!(/\.(jpg|png|jpeg)$/i).test(uploadFile.name)) {
-      this.alertas.presentAlert(MENSAJE_ERROR, 'EL archivo subido no es una imagen');
-    }
-    if (uploadFile.size > 1000000) {
-      this.alertas.presentAlert(MENSAJE_ERROR, 'El peso de la firma no puede exceder 1 MB');
-    }
-  }
-
 }
