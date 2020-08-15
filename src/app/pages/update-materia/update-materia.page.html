@@ -40,7 +40,7 @@
         </ion-item>
         <ion-item>
           <ion-label position="floating">Nombre Materia</ion-label>
-          <ion-input type="text" name="nombre" [(ngModel)]="nuevaMateria.nombreMateria" minlength='2' maxlength='30'
+          <ion-input type="text" name="nombre" [(ngModel)]="nuevaMateria.nombreMateria" minlength='2' maxlength='50'
             placeholder="Opcional">
           </ion-input>
         </ion-item>
@@ -78,13 +78,13 @@
         <ion-item class="animated fadeIn fast" *ngFor="let horario of viejaMateria.horarios">
           <ion-grid>
             <ion-row>
-              <ion-col>
+              <ion-col size="6">
                 <ion-label>{{horario.dia}}</ion-label>
               </ion-col>
-              <ion-col>
+              <ion-col size="3">
                 <ion-label>{{ horario.horaInicial | date:'HH':'-0500' }}</ion-label>
               </ion-col>
-              <ion-col>
+              <ion-col size="3">
                 <ion-label>{{ horario.horaFinal | date:'HH':'-0500' }}</ion-label>
               </ion-col>
             </ion-row>

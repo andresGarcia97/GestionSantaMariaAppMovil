@@ -22,6 +22,7 @@ export class EstudianteService {
   public labores: Labor[] = [];
   public salidas: Salida[] = [];
   public materias: Materia[] = [];
+  public firma = '';
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -76,6 +77,12 @@ export class EstudianteService {
     await this.cargarEstudiante();
     this.materias = JSON.parse(this.estudianteString).materias;
     return this.materias;
+  }
+
+  public async obtenerFirma(): Promise<string> {
+    await this.cargarEstudiante();
+    this.firma = JSON.parse(this.estudianteString).firma;
+    return this.firma;
   }
 
   public async borrarEstudiante() {

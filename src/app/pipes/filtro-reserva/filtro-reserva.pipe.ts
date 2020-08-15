@@ -6,9 +6,7 @@ import { Reserva } from 'src/app/models/interfaces';
 })
 export class FiltroReservaPipe implements PipeTransform {
 
-  transform(arreglo: Reserva[],
-            texto: string): any[] {
-
+  transform(arreglo: Reserva[], texto: string): any[] {
     if (texto === '') {
       return arreglo;
     }

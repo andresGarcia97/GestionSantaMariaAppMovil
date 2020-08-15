@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LavadoLoza, TurnoLoza, User } from '../../models/interfaces';
 import { EstudianteService } from '../../services/estudiante/estudiante.service';
 import { HorariosLozaService } from '../../services/horarios-loza/horarios-loza.service';
+import { AlertsService } from 'src/app/services/alerts/alerts.service';
+import { INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, INFO_NO_TIENE_TURNOS_LAVADO_LOZA } from '../../models/mensajes';
 
 @Component({
   selector: 'app-horarios-loza',
@@ -17,15 +19,44 @@ export class HorariosLozaPage implements OnInit {
   diasYTurnos: TurnoLoza[] = [];
   usuario = new User();
 
-  constructor(private horariosLozaService: HorariosLozaService, private datosEstudiante: EstudianteService) { }
+  constructor(private alerta: AlertsService, private horariosLozaService: HorariosLozaService, 
+    private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
     this.mostrarHorarios = false;
     await this.horariosLozaService.getHorariosLoza();
-    await this.horariosLozaService.obtenerHorarios();
-    this.horariosLoza = this.horariosLozaService.horarios;
-    this.mostrarHorarios = true;
+    await this.mostrarHorariosLoza();
+    await this.mensajeTurnosDeLoza();
+  }
+
+  public async mensajeTurnosDeLoza() {
     this.mostrarTurnoEstudiante = await this.filtrarEstudiante();
+    if (this.mostrarTurnoEstudiante) {
+      return this.mostrarTurnoEstudiante;
+    }
+    else {
+      await this.alerta.showToast(INFO_NO_TIENE_TURNOS_LAVADO_LOZA, 'secondary', 1000);
+      return this.mostrarTurnoEstudiante;
+    }
+  }
+
+  public async obtenerListaHorarios(): Promise<LavadoLoza[]> {
+    await this.horariosLozaService.obtenerHorarios();
+    if (this.horariosLozaService.horarios !== null) {
+      this.horariosLoza = this.horariosLozaService.horarios;
+    }
+    return this.horariosLoza;
+  }
+
+  public async mostrarHorariosLoza() {
+    await this.obtenerListaHorarios();
+    if (this.horariosLoza.length === 0) {
+      this.mostrarHorarios = false;
+      await this.alerta.showToast(INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, 'secondary', 1000);
+    }
+    else {
+      this.mostrarHorarios = true;
+    }
   }
 
   public segmentChanged(event) {

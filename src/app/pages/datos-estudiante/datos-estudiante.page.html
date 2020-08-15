@@ -34,15 +34,18 @@
       </ion-list>
    </ion-card>
 
-   <ion-card *ngIf="mostrarImagen">
-      <ion-card-content>
-         <ion-grid>
-            <ion-row>
-               <ion-col size="6">
-                  <img [src]="base64Image"><img>
-               </ion-col>
-            </ion-row>
-         </ion-grid>
-      </ion-card-content>
+   <ion-card>
+      <img [src]="image"><img>
+      <ion-card-header>
+         <ion-card-title>Firma Actual</ion-card-title>
+      </ion-card-header>
    </ion-card>
+
+    <ion-card>
+      <img [src]="base64Image"><img>
+      <ion-card-header>
+         <ion-card-title>Firma Nueva</ion-card-title>
+      </ion-card-header>
+   </ion-card>
+
 </ion-content>

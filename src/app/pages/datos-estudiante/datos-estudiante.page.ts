@@ -6,8 +6,9 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 import { UNIVERSIDAD_UCO, UNIVERSIDAD_UDEA } from '../../models/constantes';
 import {
   ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA, ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA,
-  ERROR_FALTA_FIRMA_UNIVERSIDAD, MENSAJE_ERROR
+  ERROR_FALTA_FIRMA_UNIVERSIDAD, MENSAJE_ERROR, ERROR_AL_CARGAR_LA_IMAGEN, INFO_TODAVIA_NO_TIENE_FIRMA
 } from '../../models/mensajes';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-datos-estudiante',
@@ -20,10 +21,10 @@ export class DatosEstudiantePage implements OnInit {
   udea = UNIVERSIDAD_UDEA;
   base64Image: any;
   estudiante: Estudent = new Estudent();
-  mostrarImagen = false;
+  image: any;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
-    private alertas: AlertsService) { }
+    private alertas: AlertsService, private navCrtl: NavController) { }
 
   obtenerUniversidad(event) {
     this.estudiante.universidad = event.detail.value;
@@ -33,13 +34,28 @@ export class DatosEstudiantePage implements OnInit {
 
   async ngOnInit() {
     await this.datosEstudiante.obtenerEstudiante();
+    await this.datosEstudiante.obtenerFirma();
     this.estudiante.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.estudiante.tipoUsuario = this.datosEstudiante.estudiante.tipoUsuario;
+    this.estudiante.firma = this.datosEstudiante.firma;
+    this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
+    this.mostrarfirmaActual();
+  }
+
+  async mostrarfirmaActual() {
+    if (!this.estudiante.firma) {
+      this.alertas.showToast(INFO_TODAVIA_NO_TIENE_FIRMA, 'secondary');
+    }
+    else {
+      this.image = new Image();
+      this.image = 'data:image/jpeg;base64,' + this.estudiante.firma;
+      return this.image;
+    }
   }
 
   galeria() {
     const options: CameraOptions = {
-      quality: 80,
+      quality: 90,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
@@ -50,13 +66,12 @@ export class DatosEstudiantePage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
-      const base64Image = 'data:image/jpeg;base64,' + imageData;
+      this.base64Image = new Image();
+      this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.estudiante.firma = imageData;
-      this.mostrarImagen = true;
-      return this.estudiante;
+      return this.base64Image;
     }, (err) => {
-      this.mostrarImagen = false;
-      this.alertas.showToast('Error al cargar la imagen', 'warning');
+      this.alertas.showToast(ERROR_AL_CARGAR_LA_IMAGEN, 'warning');
     });
   }
 
@@ -69,9 +84,10 @@ export class DatosEstudiantePage implements OnInit {
         .subscribe(async (data: string) => {
           console.log(this.estudiante.firma);
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
+          await this.datosEstudiante.getEstudiante(this.estudiante);
+          this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
         }, async error => {
-          console.log(this.estudiante.firma);
-          this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA, 'warning');
+          this.alertas.presentAlert(MENSAJE_ERROR, ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA);
         });
     }
   }

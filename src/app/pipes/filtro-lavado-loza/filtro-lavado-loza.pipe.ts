@@ -7,7 +7,7 @@ import { LavadoLoza } from '../../models/interfaces';
 export class FiltroLavadoLozaPipe implements PipeTransform {
 
   transform(arreglo: LavadoLoza[], texto: string): any[] {
-    if (texto === '' || texto == null) {
+    if (texto === '') {
       return arreglo;
     }
 
