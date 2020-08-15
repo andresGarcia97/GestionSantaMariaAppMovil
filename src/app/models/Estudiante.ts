@@ -9,7 +9,8 @@ export class Estudent {
     correo: string;
     tipoUsuario: string;
     universidad: string;
-    firma: ImageData;
+    // imagen codificada en base64
+    firma: string;
     materias: Materia[];
     inasistencias: InasistenciaAlimentacion[];
     labores: Labor[];

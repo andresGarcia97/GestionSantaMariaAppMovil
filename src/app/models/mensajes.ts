@@ -40,6 +40,7 @@ export const ERROR_HORAS_INVALIDAS = 'Alguna de Las horas incumple las horas est
 export const ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL = 'La hora final debe ser despues de la hora inicial';
 export const ERROR_MATERIA_CANTIDAD_HORARIOS = 'La Materia debe tener como minimo un Horario';
 export const ERROR_FALTA_FIRMA_UNIVERSIDAD = 'Falta la firma o la universidad';
+export const ERROR_IMAGEN_PESADA = 'La imagen no puede pesar más de 1 MB';
 
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
