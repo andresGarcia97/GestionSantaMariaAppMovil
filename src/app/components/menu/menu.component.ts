@@ -20,7 +20,7 @@ export class MenuComponent {
     },
     {
       icon: 'cloud-upload-outline',
-      name: 'Agregar firma Y universidad',
+      name: 'Firma Y Universidad',
       redirectTo: '/datos-estudiante'
     },
     {
@@ -36,8 +36,7 @@ export class MenuComponent {
   ];
 
   constructor(private login: LoginService, private notificaciones: AlertsService,
-    private menuCtrl: MenuController) {
-  }
+    private menuCtrl: MenuController) { }
 
   toggleDarkMode = () => {
     document.body.classList.toggle('dark');

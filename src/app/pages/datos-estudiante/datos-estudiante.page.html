@@ -1,11 +1,11 @@
-<app-header titulo="Agregar Firma y Universidad"></app-header>
+<app-header titulo="Firma y Universidad"></app-header>
 
 <ion-content>
    <ion-card>
       <ion-list lines="full">
          <ion-item color="primary">
             <ion-label position="stacked" multiple="true">Universidad</ion-label>
-            <ion-select placeholder="Seleccione Su Universidad" (ionChange)="obtenerUniversidad($event)">
+            <ion-select value={{universidadActual}} placeholder="Seleccione Su Universidad" (ionChange)="obtenerUniversidad($event)">
                <ion-select-option value={{uco}}>{{uco}}</ion-select-option>
                <ion-select-option value={{udea}}>{{udea}}</ion-select-option>
             </ion-select>

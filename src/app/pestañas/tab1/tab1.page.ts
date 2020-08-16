@@ -32,9 +32,9 @@ export class Tab1Page implements OnInit {
 
   async ngOnInit() {
     await this.datosEstudiante.obtenerEstudiante();
+    await this.obtenerSalidas();
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
-    await this.obtenerSalidas();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaSalida.estudianteSalida = this.usuario;
   }

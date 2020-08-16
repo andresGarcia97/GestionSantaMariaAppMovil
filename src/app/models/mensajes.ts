@@ -13,6 +13,7 @@ export const LOGOUT_EXITOSO = 'Ha cerrado la sesión';
 export const LOGIN_ERRONEO = 'Identificación o contraseña erroneos';
 
 export const MENSAJE_ERROR = 'ERROR';
+export const MENSAJE_ADVERTENCIA = 'ADVERTENCIA';
 
 export const GUARDAR_INASISTENCIA_EXITO = 'Inaisistencia creada exitosamente';
 export const GUARDAR_INASISTENCIA_ERROR = 'Error al crear la inasistencia';
@@ -41,6 +42,7 @@ export const ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL = 'La hora final debe ser d
 export const ERROR_MATERIA_CANTIDAD_HORARIOS = 'La Materia debe tener como minimo un Horario';
 export const ERROR_FALTA_FIRMA_UNIVERSIDAD = 'Falta la firma o la universidad';
 export const ERROR_AL_CARGAR_LA_IMAGEN = 'No se pudo cargar ninguna imagen';
+export const IMAGEN_MUY_PESADA = 'La firma no puede pesar más de un 1MB';
 
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
@@ -48,6 +50,7 @@ export const INFO_ADICION_HORARIO = 'Horario agregado A ';
 export const INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA = 'No se pudieron actualizar los horarios de lavado';
 export const INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS = 'No se pudieron actualizar las reservas';
 export const INFO_TODAVIA_NO_TIENE_FIRMA = 'Todavia no cuenta con una firma';
+export const INFO_TODAVIA_NO_TIENE_UNIVERSIDAD = 'Todavia no ha seleccionado una universidad';
 export const INFO_TODAVIA_NO_HAY_HORARIOS_LOZA = 'Todavia no hay horarios para el Lavado de Loza';
 export const INFO_NO_TIENE_TURNOS_LAVADO_LOZA = 'Ehnorabuena! no tiene ningun turno para Lavar Loza';
 export const INFO_NO_TIENE_LABORES = 'Ehnorabuena! no tiene ninguna actividad o labor para hacer';
