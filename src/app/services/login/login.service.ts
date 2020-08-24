@@ -2,9 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { LOGIN_ERRONEO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
-import { User } from '../../models/interfaces';
+import { Token, User } from '../../models/interfaces';
 import { AlertsService } from '../alerts/alerts.service';
 
 const LOGIN = environment.LOCALHOST.concat('login');
@@ -22,23 +22,18 @@ export class LoginService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  public async login(usuario: User): Promise<boolean> {
+  public async login(usuario: User) {
     this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
-      .subscribe(async (data: string) => {
+      .subscribe(async (data: any) => {
         await this.guardarToken(data);
-        this.alertas.showToast(LOGIN_EXITOSO, 'success');
-        this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
-        return true;
       }, async error => {
         await this.borrarStorage();
         this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
-        return false;
       });
-    return false;
   }
 
-  public async guardarToken(token: string) {
-    await this.storage.set('token', token);
+  public async guardarToken(token: Token) {
+    await this.storage.set('token', token.token);
   }
 
   public async borrarStorage() {

@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
 import { environment } from 'src/environments/environment';
 import { InasistenciaAlimentacion, Labor, Materia, Salida, User } from '../../models/interfaces';
+import { LoginService } from '../login/login.service';
 
 const ENDPOINT_ESTUDIANTE = environment.LOCALHOST.concat('estudiante/');
 const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
@@ -27,13 +28,23 @@ export class EstudianteService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private http: HttpClient, private storage: Storage) { }
+  constructor(private http: HttpClient, private storage: Storage, private loginToken: LoginService) { }
 
-  public getEstudiante(estudiante: User): any {
-    return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, { headers: this.headersjson })
+  public async getEstudiante(estudiante: User): Promise<any> {
+    await this.loginToken.cargarToken();
+    const token = this.loginToken.token;
+    console.log(token);
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: token
+      })
+    };
+    return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options)
       .subscribe(async (data: Estudent) => {
         await this.guardarEstudiante(data);
       }, async error => {
+        console.log(error);
         await this.borrarEstudiante();
       });
   }

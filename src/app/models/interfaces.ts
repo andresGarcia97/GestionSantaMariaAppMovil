@@ -15,6 +15,10 @@ export interface Componente {
     redirectTo: string;
 }
 
+export interface Token {
+    token: string;
+}
+
 export class TurnoLoza {
     dia: string;
     turno: string;
