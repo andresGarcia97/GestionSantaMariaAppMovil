@@ -8,7 +8,7 @@ import { UNIVERSIDAD_UCO, UNIVERSIDAD_UDEA } from '../../models/constantes';
 import {
   ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA, ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA,
   ERROR_AL_CARGAR_LA_IMAGEN, ERROR_FALTA_FIRMA_UNIVERSIDAD,
-  IMAGEN_MUY_PESADA, INFO_TODAVIA_NO_TIENE_FIRMA, INFO_TODAVIA_NO_TIENE_UNIVERSIDAD,
+  ERROR_IMAGEN_MUY_PESADA, INFO_TODAVIA_NO_TIENE_FIRMA, INFO_TODAVIA_NO_TIENE_UNIVERSIDAD,
   MENSAJE_ADVERTENCIA, MENSAJE_ERROR
 } from '../../models/mensajes';
 
@@ -98,16 +98,16 @@ export class DatosEstudiantePage implements OnInit {
     return ((this.estudiante.firma.length * (3 / 4)) - 2) / 1000;
   }
 
-  enviar() {
+  async enviar() {
     if (!this.estudiante.firma || !this.estudiante.firma) {
       this.alertas.presentAlert(MENSAJE_ERROR, ERROR_FALTA_FIRMA_UNIVERSIDAD);
     }
     // si la imagen pesa más de un 1MB no se dejara enviar
     else if (this.calcularSizeImageInKB() > 1000) {
-      this.alertas.presentAlert(MENSAJE_ADVERTENCIA, IMAGEN_MUY_PESADA);
+      this.alertas.presentAlert(MENSAJE_ADVERTENCIA, ERROR_IMAGEN_MUY_PESADA);
     }
     else {
-      this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante)
+      (await this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante))
         .subscribe(async (data: string) => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           await this.datosEstudiante.getEstudiante(this.estudiante);

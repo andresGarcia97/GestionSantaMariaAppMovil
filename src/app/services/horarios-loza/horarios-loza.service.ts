@@ -5,6 +5,7 @@ import { LavadoLoza } from 'src/app/models/interfaces';
 import { INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
 import { AlertsService } from '../alerts/alerts.service';
+import { LoginService } from '../login/login.service';
 
 const ENDPOINT_LAVADO_LOZA = environment.LOCALHOST.concat('lavadoloza/');
 const OBTENER_HORARIOS_LOZA = ENDPOINT_LAVADO_LOZA.concat('horarios');
@@ -18,12 +19,13 @@ export class HorariosLozaService {
   public horarios: LavadoLoza[] = [];
   private horariosString = '';
 
-  private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  constructor(private http: HttpClient, private storage: Storage, private alerts: AlertsService) { }
+  constructor(private http: HttpClient, private storage: Storage,
+    private alerts: AlertsService, private loginToken: LoginService) { }
 
   public async getHorariosLoza() {
-    return this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, { headers: this.headersjson })
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, options)
       .subscribe(async (data: LavadoLoza[]) => {
         await this.guardarHorarios(data);
       }, async error => {
@@ -35,7 +37,7 @@ export class HorariosLozaService {
     await this.storage.set('horariosLoza', JSON.stringify(horarios));
   }
 
-  private async cargarHorarios(){
+  private async cargarHorarios() {
     this.horariosString = await this.storage.get('horariosLoza') || null;
     return this.horariosString;
   }

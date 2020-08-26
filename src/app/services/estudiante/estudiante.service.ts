@@ -26,31 +26,27 @@ export class EstudianteService {
   public firma = '';
   public universidad = '';
 
-  private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
-
   constructor(private http: HttpClient, private storage: Storage, private loginToken: LoginService) { }
 
   public async getEstudiante(estudiante: User): Promise<any> {
     await this.loginToken.cargarToken();
-    const token = this.loginToken.token;
-    console.log(token);
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: token
-      })
-    };
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
     return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options)
       .subscribe(async (data: Estudent) => {
         await this.guardarEstudiante(data);
+        return Promise.resolve();
       }, async error => {
-        console.log(error);
         await this.borrarEstudiante();
+        return Promise.reject();
       });
   }
 
-  public agregarFirmaYUniversidad(estudiante: Estudent): any {
-    return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, { headers: this.headersjson });
+  public async agregarFirmaYUniversidad(estudiante: Estudent): Promise<any> {
+    await this.loginToken.cargarToken();
+    const token = this.loginToken.token;
+    console.log(token);
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: token }) };
+    return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, options);
   }
 
   public async guardarEstudiante(estudiante: Estudent) {

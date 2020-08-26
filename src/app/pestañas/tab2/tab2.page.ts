@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { InasistenciaAlimentacion, User } from '../../models/interfaces';
 import { PickerController } from '@ionic/angular';
+import { ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { MENSAJE_ERROR, GUARDAR_INASISTENCIA_EXITO, GUARDAR_INASISTENCIA_ERROR, ERROR_HORA_INASITENCIA } from 'src/app/models/mensajes';
-import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
-import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
 import {
-  HORA_DESAYUNO, HORA_ALMUERZO, HORA_CENA, MOTIVO_PERSONAL, MOMENTO_DESAYUNO, MOMENTO_ALMUERZO,
-  MOMENTO_CENA, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO
+  HORA_ALMUERZO, HORA_CENA, HORA_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA,
+  MOMENTO_DESAYUNO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
 } from '../../models/constantes';
+import { InasistenciaAlimentacion, User } from '../../models/interfaces';
+import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
+import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 
 @Component({
   selector: 'app-tab2',
@@ -134,7 +134,7 @@ export class Tab2Page implements OnInit {
     return options;
   }
 
-  public CrearInansistencia() {
+  public async crearInansistencia() {
     if (this.validarFecha()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
     }
@@ -147,13 +147,18 @@ export class Tab2Page implements OnInit {
     else {
       this.saveInasistencias = [];
       this.saveInasistencias.push(this.inasistencia);
-      this.inasitenciaService.createInasistencia(this.saveInasistencias)
-        .subscribe(async (data: string) => {
+      (await this.inasitenciaService.createInasistencia(this.saveInasistencias))
+        .subscribe(async () => {
           this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
-          this.datosEstudiante.getEstudiante(this.usuario);
+          await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
         }, async error => {
-          this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
+          if (error.status === 400) {
+            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else {
+            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
+          }
         });
     }
   }

@@ -2,10 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { LOGIN_ERRONEO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
 import { Token, User } from '../../models/interfaces';
-import { AlertsService } from '../alerts/alerts.service';
 
 const LOGIN = environment.LOCALHOST.concat('login');
 
@@ -18,17 +16,18 @@ export class LoginService {
   token: string = null;
 
   constructor(private http: HttpClient, private storage: Storage
-    , private navCrtl: NavController, private alertas: AlertsService) { }
+    , private navCrtl: NavController) { }
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   public async login(usuario: User) {
-    this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
+    return this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
       .subscribe(async (data: any) => {
         await this.guardarToken(data);
+        return Promise.resolve();
       }, async error => {
         await this.borrarStorage();
-        this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
+        return Promise.reject();
       });
   }
 
@@ -44,9 +43,14 @@ export class LoginService {
     this.token = await this.storage.get('token') || null;
   }
 
-  public async obtenerValorToken(): Promise<string> {
+  public async aceptarToken(): Promise<any> {
     await this.cargarToken();
-    return this.token.toString();
+    if (this.token === null) {
+      return Promise.reject();
+    }
+    else {
+      return Promise.resolve();
+    }
   }
 
   public async validarToken(): Promise<boolean> {
