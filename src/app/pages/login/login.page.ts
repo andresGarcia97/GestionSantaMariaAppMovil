@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { ERROR_DURANTE_AUTENTICACION, ERROR_OBTENIENDO_ESTUDIANTE, LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { ERROR_OBTENIENDO_ESTUDIANTE, LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { LoginService } from 'src/app/services/login/login.service';

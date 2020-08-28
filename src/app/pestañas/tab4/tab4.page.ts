@@ -101,10 +101,10 @@ export class Tab4Page implements OnInit {
     return false;
   }
 
-  reiniciarHorario(): Horario {
+  private reiniciarHorario(horaInicial: Date, horaFinal: Date): Horario {
     this.nuevoHorario = new Horario();
-    this.nuevoHorario.horaInicial = new Date();
-    this.nuevoHorario.horaFinal = new Date();
+    this.nuevoHorario.horaInicial = new Date(horaInicial);
+    this.nuevoHorario.horaFinal = new Date(horaFinal);
     return this.nuevoHorario;
   }
 
@@ -122,15 +122,15 @@ export class Tab4Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL);
     }
     else {
-      this.mostrarListaMaterias = false;
       this.nuevosHorarios.push(this.nuevoHorario);
-      this.reiniciarHorario();
-      this.nuevaMateria.horarios = this.nuevosHorarios;
+      const horaInicial = this.nuevoHorario.horaInicial;
+      const horaFinal = this.nuevoHorario.horaFinal;
+      this.reiniciarHorario(horaInicial, horaFinal);
       this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
     }
   }
 
-  crearMateria() {
+  async crearMateria() {
     if (this.validarNombre()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
@@ -140,12 +140,11 @@ export class Tab4Page implements OnInit {
     else {
       this.mostrarListaMaterias = false;
       this.nuevaMateria.horarios = this.nuevosHorarios;
-      this.materiaService.createMateria(this.nuevaMateria).
-        subscribe(async (data: string) => {
+      console.log(this.nuevosHorarios);
+      (await this.materiaService.createMateria(this.nuevaMateria)).
+        subscribe(async () => {
           this.alerta.showToast(GUARDAR_MATERIA_EXITO, 'success');
-          this.datosEstudiante.getEstudiante(this.usuario);
-          this.mostrarListaMaterias = false;
-          await this.mostrarListaButton();
+          await this.datosEstudiante.getEstudiante(this.usuario);
           this.nuevosHorarios = [];
           this.nuevaMateria = new Materia();
         }, async error => {
@@ -155,6 +154,7 @@ export class Tab4Page implements OnInit {
           else {
             this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_MATERIA_ERROR);
           }
+          await this.ngOnInit();
         });
     }
   }
@@ -163,11 +163,10 @@ export class Tab4Page implements OnInit {
     this.itemLista.closeSlidingItems();
     const modalUpdate = await this.modalCtrl.create({
       component: UpdateMateriaPage,
-      componentProps: {
-        viejaMateria: materia
-      }
+      componentProps: { viejaMateria: materia }
     });
     await modalUpdate.present();
+    await this.ngOnInit();
   }
 
   async eliminarMateria(materia: Materia) {
@@ -182,14 +181,13 @@ export class Tab4Page implements OnInit {
         },
         {
           text: 'Aceptar',
-          handler: () => {
+          handler: async () => {
             materia.estudiante = this.usuario;
-            this.materiaService.deleteMateria(materia)
-              .subscribe(async (data: string) => {
+            this.mostrarListaMaterias = false;
+            (await this.materiaService.deleteMateria(materia))
+              .subscribe(async () => {
                 this.alerta.showToast(BORRADO_EXITOSO_MATERIA, 'secondary');
-                this.datosEstudiante.getEstudiante(this.usuario);
-                this.mostrarListaMaterias = false;
-                await this.mostrarListaButton();
+                await this.datosEstudiante.getEstudiante(this.usuario);
               }, async error => {
                 if (error.status === 400) {
                   this.alerta.presentAlert(MENSAJE_ERROR, error.error);
@@ -203,13 +201,6 @@ export class Tab4Page implements OnInit {
       ]
     });
     await alert.present();
+    await this.ngOnInit();
   }
-
-  async actualizarContenido(event) {
-    setTimeout(async () => {
-      await this.ngOnInit();
-      event.target.complete();
-    }, 2000);
-  }
-
 }

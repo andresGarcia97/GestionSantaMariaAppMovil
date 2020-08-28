@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
@@ -31,8 +31,7 @@ export class UpdateMateriaPage implements OnInit {
   usuario = new User();
 
   constructor(private alerta: AlertsService, private modalCtrl: ModalController
-    , private materiaService: MateriasService, private datosEstudiante: EstudianteService
-    , private alertController: AlertController) { }
+    , private materiaService: MateriasService, private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
     this.nuevoHorario.horaInicial = new Date();
@@ -88,10 +87,10 @@ export class UpdateMateriaPage implements OnInit {
     return false;
   }
 
-  private reiniciarHorario(): Horario {
+  private reiniciarHorario(horaInicial: Date, horaFinal: Date): Horario {
     this.nuevoHorario = new Horario();
-    this.nuevoHorario.horaInicial = new Date();
-    this.nuevoHorario.horaFinal = new Date();
+    this.nuevoHorario.horaInicial = new Date(horaInicial);
+    this.nuevoHorario.horaFinal = new Date(horaFinal);
     return this.nuevoHorario;
   }
 
@@ -110,7 +109,9 @@ export class UpdateMateriaPage implements OnInit {
     }
     else {
       this.nuevaMateria.horarios.push(this.nuevoHorario);
-      this.reiniciarHorario();
+      const horaInicial = this.nuevoHorario.horaInicial;
+      const horaFinal = this.nuevoHorario.horaFinal;
+      this.reiniciarHorario(horaInicial, horaFinal);
       this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
       return this.nuevaMateria;
     }
@@ -120,7 +121,7 @@ export class UpdateMateriaPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  actualizarMateria() {
+  async actualizarMateria() {
     if (this.validarNombre()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
@@ -130,10 +131,10 @@ export class UpdateMateriaPage implements OnInit {
     else {
       this.materias.push(this.viejaMateria);
       this.materias.push(this.nuevaMateria);
-      this.materiaService.updateMateria(this.materias).
-        subscribe(async (data: string) => {
+      (await this.materiaService.updateMateria(this.materias)).
+        subscribe(async () => {
           this.alerta.showToast(ACTUALIZACION_MATERIA_EXITOSA, 'success');
-          this.datosEstudiante.getEstudiante(this.nuevaMateria.estudiante);
+          await this.datosEstudiante.getEstudiante(this.nuevaMateria.estudiante);
           this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {

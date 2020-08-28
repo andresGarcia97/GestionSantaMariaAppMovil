@@ -47,7 +47,7 @@ export const ERROR_OBTENIENDO_ESTUDIANTE = 'Error durante la consulta del usario
 
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
-export const INFO_ADICION_HORARIO = 'Horario agregado A ';
+export const INFO_ADICION_HORARIO = 'Horario agregado A:  ';
 export const INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA = 'No se pudieron actualizar los horarios de lavado';
 export const INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS = 'No se pudieron actualizar las reservas';
 export const INFO_TODAVIA_NO_TIENE_FIRMA = 'Todavia no cuenta con una firma';

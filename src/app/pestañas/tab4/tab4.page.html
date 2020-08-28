@@ -79,10 +79,10 @@
                   <ion-label>Dia</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Inicial</ion-label>
+                  <ion-label>Hora Inicio</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Final</ion-label>
+                  <ion-label>Hora Fin</ion-label>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -127,10 +127,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
-  <ion-refresher slot="fixed" (ionRefresh)="actualizarContenido($event)">
-    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Actualizar Materias"
-      refreshingSpinner="circles" refreshingText="Actualizando...">
-    </ion-refresher-content>
-  </ion-refresher>
 </ion-content>
