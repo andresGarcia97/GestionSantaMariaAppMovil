@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Salida } from '../../models/interfaces';
+import { LoginService } from '../login/login.service';
 
 const ENDPOINT_SALIDA = environment.LOCALHOST.concat('salidas/');
 const CREAR_SALIDA = ENDPOINT_SALIDA.concat('guardarsalida');
@@ -13,10 +13,11 @@ const CREAR_SALIDA = ENDPOINT_SALIDA.concat('guardarsalida');
 
 export class SalidasService {
 
-  private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private loginToken: LoginService) { }
 
-  public createSalida(inasistencia: Salida): Observable<string> {
-    return this.http.post<string>(CREAR_SALIDA, inasistencia, { headers: this.headersjson });
+  public async createSalida(inasistencia: Salida) {
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.post<string>(CREAR_SALIDA, inasistencia, options);
   }
 }

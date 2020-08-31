@@ -66,7 +66,7 @@ export class Tab4Page implements OnInit {
       this.alerta.showToast(INFO_LISTA_VACIA.concat('Materias'), 'secondary');
     }
     else {
-      this.mostrarListaMaterias = !this.mostrarListaMaterias;
+      this.mostrarListaMaterias = true;
     }
   }
 
@@ -140,13 +140,16 @@ export class Tab4Page implements OnInit {
     else {
       this.mostrarListaMaterias = false;
       this.nuevaMateria.horarios = this.nuevosHorarios;
-      console.log(this.nuevosHorarios);
       (await this.materiaService.createMateria(this.nuevaMateria)).
         subscribe(async () => {
           this.alerta.showToast(GUARDAR_MATERIA_EXITO, 'success');
           await this.datosEstudiante.getEstudiante(this.usuario);
+          this.mostrarListaMaterias = false;
           this.nuevosHorarios = [];
           this.nuevaMateria = new Materia();
+          setTimeout(async () => {
+            await this.mostrarListaButton();
+          }, 500);
         }, async error => {
           if (error.status === 400) {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);
@@ -165,8 +168,14 @@ export class Tab4Page implements OnInit {
       component: UpdateMateriaPage,
       componentProps: { viejaMateria: materia }
     });
+    modalUpdate.onWillDismiss()
+    .then(async () => {
+      this.mostrarListaMaterias = false;
+      setTimeout(async () => {
+        await this.mostrarListaButton();
+      }, 500);
+    });
     await modalUpdate.present();
-    await this.ngOnInit();
   }
 
   async eliminarMateria(materia: Materia) {
@@ -188,6 +197,10 @@ export class Tab4Page implements OnInit {
               .subscribe(async () => {
                 this.alerta.showToast(BORRADO_EXITOSO_MATERIA, 'secondary');
                 await this.datosEstudiante.getEstudiante(this.usuario);
+                this.mostrarListaMaterias = false;
+                setTimeout(async () => {
+                  await this.mostrarListaButton();
+                }, 500);
               }, async error => {
                 if (error.status === 400) {
                   this.alerta.presentAlert(MENSAJE_ERROR, error.error);
@@ -201,6 +214,5 @@ export class Tab4Page implements OnInit {
       ]
     });
     await alert.present();
-    await this.ngOnInit();
   }
 }

@@ -90,7 +90,7 @@ export class UpdateReservaPage implements OnInit {
     return false;
   }
 
-  public aceptarUpdate() {
+  public async aceptarUpdate() {
     this.reservas = [];
     if (this.fechaInicialNoPasada()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_PASADA);
@@ -107,10 +107,11 @@ export class UpdateReservaPage implements OnInit {
     else {
       this.reservas.push(this.viejaReserva);
       this.reservas.push(this.actualizacionReserva);
-      this.reservasService.updateReserva(this.reservas)
-        .subscribe(async (data: string) => {
+      (await this.reservasService.updateReserva(this.reservas))
+        .subscribe(async () => {
           this.reservasService.getReservas(this.actualizacionReserva);
           this.alerta.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
+          this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);
@@ -119,7 +120,6 @@ export class UpdateReservaPage implements OnInit {
             this.alerta.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
           }
         });
-      this.modalCtrl.dismiss();
     }
   }
 

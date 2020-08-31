@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Salida, User } from '../../models/interfaces';
-import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
-import { MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO, HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA } from '../../models/constantes';
+import { GUARDAR_SALIDA_ERROR, GUARDAR_SALIDA_EXITO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { MENSAJE_ERROR, GUARDAR_SALIDA_ERROR, GUARDAR_SALIDA_EXITO } from 'src/app/models/mensajes';
+import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { SalidasService } from 'src/app/services/salidas/salidas.service';
-import { ERROR_FECHAS_PASADAS, ERROR_MOTIVO_LUGAR_FALTANTES, ERROR_HORAS_INVALIDAS, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA,
-  INFO_LISTA_VACIA } from '../../models/mensajes';
+import { HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from '../../models/constantes';
+import { Salida, User } from '../../models/interfaces';
+import {
+  ERROR_FECHAS_PASADAS, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA, ERROR_HORAS_INVALIDAS, ERROR_MOTIVO_LUGAR_FALTANTES,
+  INFO_LISTA_VACIA
+} from '../../models/mensajes';
 
 @Component({
   selector: 'app-tab1',
@@ -31,27 +33,23 @@ export class Tab1Page implements OnInit {
     , private salidaService: SalidasService) { }
 
   async ngOnInit() {
+    await this.mostrarListaButton();
     await this.datosEstudiante.obtenerEstudiante();
-    await this.obtenerSalidas();
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaSalida.estudianteSalida = this.usuario;
   }
 
-  private async obtenerSalidas() {
+  public async mostrarListaButton() {
     await this.datosEstudiante.obtenerSalidas();
-    this.salidas = this.datosEstudiante.salidas;
-  }
-
-  public mostrarListaButton() {
-    this.obtenerSalidas();
-    if (this.salidas.length === 0) {
-      this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('salidas'), 'secondary');
+    if (this.datosEstudiante.salidas !== null && this.datosEstudiante.salidas.length > 0) {
+      this.salidas = this.datosEstudiante.salidas;
+      this.mostrarLista = true;
     }
     else {
-      this.mostrarLista = !this.mostrarLista;
+      this.mostrarLista = false;
+      this.alerta.showToast(INFO_LISTA_VACIA.concat('salidas'), 'secondary');
     }
   }
 
@@ -86,15 +84,15 @@ export class Tab1Page implements OnInit {
 
   private validarFechas(): boolean {
     // verifica que no haya pasado la fechaSalida
-    if (this.nuevaSalida.fechaSalida.getMonth() < this.fechaComparacion.getMonth() ||
-      this.nuevaSalida.fechaSalida.getDate() < this.fechaComparacion.getDate() ||
-      this.nuevaSalida.fechaSalida.getHours() < this.fechaComparacion.getHours()
-      && (this.nuevaSalida.fechaSalida.getDate() === this.fechaComparacion.getDate()
-        && this.nuevaSalida.fechaSalida.getMonth() === this.fechaComparacion.getMonth())) {
+    if (((this.nuevaSalida.fechaSalida.getDate() === this.fechaComparacion.getDate() &&
+      this.nuevaSalida.fechaSalida.getMonth() === this.fechaComparacion.getMonth()) &&
+      this.nuevaSalida.fechaSalida.getHours() < this.fechaComparacion.getHours()) ||
+      (this.nuevaSalida.fechaSalida.getMonth() < this.fechaComparacion.getMonth() &&
+        this.nuevaSalida.fechaSalida.getDate() < this.fechaComparacion.getDate())) {
       return true;
     }
     // verificar que no haya pasado la fechaLlegada
-    else if (this.nuevaSalida.fechaLlegada.getMonth() < this.fechaComparacion.getMonth() ||
+    else if (this.nuevaSalida.fechaLlegada.getMonth() < this.fechaComparacion.getMonth() &&
       this.nuevaSalida.fechaLlegada.getDate() < this.fechaComparacion.getDate()) {
       return true;
     }
@@ -110,7 +108,8 @@ export class Tab1Page implements OnInit {
     return false;
   }
 
-  public crearSalida() {
+  public async crearSalida() {
+    console.log(this.nuevaSalida);
     if (this.validarMotivo_Lugar()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
     }
@@ -124,11 +123,14 @@ export class Tab1Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA);
     }
     else {
-      this.salidaService.createSalida(this.nuevaSalida)
-        .subscribe(async (data: string) => {
+      (await this.salidaService.createSalida(this.nuevaSalida))
+        .subscribe(async () => {
           this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
           this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
+          setTimeout(async () => {
+            await this.mostrarListaButton();
+          }, 500);
         }, async error => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
         });

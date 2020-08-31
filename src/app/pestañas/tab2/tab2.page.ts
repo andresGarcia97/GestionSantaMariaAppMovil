@@ -37,7 +37,8 @@ export class Tab2Page implements OnInit {
     private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
-    await this.obtenerListaInasistencias();
+    this.mostrarLista = false;
+    await this.mostrarListaButton();
     this.inasistencia.fecha = new Date();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
@@ -45,13 +46,14 @@ export class Tab2Page implements OnInit {
   }
 
   public async mostrarListaButton() {
-    await this.obtenerListaInasistencias();
-    if (this.InasistenciasUsuario.length === 0) {
-      this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
+    await this.datosEstudiante.obtenerInasistencias();
+    if (this.datosEstudiante.inasistencias !== null && this.datosEstudiante.inasistencias.length > 0) {
+      this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+      this.mostrarLista = true;
     }
     else {
-      this.mostrarLista = !this.mostrarLista;
+      this.mostrarLista = false;
+      this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
     }
   }
 
@@ -59,16 +61,9 @@ export class Tab2Page implements OnInit {
     this.inasistencia.fecha = new Date(event.detail.value);
   }
 
-  private async obtenerListaInasistencias() {
-    await this.datosEstudiante.obtenerInasistencias();
-    if (this.datosEstudiante.inasistencias !== null) {
-      this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
-    }
-  }
-
   private validarFecha(): boolean {
     if (this.inasistencia.fecha.getMonth() < this.mesMInimo ||
-      this.inasistencia.fecha.getDate() < this.diaMinimo) {
+      (this.inasistencia.fecha.getDate() < this.diaMinimo && this.inasistencia.fecha.getMonth() <= this.mesMInimo)) {
       this.inasistencia.fecha = this.fechaInasistencia;
       return true;
     }
@@ -134,6 +129,13 @@ export class Tab2Page implements OnInit {
     return options;
   }
 
+  private reiniciarInasistencia(fecha: Date): InasistenciaAlimentacion {
+    this.inasistencia = new InasistenciaAlimentacion();
+    this.inasistencia.fecha = new Date(fecha);
+    this.inasistencia.estudianteInasistencia = this.usuario;
+    return this.inasistencia;
+  }
+
   public async crearInansistencia() {
     if (this.validarFecha()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
@@ -147,11 +149,16 @@ export class Tab2Page implements OnInit {
     else {
       this.saveInasistencias = [];
       this.saveInasistencias.push(this.inasistencia);
+      const fecha = this.inasistencia.fecha;
+      this.reiniciarInasistencia(fecha);
       (await this.inasitenciaService.createInasistencia(this.saveInasistencias))
         .subscribe(async () => {
           this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
           await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
+          setTimeout(async () => {
+            await this.mostrarListaButton();
+          }, 500);
         }, async error => {
           if (error.status === 400) {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);

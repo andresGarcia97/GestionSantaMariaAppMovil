@@ -5,6 +5,7 @@ import { Reserva } from 'src/app/models/interfaces';
 import { INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
 import { AlertsService } from '../alerts/alerts.service';
+import { LoginService } from '../login/login.service';
 
 const ENDPOINT_RESERVA = environment.LOCALHOST.concat('reservas/');
 const OBTENER_RESERVAS_FUTURAS = ENDPOINT_RESERVA.concat('pordia');
@@ -21,36 +22,41 @@ export class ReservasService {
   public reservas: Reserva[] = [];
   private reservasString = '';
 
-  private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  constructor(private http: HttpClient, private storage: Storage, private alerts: AlertsService) { }
+  constructor(private http: HttpClient, private storage: Storage,
+    private alerts: AlertsService, private loginToken: LoginService) { }
 
   public async getReservas(reserva: Reserva) {
-    return this.http.post<Reserva[]>(OBTENER_RESERVAS_FUTURAS, reserva, { headers: this.headersjson })
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.post<Reserva[]>(OBTENER_RESERVAS_FUTURAS, reserva, options)
       .subscribe(async (data: Reserva[]) => {
         await this.guardarReservas(data);
-      }, async error => {
+      }, () => {
         this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, 'warning', 1000);
       });
   }
 
-  public saveReserva(reserva: Reserva): any {
-    return this.http.post<string>(CREAR_RESERVA, reserva, { headers: this.headersjson });
+  public async saveReserva(reserva: Reserva) {
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.post<string>(CREAR_RESERVA, reserva, options);
   }
 
-  public updateReserva(reservas: Reserva[]): any {
-    return this.http.put<string>(ACTUALIZAR_RESERVA, reservas, { headers: this.headersjson });
+  public async updateReserva(reservas: Reserva[]) {
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.put<string>(ACTUALIZAR_RESERVA, reservas, options);
   }
 
-  public deleteReserva(reserva: Reserva): any {
+  public async deleteReserva(reserva: Reserva) {
+    await this.loginToken.cargarToken();
     const options = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: this.loginToken.token
       }),
       body: {
-        usuario: {
-          identificacion: reserva.usuario.identificacion
-        },
+        usuario: { identificacion: reserva.usuario.identificacion },
         fechaInicial: reserva.fechaInicial,
         actividad: reserva.actividad,
         fechaFinal: reserva.fechaFinal,

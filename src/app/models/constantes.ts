@@ -7,6 +7,7 @@ export const HORA_MAXIMA_RESERVA = 21;
 export const HORA_MINIMA_RESERVA = 5;
 export const HORA_MINIMA_MATERIA = 6;
 export const HORA_MAXIMA_MATERIA = 22;
+export const HORA_MINUTOS_EN_PUNTO = 0;
 
 export const MOMENTO_DESAYUNO = 'DESAYUNO';
 export const MOMENTO_ALMUERZO = 'ALMUERZO';

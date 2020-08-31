@@ -6,7 +6,12 @@
       <ion-grid>
         <ion-row>
           <ion-card-subtitle>
-            Solo se permiten reservas despues de las 05 y antes de las 21 (en punto) :
+            -Solo se permiten reservas entre las 05 y las 21.
+          </ion-card-subtitle>
+        </ion-row>
+        <ion-row>
+          <ion-card-subtitle>
+            -Tenga en cuenta que existen reglas internas que no necesariamente estan validadas.
           </ion-card-subtitle>
         </ion-row>
       </ion-grid>
@@ -38,16 +43,12 @@
               Crear
             </ion-button>
           </ion-col>
-          <ion-col>
-            <ion-button expand="full " shape="round" (click)="mostrarListaButton()">
-              Futuras
-            </ion-button>
-          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
   </ion-card>
-  <ion-card  *ngIf="mostrarLista">
+
+  <ion-card *ngIf="mostrarLista">
     <ion-card-content>
       <ion-segment (ionChange)="segmentChanged($event)" color="secondary" scrollable>
         <ion-segment-button value="">
@@ -124,11 +125,8 @@
     </ion-card-content>
   </ion-card>
   <ion-refresher slot="fixed" (ionRefresh)="actualizarContenido($event)">
-    <ion-refresher-content
-      pullingIcon ="chevron-down-circle-outline"
-      pullingText ="Actualizar Reservas"
-      refreshingSpinner ="circles"
-      refreshingText ="Actualizando...">
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Actualizar Reservas"
+      refreshingSpinner="circles" refreshingText="Actualizando...">
     </ion-refresher-content>
   </ion-refresher>
 </ion-content>
