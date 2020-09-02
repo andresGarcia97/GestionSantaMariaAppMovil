@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { NavController } from '@ionic/angular';
 import { Estudent } from 'src/app/models/Estudiante';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
@@ -25,10 +24,12 @@ export class DatosEstudiantePage implements OnInit {
   base64Image: any;
   estudiante: Estudent = new Estudent();
   image: any;
+  firmaActual = false;
+  nuevaFirma = false;
   sizeImage: any;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
-    private alertas: AlertsService, private navCrtl: NavController) { }
+    private alertas: AlertsService) { }
 
   obtenerUniversidad(event) {
     this.estudiante.universidad = event.detail.value;
@@ -54,6 +55,7 @@ export class DatosEstudiantePage implements OnInit {
     else {
       this.image = new Image();
       this.image = 'data:image/jpeg;base64,' + this.estudiante.firma;
+      this.firmaActual = true;
       return this.image;
     }
   }
@@ -88,8 +90,9 @@ export class DatosEstudiantePage implements OnInit {
       this.base64Image = new Image();
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.estudiante.firma = imageData;
+      this.nuevaFirma = true;
       return this.base64Image;
-    }, (err) => {
+    }, () => {
       this.alertas.showToast(ERROR_AL_CARGAR_LA_IMAGEN, 'warning');
     });
   }
@@ -108,15 +111,17 @@ export class DatosEstudiantePage implements OnInit {
     }
     else {
       (await this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante))
-        .subscribe(async (data: string) => {
-          this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
+        .subscribe(async () => {
           await this.datosEstudiante.getEstudiante(this.estudiante);
-          this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
+          this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
+          setTimeout(async () => {
+            await this.ngOnInit();
+          }, 500);
         }, async error => {
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);
           }
-          else{
+          else {
             this.alertas.presentAlert(MENSAJE_ERROR, ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA);
           }
         });

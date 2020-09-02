@@ -20,12 +20,12 @@ export class LoginService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  public async login(usuario: User) {
+  public async login(usuario: User): Promise<any> {
     return this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
       .subscribe(async (data: any) => {
         await this.guardarToken(data);
         return Promise.resolve();
-      }, async error => {
+      }, async () => {
         await this.borrarStorage();
         return Promise.reject();
       });
@@ -41,16 +41,6 @@ export class LoginService {
 
   public async cargarToken() {
     this.token = await this.storage.get('token') || null;
-  }
-
-  public async aceptarToken(): Promise<any> {
-    await this.cargarToken();
-    if (this.token === null) {
-      return Promise.reject();
-    }
-    else {
-      return Promise.resolve();
-    }
   }
 
   public async validarToken(): Promise<boolean> {

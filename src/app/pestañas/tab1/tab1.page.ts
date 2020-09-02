@@ -43,7 +43,7 @@ export class Tab1Page implements OnInit {
 
   public async mostrarListaButton() {
     await this.datosEstudiante.obtenerSalidas();
-    if (this.datosEstudiante.salidas !== null && this.datosEstudiante.salidas.length > 0) {
+    if (this.datosEstudiante.salidas !== null || this.datosEstudiante.salidas.length > 0) {
       this.salidas = this.datosEstudiante.salidas;
       this.mostrarLista = true;
     }

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
 import { ACTUALIZACION_USUARIO_ERRONEA, ACTUALIZACION_USUARIO_EXITOSA, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { UsuarioService } from 'src/app/services/user/usuario.service';
@@ -16,11 +15,13 @@ export class UpdateuserPage implements OnInit {
 
   protected usuario: Estudent;
   protected actualizacion = new User();
+  mostrarInfo = false;
 
   constructor(private userService: UsuarioService, public alerts: AlertsService
-    , private navCtrl: NavController, private datosEstudiante: EstudianteService) { }
+    , private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
+    this.mostrarInfo = false;
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario = this.datosEstudiante.estudiante;
     this.usuarioValido();
@@ -40,23 +41,22 @@ export class UpdateuserPage implements OnInit {
     if (!this.actualizacion.correo) {
       this.actualizacion.correo = this.usuario.correo;
     }
+    this.mostrarInfo = true;
     return this.actualizacion;
   }
 
-  public update() {
+  public async update() {
     this.usuarioValido();
-    this.userService.update(this.actualizacion)
-      .subscribe(data => {
+    (await this.userService.update(this.actualizacion))
+      .subscribe(async () => {
+        await this.datosEstudiante.getEstudiante(this.actualizacion);
         this.alerts.showToast(ACTUALIZACION_USUARIO_EXITOSA, 'success');
-        this.datosEstudiante.getEstudiante(this.actualizacion);
-        this.navCtrl.navigateRoot('/main/tabs/tab1', { animated: true });
-      }, err => {
+        setTimeout(async () => {
+          await this.ngOnInit();
+        }, 500);
+      }, () => {
         this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_USUARIO_ERRONEA);
       });
-  }
-
-  public devolverse() {
-    this.navCtrl.navigateRoot('/main/tabs/tab1', { animated: true });
   }
 
 }
