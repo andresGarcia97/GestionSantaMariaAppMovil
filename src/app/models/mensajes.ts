@@ -7,6 +7,8 @@ export const ACTUALIZACION_MATERIA_EXITOSA = 'Actualizacion exitosa de la Materi
 export const ACTUALIZACION_MATERIA_ERRONEA = 'Error al Actualizar la Materia';
 export const ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA = 'Actualizacion exitosa de los datos';
 export const ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA = 'Error al Actualizar los datos';
+export const ACTUALIZACION_CONTRASENA_EXITOSA = 'Actualización exitosa de la contraseña';
+export const ACTUALIZACION_FIRMA_CONTRASENA_ERRONEA = 'Error al actualizar la contraseña';
 
 export const LOGIN_EXITOSO = 'Login Exitoso';
 export const LOGOUT_EXITOSO = 'Ha cerrado la sesión';

@@ -22,7 +22,7 @@ export class LoginPage {
     await this.loginService.login(this.autenticacion);
     setTimeout(async () => {
       await this.estudianteService.getEstudiante(this.autenticacion);
-    }, 300);
+    }, 400);
     setTimeout(async () => {
       const loginSuccess = await this.loginService.validarToken();
       if (loginSuccess) {

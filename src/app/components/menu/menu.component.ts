@@ -25,13 +25,18 @@ export class MenuComponent {
     },
     {
       icon: 'calendar-outline',
-      name: 'Consultar info Labor',
+      name: 'Consultar Labores',
       redirectTo: '/labor'
     },
     {
       icon: 'cafe-outline',
-      name: 'Horarios Lavado de Loza',
+      name: 'Lavado de Loza',
       redirectTo: '/horarios-loza'
+    },
+    {
+      icon: 'key-outline',
+      name: 'Contraseña',
+      redirectTo: '/changue-password'
     }
   ];
 

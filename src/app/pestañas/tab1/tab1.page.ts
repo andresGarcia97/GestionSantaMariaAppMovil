@@ -18,6 +18,7 @@ import {
 export class Tab1Page implements OnInit {
 
   salidas: Salida[] = [];
+  mostrarLista = false;
   nuevaSalida = new Salida();
   usuario = new User();
   fechaLlegada = new Date();
@@ -26,24 +27,26 @@ export class Tab1Page implements OnInit {
   academico = MOTIVO_ACADEMICO;
   personal = MOTIVO_PERSONAL;
   recreativo = MOTIVO_RECREATIVO;
-  mostrarLista = false;
   yearMinimo = this.fechaLlegada.getFullYear();
 
   constructor(private datosEstudiante: EstudianteService, private alerta: AlertsService
     , private salidaService: SalidasService) { }
 
   async ngOnInit() {
-    await this.mostrarListaButton();
-    await this.datosEstudiante.obtenerEstudiante();
+    this.mostrarLista = false;
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
-    this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
-    this.nuevaSalida.estudianteSalida = this.usuario;
+    setTimeout(async () => {
+      await this.mostrarListaButton();
+      await this.datosEstudiante.obtenerEstudiante();
+      this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
+      this.nuevaSalida.estudianteSalida = this.usuario;
+    }, 500);
   }
 
   public async mostrarListaButton() {
     await this.datosEstudiante.obtenerSalidas();
-    if (this.datosEstudiante.salidas !== null || this.datosEstudiante.salidas.length > 0) {
+    if (this.datosEstudiante.salidas !== null && this.datosEstudiante.salidas.length > 0) {
       this.salidas = this.datosEstudiante.salidas;
       this.mostrarLista = true;
     }
@@ -124,14 +127,14 @@ export class Tab1Page implements OnInit {
     }
     else {
       (await this.salidaService.createSalida(this.nuevaSalida))
-        .subscribe(async () => {
+        .subscribe(() => {
           this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
           this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
-        }, async error => {
+        }, async () => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
         });
     }

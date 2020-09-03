@@ -16,7 +16,6 @@ const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
 export class EstudianteService {
 
   public estudiante: Estudent;
-  public instancia = new Estudent();
   public estudianteString = '';
 
   public inasistencias: InasistenciaAlimentacion[] = [];

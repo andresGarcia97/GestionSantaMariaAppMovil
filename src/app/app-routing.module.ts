@@ -4,6 +4,11 @@ import { UsuarioGuard } from './guards/usuario-guard/usuario-guard.guard';
 
 const routes: Routes = [
   {
+    path: 'changue-password',
+    loadChildren: () => import('./pages/changue-password/changue-password.module').then( m => m.ChanguePasswordPageModule),
+    canLoad: [UsuarioGuard]
+  },
+  {
     path: 'horarios-loza',
     loadChildren: () => import('./pages/horarios-loza/horarios-loza.module').then( m => m.HorariosLozaPageModule),
     canLoad: [UsuarioGuard]
@@ -36,7 +41,7 @@ const routes: Routes = [
     path: '',
     pathMatch: 'full',
     redirectTo: 'main/tabs/tab1'
-  }
+  },
 ];
 @NgModule({
   imports: [
