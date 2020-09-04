@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { GUARDAR_SALIDA_ERROR, GUARDAR_SALIDA_EXITO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { GUARDAR_SALIDA_ERROR, GUARDAR_SALIDA_EXITO, INFO_TODAVIA_NO_TIENE_FIRMA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { SalidasService } from 'src/app/services/salidas/salidas.service';
 import { HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from '../../models/constantes';
 import { Salida, User } from '../../models/interfaces';
@@ -29,8 +30,8 @@ export class Tab1Page implements OnInit {
   recreativo = MOTIVO_RECREATIVO;
   yearMinimo = this.fechaLlegada.getFullYear();
 
-  constructor(private datosEstudiante: EstudianteService, private alerta: AlertsService
-    , private salidaService: SalidasService) { }
+  constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService
+    , private salidaService: SalidasService, private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.mostrarLista = false;
@@ -41,7 +42,7 @@ export class Tab1Page implements OnInit {
       await this.datosEstudiante.obtenerEstudiante();
       this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
       this.nuevaSalida.estudianteSalida = this.usuario;
-    }, 500);
+    }, 400);
   }
 
   public async mostrarListaButton() {
@@ -52,7 +53,7 @@ export class Tab1Page implements OnInit {
     }
     else {
       this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('salidas'), 'secondary');
+      this.alerts.showToast(INFO_LISTA_VACIA.concat('salidas'), 'secondary');
     }
   }
 
@@ -66,6 +67,15 @@ export class Tab1Page implements OnInit {
 
   public cambioFechaSalida(event) {
     this.nuevaSalida.fechaSalida = new Date(event.detail.value);
+  }
+
+  private async validarFirma(): Promise<boolean> {
+    await this.datosEstudiante.obtenerFirma();
+    const firma = this.datosEstudiante.firma;
+    if (!firma || 0 === firma.length) {
+      return true;
+    }
+    return false;
   }
 
   private validarMotivo_Lugar(): boolean {
@@ -112,30 +122,40 @@ export class Tab1Page implements OnInit {
   }
 
   public async crearSalida() {
+    const firma = await this.validarFirma();
     this.fechaComparacion = new Date();
     if (this.validarMotivo_Lugar()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
     }
     else if (this.validarFechas()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_PASADAS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_PASADAS);
     }
     else if (this.validarLogicaFechas()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
     }
     else if (this.fechaSalidaMayor_fechaLlegada()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA);
+    }
+    else if (firma) {
+      this.alerts.presentAlert(MENSAJE_ERROR, INFO_TODAVIA_NO_TIENE_FIRMA);
     }
     else {
       (await this.salidaService.createSalida(this.nuevaSalida))
-        .subscribe(() => {
-          this.datosEstudiante.getEstudiante(this.usuario);
-          this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
+        .subscribe(async () => {
+          this.alerts.showToast(GUARDAR_SALIDA_EXITO, 'success');
+          await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
           setTimeout(async () => {
             await this.ngOnInit();
           }, 100);
-        }, async () => {
-          this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
+        }, error => {
+          if (error.status === 401) {
+            this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
+          }
+          else {
+            this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
+          }
         });
     }
   }

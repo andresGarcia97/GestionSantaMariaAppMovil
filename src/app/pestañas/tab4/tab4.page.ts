@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonList, ModalController } from '@ionic/angular';
-import { INFO_LISTA_VACIA, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { INFO_LISTA_VACIA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import {
   DIA_DOMINGO, DIA_JUEVES, DIA_LUNES, DIA_MARTES, DIA_MIERCOLES, DIA_SABADO, DIA_VIERNES,
   HORA_MAXIMA_MATERIA, HORA_MINIMA_MATERIA
@@ -35,8 +36,8 @@ export class Tab4Page implements OnInit {
   usuario = new User();
   mostrarListaMaterias = false;
 
-  constructor(private datosEstudiante: EstudianteService, private alerta: AlertsService, private materiaService: MateriasService
-    , private modalCtrl: ModalController, private alertController: AlertController) { }
+  constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService, private materiaService: MateriasService
+    , private modalCtrl: ModalController, private alertController: AlertController, private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.mostrarListaMaterias = false;
@@ -63,7 +64,7 @@ export class Tab4Page implements OnInit {
     this.materias = this.datosEstudiante.materias;
     if (this.materias.length === 0) {
       this.mostrarListaMaterias = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('Materias'), 'secondary');
+      this.alerts.showToast(INFO_LISTA_VACIA.concat('Materias'), 'secondary');
     }
     else {
       this.mostrarListaMaterias = true;
@@ -110,39 +111,38 @@ export class Tab4Page implements OnInit {
 
   crearHorario() {
     if (this.validarNombre()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
     else if (this.validarDia()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_DIA_VACIO);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_DIA_VACIO);
     }
     else if (this.validarHoras()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
     }
     else if (this.validarHoraFinalMayor()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL);
     }
     else {
       this.nuevosHorarios.push(this.nuevoHorario);
       const horaInicial = this.nuevoHorario.horaInicial;
       const horaFinal = this.nuevoHorario.horaFinal;
       this.reiniciarHorario(horaInicial, horaFinal);
-      this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
+      this.alerts.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
     }
   }
 
   async crearMateria() {
     if (this.validarNombre()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
     else if (this.nuevosHorarios.length <= 0) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
     }
     else {
-      this.mostrarListaMaterias = false;
       this.nuevaMateria.horarios = this.nuevosHorarios;
       (await this.materiaService.createMateria(this.nuevaMateria)).
         subscribe(async () => {
-          this.alerta.showToast(GUARDAR_MATERIA_EXITO, 'success');
+          this.alerts.showToast(GUARDAR_MATERIA_EXITO, 'success');
           await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarListaMaterias = false;
           this.nuevosHorarios = [];
@@ -150,14 +150,16 @@ export class Tab4Page implements OnInit {
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
-        }, async error => {
+        }, error => {
           if (error.status === 400) {
-            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.logoutForzado();
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_MATERIA_ERROR);
+            this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_MATERIA_ERROR);
           }
-          await this.ngOnInit();
         });
     }
   }
@@ -195,18 +197,21 @@ export class Tab4Page implements OnInit {
             this.mostrarListaMaterias = false;
             (await this.materiaService.deleteMateria(materia))
               .subscribe(async () => {
-                this.alerta.showToast(BORRADO_EXITOSO_MATERIA, 'secondary');
+                this.alerts.showToast(BORRADO_EXITOSO_MATERIA, 'secondary');
                 await this.datosEstudiante.getEstudiante(this.usuario);
                 this.mostrarListaMaterias = false;
                 setTimeout(async () => {
                   await this.mostrarListaButton();
                 }, 500);
-              }, async error => {
+              }, error => {
                 if (error.status === 400) {
-                  this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+                  this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+                }
+                else if (error.status === 401) {
+                  this.logoutForzado();
                 }
                 else {
-                  this.alerta.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_MATERIA);
+                  this.alerts.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_MATERIA);
                 }
               });
           }
@@ -214,5 +219,10 @@ export class Tab4Page implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  private logoutForzado() {
+    this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+    this.logoutForced.logout();
   }
 }

@@ -3,11 +3,13 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Estudent } from 'src/app/models/Estudiante';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { UNIVERSIDAD_UCO, UNIVERSIDAD_UDEA } from '../../models/constantes';
 import {
   ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA, ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA,
   ERROR_AL_CARGAR_LA_IMAGEN, ERROR_FALTA_FIRMA_UNIVERSIDAD,
   ERROR_IMAGEN_MUY_PESADA, INFO_TODAVIA_NO_TIENE_FIRMA, INFO_TODAVIA_NO_TIENE_UNIVERSIDAD,
+  LOGOUT_FORZADO,
   MENSAJE_ADVERTENCIA, MENSAJE_ERROR
 } from '../../models/mensajes';
 
@@ -29,7 +31,7 @@ export class DatosEstudiantePage implements OnInit {
   sizeImage: any;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
-    private alertas: AlertsService) { }
+    private alertas: AlertsService, private logoutForced: LoginService) { }
 
   obtenerUniversidad(event) {
     this.estudiante.universidad = event.detail.value;
@@ -112,16 +114,24 @@ export class DatosEstudiantePage implements OnInit {
     else {
       (await this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante))
         .subscribe(async () => {
-          await this.datosEstudiante.getEstudiante(this.estudiante);
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
+          await this.datosEstudiante.getEstudiante(this.estudiante);
+          this.nuevaFirma = false;
+          this.firmaActual = false;
           setTimeout(async () => {
-            this.nuevaFirma = false;
             this.base64Image = new Image();
             await this.ngOnInit();
           }, 400);
-        }, async error => {
+        }, error => {
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          if (error.status === 400) {
+            this.alertas.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.alertas.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
           }
           else {
             this.alertas.presentAlert(MENSAJE_ERROR, ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA);

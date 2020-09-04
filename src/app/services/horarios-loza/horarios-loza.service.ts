@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { LavadoLoza } from 'src/app/models/interfaces';
-import { INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA } from 'src/app/models/mensajes';
+import { INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
 import { AlertsService } from '../alerts/alerts.service';
 import { LoginService } from '../login/login.service';
@@ -29,7 +29,13 @@ export class HorariosLozaService {
       .subscribe(async (data: LavadoLoza[]) => {
         await this.guardarHorarios(data);
       }, async error => {
-        this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'warning', 1000);
+        if (error.status === 401) {
+          this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+          this.loginToken.logout();
+        }
+        else {
+          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'warning', 1000);
+        }
       });
   }
 

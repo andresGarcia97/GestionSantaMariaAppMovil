@@ -11,8 +11,9 @@ export const ACTUALIZACION_CONTRASENA_EXITOSA = 'Actualización exitosa de la co
 export const ACTUALIZACION_FIRMA_CONTRASENA_ERRONEA = 'Error al actualizar la contraseña';
 
 export const LOGIN_EXITOSO = 'Login Exitoso';
-export const LOGOUT_EXITOSO = 'Ha cerrado la sesión';
 export const LOGIN_ERRONEO = 'Identificación o contraseña erroneos';
+export const LOGOUT_EXITOSO = 'Ha cerrado la sesión';
+export const LOGOUT_FORZADO = 'Sesion caducada, por favor vuelva a iniciar sesión';
 
 export const MENSAJE_ERROR = 'ERROR';
 export const MENSAJE_ADVERTENCIA = 'ADVERTENCIA';

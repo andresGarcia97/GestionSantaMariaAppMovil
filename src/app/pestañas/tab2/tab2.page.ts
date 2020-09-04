@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PickerController } from '@ionic/angular';
-import { ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, INFO_TODAVIA_NO_TIENE_FIRMA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import {
   HORA_ALMUERZO, HORA_CENA, HORA_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA,
   MOMENTO_DESAYUNO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
@@ -33,8 +34,9 @@ export class Tab2Page implements OnInit {
   public mostrarLista = false;
   public usuario = new User();
 
-  constructor(private pickerController: PickerController, private alerta: AlertsService,
-    private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService) { }
+  constructor(private pickerController: PickerController, private alerts: AlertsService
+    , private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService
+    , private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.mostrarLista = false;
@@ -53,12 +55,21 @@ export class Tab2Page implements OnInit {
     }
     else {
       this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
+      this.alerts.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
     }
   }
 
   public cambioFecha(event) {
     this.inasistencia.fecha = new Date(event.detail.value);
+  }
+
+  private async validarFirma(): Promise<boolean> {
+    await this.datosEstudiante.obtenerFirma();
+    const firma = this.datosEstudiante.firma;
+    if (!firma || 0 === firma.length) {
+      return true;
+    }
+    return false;
   }
 
   private validarFecha(): boolean {
@@ -137,14 +148,18 @@ export class Tab2Page implements OnInit {
   }
 
   public async crearInansistencia() {
+    const firma = await this.validarFirma();
     if (this.validarFecha()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
     }
     else if (this.validarCampos()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_HORA_FALTANTES);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_HORA_FALTANTES);
     }
     else if (this.validarHoras()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
+    }
+    else if (firma) {
+      this.alerts.presentAlert(MENSAJE_ERROR, INFO_TODAVIA_NO_TIENE_FIRMA);
     }
     else {
       this.saveInasistencias = [];
@@ -153,18 +168,22 @@ export class Tab2Page implements OnInit {
       this.reiniciarInasistencia(fecha);
       (await this.inasitenciaService.createInasistencia(this.saveInasistencias))
         .subscribe(async () => {
-          this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
+          this.alerts.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
           await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
-        }, async error => {
+        }, error => {
           if (error.status === 400) {
-            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
+            this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
           }
         });
     }

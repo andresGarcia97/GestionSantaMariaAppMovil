@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ACTUALIZACION_USUARIO_ERRONEA, ACTUALIZACION_USUARIO_EXITOSA, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { ACTUALIZACION_USUARIO_ERRONEA, ACTUALIZACION_USUARIO_EXITOSA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { UsuarioService } from 'src/app/services/user/usuario.service';
 import { Estudent } from '../../models/Estudiante';
 import { User } from '../../models/interfaces';
@@ -18,7 +19,7 @@ export class UpdateuserPage implements OnInit {
   mostrarInfo = false;
 
   constructor(private userService: UsuarioService, public alerts: AlertsService
-    , private datosEstudiante: EstudianteService) { }
+    , private datosEstudiante: EstudianteService, private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.mostrarInfo = false;
@@ -54,8 +55,14 @@ export class UpdateuserPage implements OnInit {
         setTimeout(async () => {
           await this.ngOnInit();
         }, 500);
-      }, () => {
-        this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_USUARIO_ERRONEA);
+      }, error => {
+        if (error.status === 401) {
+          this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+          this.logoutForced.logout();
+        }
+        else {
+          this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_USUARIO_ERRONEA);
+        }
       });
   }
 

@@ -15,7 +15,6 @@ export class AlertsService {
       message: mensaje,
       buttons: ['OK']
     });
-
     await alert.present();
   }
 

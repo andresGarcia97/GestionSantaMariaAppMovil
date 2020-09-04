@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { LavadoLoza, TurnoLoza, User } from '../../models/interfaces';
+import { INFO_NO_TIENE_TURNOS_LAVADO_LOZA, INFO_TODAVIA_NO_HAY_HORARIOS_LOZA } from '../../models/mensajes';
 import { EstudianteService } from '../../services/estudiante/estudiante.service';
 import { HorariosLozaService } from '../../services/horarios-loza/horarios-loza.service';
-import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, INFO_NO_TIENE_TURNOS_LAVADO_LOZA } from '../../models/mensajes';
 
 @Component({
   selector: 'app-horarios-loza',
@@ -19,7 +19,7 @@ export class HorariosLozaPage implements OnInit {
   diasYTurnos: TurnoLoza[] = [];
   usuario = new User();
 
-  constructor(private alerta: AlertsService, private horariosLozaService: HorariosLozaService, 
+  constructor(private alerta: AlertsService, private horariosLozaService: HorariosLozaService,
     private datosEstudiante: EstudianteService) { }
 
   async ngOnInit() {
@@ -52,7 +52,7 @@ export class HorariosLozaPage implements OnInit {
     await this.obtenerListaHorarios();
     if (this.horariosLoza.length === 0) {
       this.mostrarHorarios = false;
-      await this.alerta.showToast(INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, 'secondary', 1000);
+      await this.alerta.showToast(INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, 'secondary', 1500);
     }
     else {
       this.mostrarHorarios = true;

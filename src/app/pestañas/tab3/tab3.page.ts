@@ -4,11 +4,12 @@ import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, HORA_MINUTOS_EN_PUNTO, MOTIVO
 import {
   BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA, ERROR_MOTIVO_LUGAR_FALTANTES,
   GUARDAR_RESERVA_ERROR,
-  GUARDAR_RESERVA_EXITO, MENSAJE_ERROR
+  GUARDAR_RESERVA_EXITO, LOGOUT_FORZADO, MENSAJE_ERROR
 } from 'src/app/models/mensajes';
 import { UpdateReservaPage } from 'src/app/pages/update-reserva/update-reserva.page';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { ReservasService } from 'src/app/services/reservas/reservas.service';
 import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_TV, LUGAR_SALON3, LUGAR_SALON4, LUGAR_SALON_AMARILLO } from '../../models/constantes';
 import { Reserva, User } from '../../models/interfaces';
@@ -42,9 +43,10 @@ export class Tab3Page implements OnInit {
   mostrarLista = false;
   yearMinimo = this.fechaInicial.getFullYear();
 
-  constructor(private alerta: AlertsService, private datosEstudiante: EstudianteService
+  constructor(private alerts: AlertsService, private datosEstudiante: EstudianteService
     , private pickerController: PickerController, private reservasService: ReservasService
-    , private modalCtrl: ModalController, private alertController: AlertController) { }
+    , private modalCtrl: ModalController, private alertController: AlertController
+    , private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.mostrarLista = false;
@@ -68,7 +70,7 @@ export class Tab3Page implements OnInit {
     }
     else {
       this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
+      this.alerts.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
     }
   }
 
@@ -177,22 +179,22 @@ export class Tab3Page implements OnInit {
     return false;
   }
 
-  public async crearReserva() {
+  async crearReserva() {
     this.fechaComparacion = new Date();
     if (this.validarCampos()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
     }
     else if (this.fechaInicialNoPasada()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_PASADA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_PASADA);
     }
     else if (this.fechaInicialMayor_quefechaFinal()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL);
     }
     else if (!this.mismoDiaYMes()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_DIFERENTE_DIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_DIFERENTE_DIA);
     }
     else if (this.validarLogicaFechas()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
       (await this.reservasService.saveReserva(this.nuevaReserva))
@@ -202,19 +204,22 @@ export class Tab3Page implements OnInit {
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
-          this.alerta.showToast(GUARDAR_RESERVA_EXITO, 'success');
+          this.alerts.showToast(GUARDAR_RESERVA_EXITO, 'success');
         }, async error => {
           if (error.status === 400) {
-            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.logoutForzado();
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_ERROR);
+            this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_ERROR);
           }
         });
     }
   }
 
-  public async editarReserva(reserva: Reserva) {
+  async editarReserva(reserva: Reserva) {
     this.itemLista.closeSlidingItems();
     const modalUpdate = await this.modalCtrl.create({
       component: UpdateReservaPage,
@@ -231,6 +236,7 @@ export class Tab3Page implements OnInit {
       });
     await modalUpdate.present();
   }
+
   async eliminarReserva(reserva: Reserva) {
     this.itemLista.closeSlidingItems();
     const alert = await this.alertController.create({
@@ -251,13 +257,16 @@ export class Tab3Page implements OnInit {
                 setTimeout(async () => {
                   await this.mostrarListaButton();
                 }, 500);
-                this.alerta.showToast(BORRADO_EXITOSO_RESERVA, 'secondary');
+                this.alerts.showToast(BORRADO_EXITOSO_RESERVA, 'secondary');
               }, async error => {
                 if (error.status === 400) {
-                  this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+                  this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+                }
+                else if (error.status === 401) {
+                  this.logoutForzado();
                 }
                 else {
-                  this.alerta.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_RESERVA);
+                  this.alerts.presentAlert(MENSAJE_ERROR, BORRADO_FALLIDO_RESERVA);
                 }
               });
           }
@@ -265,6 +274,11 @@ export class Tab3Page implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  private logoutForzado() {
+    this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+    this.logoutForced.logout();
   }
 
   async actualizarContenido(event) {
