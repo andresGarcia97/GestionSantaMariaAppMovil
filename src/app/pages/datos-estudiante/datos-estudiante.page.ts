@@ -115,8 +115,10 @@ export class DatosEstudiantePage implements OnInit {
           await this.datosEstudiante.getEstudiante(this.estudiante);
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           setTimeout(async () => {
+            this.nuevaFirma = false;
+            this.base64Image = new Image();
             await this.ngOnInit();
-          }, 500);
+          }, 400);
         }, async error => {
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);

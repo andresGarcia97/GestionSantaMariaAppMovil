@@ -76,13 +76,13 @@
                 <ion-item>
                     <ion-grid>
                         <ion-row>
-                            <ion-col>
-                                <ion-label>{{salida.razon}}</ion-label>
-                                <ion-label>{{salida.lugar}}</ion-label>
+                            <ion-col size="8">
+                                <ion-label class="ion-text-wrap">{{salida.razon}}</ion-label>
+                                <ion-label class="ion-text-wrap">{{salida.lugar}}</ion-label>
                             </ion-col>
-                            <ion-col>
-                                <ion-label>{{salida.fechaSalida | date:'MM/dd'}}</ion-label>
-                                <ion-label>{{salida.fechaLlegada | date: 'MM/dd'}}</ion-label>
+                            <ion-col size="4">
+                                <ion-label class="ion-text-wrap">{{salida.fechaSalida | date:'MM/dd'}}</ion-label>
+                                <ion-label class="ion-text-wrap">{{salida.fechaLlegada | date: 'MM/dd'}}</ion-label>
                             </ion-col>
                         </ion-row>
                     </ion-grid>

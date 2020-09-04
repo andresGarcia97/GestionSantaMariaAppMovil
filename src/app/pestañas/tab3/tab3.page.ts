@@ -3,6 +3,7 @@ import { AlertController, IonList, ModalController, PickerController } from '@io
 import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, HORA_MINUTOS_EN_PUNTO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from 'src/app/models/constantes';
 import {
   BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA, ERROR_MOTIVO_LUGAR_FALTANTES,
+  GUARDAR_RESERVA_ERROR,
   GUARDAR_RESERVA_EXITO, MENSAJE_ERROR
 } from 'src/app/models/mensajes';
 import { UpdateReservaPage } from 'src/app/pages/update-reserva/update-reserva.page';
@@ -47,10 +48,10 @@ export class Tab3Page implements OnInit {
 
   async ngOnInit() {
     this.mostrarLista = false;
-    this.nuevaReserva.fechaInicial = new Date();
-    this.nuevaReserva.fechaFinal = new Date();
     this.reservaConsultas.fechaInicial = new Date();
     await this.reservasService.getReservas(this.reservaConsultas);
+    this.nuevaReserva.fechaInicial = new Date();
+    this.nuevaReserva.fechaFinal = new Date();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.nuevaReserva.usuario = this.usuario;
@@ -135,12 +136,12 @@ export class Tab3Page implements OnInit {
     return false;
   }
   private fechaInicialNoPasada(): boolean {
-    if ((this.nuevaReserva.fechaInicial.getMonth() < this.fechaComparacion.getMonth() ||
-      this.nuevaReserva.fechaInicial.getDate() < this.fechaComparacion.getDate() ||
-      this.nuevaReserva.fechaInicial.getHours() < this.fechaComparacion.getHours() ||
-      this.nuevaReserva.fechaInicial.getMinutes() < this.fechaComparacion.getMinutes()) &&
-      (this.nuevaReserva.fechaInicial.getDate() === this.fechaComparacion.getDate() &&
-        this.nuevaReserva.fechaInicial.getMonth() === this.fechaComparacion.getMonth())) {
+    if ((this.nuevaReserva.fechaInicial.getDate() === this.fechaComparacion.getDate() &&
+      this.nuevaReserva.fechaInicial.getMonth() === this.fechaComparacion.getMonth() &&
+      this.nuevaReserva.fechaInicial.getHours() < this.fechaComparacion.getHours() &&
+      this.nuevaReserva.fechaInicial.getMinutes() < this.fechaComparacion.getMinutes()) ||
+      (this.nuevaReserva.fechaInicial.getMonth() < this.fechaComparacion.getMonth() &&
+        this.nuevaReserva.fechaInicial.getDate() < this.fechaComparacion.getDate())) {
       return true;
     }
     return false;
@@ -177,6 +178,7 @@ export class Tab3Page implements OnInit {
   }
 
   public async crearReserva() {
+    this.fechaComparacion = new Date();
     if (this.validarCampos()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
     }
@@ -193,7 +195,6 @@ export class Tab3Page implements OnInit {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
-      this.mostrarLista = false;
       (await this.reservasService.saveReserva(this.nuevaReserva))
         .subscribe(async () => {
           await this.reservasService.getReservas(this.reservaConsultas);
@@ -207,7 +208,7 @@ export class Tab3Page implements OnInit {
             this.alerta.presentAlert(MENSAJE_ERROR, error.error);
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_EXITO);
+            this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_ERROR);
           }
         });
     }
@@ -222,12 +223,12 @@ export class Tab3Page implements OnInit {
       }
     });
     modalUpdate.onWillDismiss()
-    .then(async () => {
-      this.mostrarLista = false;
-      setTimeout(async () => {
-        await this.mostrarListaButton();
-      }, 500);
-    });
+      .then(async () => {
+        this.mostrarLista = false;
+        setTimeout(async () => {
+          await this.mostrarListaButton();
+        }, 500);
+      });
     await modalUpdate.present();
   }
   async eliminarReserva(reserva: Reserva) {

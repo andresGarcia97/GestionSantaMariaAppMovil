@@ -112,7 +112,7 @@ export class Tab1Page implements OnInit {
   }
 
   public async crearSalida() {
-    console.log(this.nuevaSalida);
+    this.fechaComparacion = new Date();
     if (this.validarMotivo_Lugar()) {
       this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
     }
@@ -128,12 +128,12 @@ export class Tab1Page implements OnInit {
     else {
       (await this.salidaService.createSalida(this.nuevaSalida))
         .subscribe(() => {
-          this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
           this.datosEstudiante.getEstudiante(this.usuario);
+          this.alerta.showToast(GUARDAR_SALIDA_EXITO, 'success');
           this.mostrarLista = false;
           setTimeout(async () => {
-            await this.mostrarListaButton();
-          }, 500);
+            await this.ngOnInit();
+          }, 100);
         }, async () => {
           this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
         });

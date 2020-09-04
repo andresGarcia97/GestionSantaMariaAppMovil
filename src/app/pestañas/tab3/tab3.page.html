@@ -99,13 +99,13 @@
           <ion-item class="animated fadeIn fast">
             <ion-grid>
               <ion-row>
-                <ion-col>
-                  <ion-label>{{reserva.espacio}}</ion-label>
-                  <ion-label>{{reserva.usuario.nombre}} {{reserva.usuario.apellido}}</ion-label>
+                <ion-col size="8">
+                  <ion-label class="ion-text-wrap">{{reserva.espacio}}</ion-label>
+                  <ion-label class="ion-text-wrap">{{reserva.usuario.nombre}} {{reserva.usuario.apellido}}</ion-label>
                 </ion-col>
-                <ion-col>
-                  <ion-label>{{reserva.fechaInicial | date:'MM/dd HH:mm'}}</ion-label>
-                  <ion-label>{{reserva.fechaFinal| date:'MM/dd HH:mm'}}</ion-label>
+                <ion-col size="4">
+                  <ion-label class="ion-text-wrap">{{reserva.fechaInicial | date:'MM/dd HH:mm'}}</ion-label>
+                  <ion-label class="ion-text-wrap">{{reserva.fechaFinal| date:'MM/dd HH:mm'}}</ion-label>
                 </ion-col>
               </ion-row>
             </ion-grid>
