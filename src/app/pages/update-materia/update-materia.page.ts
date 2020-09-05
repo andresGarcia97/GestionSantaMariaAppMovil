@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
-import { MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { ModalController } from '@ionic/angular';
+import { LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { MateriasService } from 'src/app/services/materias/materias.service';
 import {
   DIA_DOMINGO, DIA_JUEVES, DIA_LUNES, DIA_MARTES, DIA_MIERCOLES, DIA_SABADO, DIA_VIERNES,
@@ -30,9 +31,9 @@ export class UpdateMateriaPage implements OnInit {
   materias: Materia[] = [];
   usuario = new User();
 
-  constructor(private alerta: AlertsService, private modalCtrl: ModalController
+  constructor(private alerts: AlertsService, private modalCtrl: ModalController
     , private materiaService: MateriasService, private datosEstudiante: EstudianteService
-    , private alertController: AlertController) { }
+    , private logoutForced: LoginService) { }
 
   async ngOnInit() {
     this.nuevoHorario.horaInicial = new Date();
@@ -88,30 +89,32 @@ export class UpdateMateriaPage implements OnInit {
     return false;
   }
 
-  private reiniciarHorario(): Horario {
+  private reiniciarHorario(horaInicial: Date, horaFinal: Date): Horario {
     this.nuevoHorario = new Horario();
-    this.nuevoHorario.horaInicial = new Date();
-    this.nuevoHorario.horaFinal = new Date();
+    this.nuevoHorario.horaInicial = new Date(horaInicial);
+    this.nuevoHorario.horaFinal = new Date(horaFinal);
     return this.nuevoHorario;
   }
 
   crearHorario() {
     if (this.validarNombre()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
     else if (this.validarDia()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_DIA_VACIO);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_DIA_VACIO);
     }
     else if (this.validarHoras()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORAS_INVALIDAS);
     }
     else if (this.validarHoraFinalMayor()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORA_INICIAL_MAYOR_QUE_HORA_FINAL);
     }
     else {
       this.nuevaMateria.horarios.push(this.nuevoHorario);
-      this.reiniciarHorario();
-      this.alerta.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
+      const horaInicial = this.nuevoHorario.horaInicial;
+      const horaFinal = this.nuevoHorario.horaFinal;
+      this.reiniciarHorario(horaInicial, horaFinal);
+      this.alerts.showToast(INFO_ADICION_HORARIO.concat(this.nuevaMateria.nombreMateria), 'secondary', 1000);
       return this.nuevaMateria;
     }
   }
@@ -120,27 +123,32 @@ export class UpdateMateriaPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  actualizarMateria() {
+  async actualizarMateria() {
     if (this.validarNombre()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
     else if (this.nuevaMateria.horarios.length <= 0) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
     }
     else {
       this.materias.push(this.viejaMateria);
       this.materias.push(this.nuevaMateria);
-      this.materiaService.updateMateria(this.materias).
-        subscribe(async (data: string) => {
-          this.alerta.showToast(ACTUALIZACION_MATERIA_EXITOSA, 'success');
-          this.datosEstudiante.getEstudiante(this.nuevaMateria.estudiante);
+      (await this.materiaService.updateMateria(this.materias)).
+        subscribe(async () => {
+          await this.datosEstudiante.getEstudiante(this.nuevaMateria.estudiante);
+          this.alerts.showToast(ACTUALIZACION_MATERIA_EXITOSA, 'success');
           this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {
-            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            await this.modalCtrl.dismiss();
+            this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, ACTUALIZACION_MATERIA_ERRONEA);
+            this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_MATERIA_ERRONEA);
           }
         });
       this.materias = [];

@@ -55,11 +55,6 @@
               Crear Materia
             </ion-button>
           </ion-col>
-          <ion-col>
-            <ion-button expand="full " shape="round" (click)="mostrarListaButton()">
-              Mostrar Materias
-            </ion-button>
-          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
@@ -76,13 +71,13 @@
                   <ion-label>Materia</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Dia</ion-label>
+                  <ion-label>  Dia</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Inicial</ion-label>
+                  <ion-label>Hora Inicio</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Final</ion-label>
+                  <ion-label>Hora Fin</ion-label>
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -99,13 +94,13 @@
                 </ion-col>
                 <ion-col size="7">
                   <ion-row *ngFor="let horario of materia.horarios">
-                    <ion-col size="8">
+                    <ion-col size="6">
                       <ion-label class="ion-text-wrap">{{horario.dia}}</ion-label>
                     </ion-col>
-                    <ion-col size="2">
+                    <ion-col size="3">
                       <ion-label class="ion-text-wrap">{{horario.horaInicial | date:'HH':'-0500' }}</ion-label>
                     </ion-col>
-                    <ion-col size="2">
+                    <ion-col size="3">
                       <ion-label class="ion-text-wrap">{{ horario.horaFinal | date:'HH':'-0500' }}</ion-label>
                     </ion-col>
                   </ion-row>
@@ -127,10 +122,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
-  <ion-refresher slot="fixed" (ionRefresh)="actualizarContenido($event)">
-    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Actualizar Materias"
-      refreshingSpinner="circles" refreshingText="Actualizando...">
-    </ion-refresher-content>
-  </ion-refresher>
 </ion-content>

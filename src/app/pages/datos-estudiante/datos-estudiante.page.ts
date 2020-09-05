@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { NavController } from '@ionic/angular';
 import { Estudent } from 'src/app/models/Estudiante';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { UNIVERSIDAD_UCO, UNIVERSIDAD_UDEA } from '../../models/constantes';
 import {
   ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA, ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA,
   ERROR_AL_CARGAR_LA_IMAGEN, ERROR_FALTA_FIRMA_UNIVERSIDAD,
-  IMAGEN_MUY_PESADA, INFO_TODAVIA_NO_TIENE_FIRMA, INFO_TODAVIA_NO_TIENE_UNIVERSIDAD,
+  ERROR_IMAGEN_MUY_PESADA, INFO_TODAVIA_NO_TIENE_FIRMA, INFO_TODAVIA_NO_TIENE_UNIVERSIDAD,
+  LOGOUT_FORZADO,
   MENSAJE_ADVERTENCIA, MENSAJE_ERROR
 } from '../../models/mensajes';
 
@@ -25,10 +26,12 @@ export class DatosEstudiantePage implements OnInit {
   base64Image: any;
   estudiante: Estudent = new Estudent();
   image: any;
+  firmaActual = false;
+  nuevaFirma = false;
   sizeImage: any;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
-    private alertas: AlertsService, private navCrtl: NavController) { }
+    private alertas: AlertsService, private logoutForced: LoginService) { }
 
   obtenerUniversidad(event) {
     this.estudiante.universidad = event.detail.value;
@@ -54,6 +57,7 @@ export class DatosEstudiantePage implements OnInit {
     else {
       this.image = new Image();
       this.image = 'data:image/jpeg;base64,' + this.estudiante.firma;
+      this.firmaActual = true;
       return this.image;
     }
   }
@@ -88,8 +92,9 @@ export class DatosEstudiantePage implements OnInit {
       this.base64Image = new Image();
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
       this.estudiante.firma = imageData;
+      this.nuevaFirma = true;
       return this.base64Image;
-    }, (err) => {
+    }, () => {
       this.alertas.showToast(ERROR_AL_CARGAR_LA_IMAGEN, 'warning');
     });
   }
@@ -98,25 +103,37 @@ export class DatosEstudiantePage implements OnInit {
     return ((this.estudiante.firma.length * (3 / 4)) - 2) / 1000;
   }
 
-  enviar() {
+  async enviar() {
     if (!this.estudiante.firma || !this.estudiante.firma) {
       this.alertas.presentAlert(MENSAJE_ERROR, ERROR_FALTA_FIRMA_UNIVERSIDAD);
     }
     // si la imagen pesa más de un 1MB no se dejara enviar
     else if (this.calcularSizeImageInKB() > 1000) {
-      this.alertas.presentAlert(MENSAJE_ADVERTENCIA, IMAGEN_MUY_PESADA);
+      this.alertas.presentAlert(MENSAJE_ADVERTENCIA, ERROR_IMAGEN_MUY_PESADA);
     }
     else {
-      this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante)
-        .subscribe(async (data: string) => {
+      (await this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante))
+        .subscribe(async () => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           await this.datosEstudiante.getEstudiante(this.estudiante);
-          this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
-        }, async error => {
+          this.nuevaFirma = false;
+          this.firmaActual = false;
+          setTimeout(async () => {
+            this.base64Image = new Image();
+            await this.ngOnInit();
+          }, 400);
+        }, error => {
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);
           }
-          else{
+          if (error.status === 400) {
+            this.alertas.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.alertas.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
+          }
+          else {
             this.alertas.presentAlert(MENSAJE_ERROR, ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA);
           }
         });

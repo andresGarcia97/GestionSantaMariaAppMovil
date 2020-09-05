@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { Estudent } from 'src/app/models/Estudiante';
 import { environment } from 'src/environments/environment';
 import { InasistenciaAlimentacion, Labor, Materia, Salida, User } from '../../models/interfaces';
+import { LoginService } from '../login/login.service';
 
 const ENDPOINT_ESTUDIANTE = environment.LOCALHOST.concat('estudiante/');
 const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
@@ -15,7 +16,6 @@ const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
 export class EstudianteService {
 
   public estudiante: Estudent;
-  public instancia = new Estudent();
   public estudianteString = '';
 
   public inasistencias: InasistenciaAlimentacion[] = [];
@@ -25,21 +25,25 @@ export class EstudianteService {
   public firma = '';
   public universidad = '';
 
-  private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
+  constructor(private http: HttpClient, private storage: Storage, private loginToken: LoginService) { }
 
-  constructor(private http: HttpClient, private storage: Storage) { }
-
-  public getEstudiante(estudiante: User): any {
-    return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, { headers: this.headersjson })
+  public async getEstudiante(estudiante: User): Promise<any> {
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options)
       .subscribe(async (data: Estudent) => {
         await this.guardarEstudiante(data);
-      }, async error => {
+        return Promise.resolve();
+      }, async () => {
         await this.borrarEstudiante();
+        return Promise.reject();
       });
   }
 
-  public agregarFirmaYUniversidad(estudiante: Estudent): any {
-    return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, { headers: this.headersjson });
+  public async agregarFirmaYUniversidad(estudiante: Estudent){
+    await this.loginToken.cargarToken();
+    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+    return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, options);
   }
 
   public async guardarEstudiante(estudiante: Estudent) {

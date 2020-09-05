@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { InasistenciaAlimentacion, User } from '../../models/interfaces';
 import { PickerController } from '@ionic/angular';
+import { ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, INFO_TODAVIA_NO_TIENE_FIRMA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
-import { MENSAJE_ERROR, GUARDAR_INASISTENCIA_EXITO, GUARDAR_INASISTENCIA_ERROR, ERROR_HORA_INASITENCIA } from 'src/app/models/mensajes';
-import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
-import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
+import { LoginService } from 'src/app/services/login/login.service';
 import {
-  HORA_DESAYUNO, HORA_ALMUERZO, HORA_CENA, MOTIVO_PERSONAL, MOMENTO_DESAYUNO, MOMENTO_ALMUERZO,
-  MOMENTO_CENA, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO
+  HORA_ALMUERZO, HORA_CENA, HORA_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA,
+  MOMENTO_DESAYUNO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
 } from '../../models/constantes';
+import { InasistenciaAlimentacion, User } from '../../models/interfaces';
+import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
+import { InasistenciaService } from '../../services/inasistencias/inasistencia.service';
 
 @Component({
   selector: 'app-tab2',
@@ -33,11 +34,13 @@ export class Tab2Page implements OnInit {
   public mostrarLista = false;
   public usuario = new User();
 
-  constructor(private pickerController: PickerController, private alerta: AlertsService,
-    private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService) { }
+  constructor(private pickerController: PickerController, private alerts: AlertsService
+    , private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService
+    , private logoutForced: LoginService) { }
 
   async ngOnInit() {
-    await this.obtenerListaInasistencias();
+    this.mostrarLista = false;
+    await this.mostrarListaButton();
     this.inasistencia.fecha = new Date();
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
@@ -45,13 +48,14 @@ export class Tab2Page implements OnInit {
   }
 
   public async mostrarListaButton() {
-    await this.obtenerListaInasistencias();
-    if (this.InasistenciasUsuario.length === 0) {
-      this.mostrarLista = false;
-      this.alerta.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
+    await this.datosEstudiante.obtenerInasistencias();
+    if (this.datosEstudiante.inasistencias !== null && this.datosEstudiante.inasistencias.length > 0) {
+      this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+      this.mostrarLista = true;
     }
     else {
-      this.mostrarLista = !this.mostrarLista;
+      this.mostrarLista = false;
+      this.alerts.showToast(INFO_LISTA_VACIA.concat('inasistencias'), 'secondary');
     }
   }
 
@@ -59,16 +63,18 @@ export class Tab2Page implements OnInit {
     this.inasistencia.fecha = new Date(event.detail.value);
   }
 
-  private async obtenerListaInasistencias() {
-    await this.datosEstudiante.obtenerInasistencias();
-    if (this.datosEstudiante.inasistencias !== null) {
-      this.InasistenciasUsuario = this.datosEstudiante.inasistencias;
+  private async validarFirma(): Promise<boolean> {
+    await this.datosEstudiante.obtenerFirma();
+    const firma = this.datosEstudiante.firma;
+    if (!firma || 0 === firma.length) {
+      return true;
     }
+    return false;
   }
 
   private validarFecha(): boolean {
     if (this.inasistencia.fecha.getMonth() < this.mesMInimo ||
-      this.inasistencia.fecha.getDate() < this.diaMinimo) {
+      (this.inasistencia.fecha.getDate() < this.diaMinimo && this.inasistencia.fecha.getMonth() <= this.mesMInimo)) {
       this.inasistencia.fecha = this.fechaInasistencia;
       return true;
     }
@@ -134,26 +140,51 @@ export class Tab2Page implements OnInit {
     return options;
   }
 
-  public CrearInansistencia() {
+  private reiniciarInasistencia(fecha: Date): InasistenciaAlimentacion {
+    this.inasistencia = new InasistenciaAlimentacion();
+    this.inasistencia.fecha = new Date(fecha);
+    this.inasistencia.estudianteInasistencia = this.usuario;
+    return this.inasistencia;
+  }
+
+  public async crearInansistencia() {
+    const firma = await this.validarFirma();
     if (this.validarFecha()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_PASADA);
     }
     else if (this.validarCampos()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_HORA_FALTANTES);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_HORA_FALTANTES);
     }
     else if (this.validarHoras()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORA_INASITENCIA.concat(this.inasistencia.horaAlimentacion));
+    }
+    else if (firma) {
+      this.alerts.presentAlert(MENSAJE_ERROR, INFO_TODAVIA_NO_TIENE_FIRMA);
     }
     else {
       this.saveInasistencias = [];
       this.saveInasistencias.push(this.inasistencia);
-      this.inasitenciaService.createInasistencia(this.saveInasistencias)
-        .subscribe(async (data: string) => {
-          this.alerta.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
-          this.datosEstudiante.getEstudiante(this.usuario);
+      const fecha = this.inasistencia.fecha;
+      this.reiniciarInasistencia(fecha);
+      (await this.inasitenciaService.createInasistencia(this.saveInasistencias))
+        .subscribe(async () => {
+          this.alerts.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
+          await this.datosEstudiante.getEstudiante(this.usuario);
           this.mostrarLista = false;
-        }, async error => {
-          this.alerta.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
+          setTimeout(async () => {
+            await this.mostrarListaButton();
+          }, 500);
+        }, error => {
+          if (error.status === 400) {
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
+          }
+          else {
+            this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
+          }
         });
     }
   }

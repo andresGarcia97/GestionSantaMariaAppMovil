@@ -1,12 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController, PickerController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from 'src/app/models/constantes';
 import { Reserva } from 'src/app/models/interfaces';
 import {
   ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL,
-  ERROR_FECHA_INICIAL_PASADA, MENSAJE_ERROR
+  ERROR_FECHA_INICIAL_PASADA, LOGOUT_FORZADO, MENSAJE_ERROR
 } from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import { ReservasService } from 'src/app/services/reservas/reservas.service';
 import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_TV, LUGAR_SALON3, LUGAR_SALON4, LUGAR_SALON_AMARILLO } from '../../models/constantes';
 import { ACTUALIZACION_RESERVA_ERRONEA, ACTUALIZACION_RESERVA_EXITOSA } from '../../models/mensajes';
@@ -31,8 +32,8 @@ export class UpdateReservaPage implements OnInit {
   yearMinimo = this.fechaInicial.getFullYear();
   actualizacionReserva = new Reserva();
   reservas: Reserva[] = [];
-  constructor(private modalCtrl: ModalController, private pickerController: PickerController
-    , private alerta: AlertsService, private reservasService: ReservasService) { }
+  constructor(private modalCtrl: ModalController, private logoutForced: LoginService
+    , private alerts: AlertsService, private reservasService: ReservasService) { }
 
   ngOnInit() {
     this.actualizacionReserva.fechaInicial = new Date();
@@ -50,12 +51,12 @@ export class UpdateReservaPage implements OnInit {
   }
 
   private fechaInicialNoPasada(): boolean {
-    if ((this.actualizacionReserva.fechaInicial.getMonth() < this.fechaComparacion.getMonth() ||
-      this.actualizacionReserva.fechaInicial.getDate() < this.fechaComparacion.getDate() ||
-      this.actualizacionReserva.fechaInicial.getHours() < this.fechaComparacion.getHours() ||
-      this.actualizacionReserva.fechaInicial.getMinutes() < this.fechaComparacion.getMinutes()) &&
-      (this.actualizacionReserva.fechaInicial.getDate() === this.fechaComparacion.getDate() &&
-        this.actualizacionReserva.fechaInicial.getMonth() === this.fechaComparacion.getMonth())) {
+    if ((this.actualizacionReserva.fechaInicial.getDate() === this.fechaComparacion.getDate() &&
+      this.actualizacionReserva.fechaInicial.getMonth() === this.fechaComparacion.getMonth() &&
+      this.actualizacionReserva.fechaInicial.getHours() < this.fechaComparacion.getHours() &&
+      this.actualizacionReserva.fechaInicial.getMinutes() < this.fechaComparacion.getMinutes()) ||
+      (this.actualizacionReserva.fechaInicial.getMonth() < this.fechaComparacion.getMonth() &&
+        this.actualizacionReserva.fechaInicial.getDate() < this.fechaComparacion.getDate())) {
       return true;
     }
     return false;
@@ -90,36 +91,42 @@ export class UpdateReservaPage implements OnInit {
     return false;
   }
 
-  public aceptarUpdate() {
+  public async aceptarUpdate() {
+    this.fechaComparacion = new Date();
     this.reservas = [];
     if (this.fechaInicialNoPasada()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_PASADA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_PASADA);
     }
     else if (this.fechaInicialMayor_quefechaFinal()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL);
     }
     else if (!this.mismoDiaYMes()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_DIFERENTE_DIA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_DIFERENTE_DIA);
     }
     else if (this.validarLogicaFechas()) {
-      this.alerta.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
       this.reservas.push(this.viejaReserva);
       this.reservas.push(this.actualizacionReserva);
-      this.reservasService.updateReserva(this.reservas)
-        .subscribe(async (data: string) => {
-          this.reservasService.getReservas(this.actualizacionReserva);
-          this.alerta.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
+      (await this.reservasService.updateReserva(this.reservas))
+        .subscribe(async () => {
+          await this.reservasService.getReservas(this.actualizacionReserva);
+          this.alerts.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
+          this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {
-            this.alerta.presentAlert(MENSAJE_ERROR, error.error);
+            this.alerts.presentAlert(MENSAJE_ERROR, error.error);
+          }
+          else if (error.status === 401) {
+            await this.modalCtrl.dismiss();
+            this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+            this.logoutForced.logout();
           }
           else {
-            this.alerta.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
+            this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
           }
         });
-      this.modalCtrl.dismiss();
     }
   }
 

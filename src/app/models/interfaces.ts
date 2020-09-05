@@ -1,3 +1,13 @@
+export interface Componente {
+    icon: string;
+    name: string;
+    redirectTo: string;
+}
+
+export interface Token {
+    token: string;
+}
+
 export class User {
     identificacion: number;
     nombre: string;
@@ -6,33 +16,27 @@ export class User {
     contrasena: string;
     correo: string;
     tipoUsuario: string;
-    constructor(){}
-}
-
-export interface Componente {
-    icon: string;
-    name: string;
-    redirectTo: string;
+    constructor() { }
 }
 
 export class TurnoLoza {
     dia: string;
     turno: string;
-    constructor(){}
+    constructor() { }
 }
 
 export class Horario {
     horaInicial: Date;
     dia: string;
     horaFinal: Date;
-    constructor(){}
+    constructor() { }
 }
 
 export class Materia {
     nombreMateria: string;
     horarios: Horario[];
     estudiante: User;
-    constructor(){}
+    constructor() { }
 }
 
 export class InasistenciaAlimentacion {
@@ -40,14 +44,14 @@ export class InasistenciaAlimentacion {
     horaAlimentacion: string;
     fecha: Date;
     motivo: string;
-    constructor(){}
+    constructor() { }
 }
 
 export class LavadoLoza {
     estudiantes: User[];
     dia: string;
     turno: string;
-    constructor(){}
+    constructor() { }
 }
 
 export class Labor {
@@ -55,7 +59,7 @@ export class Labor {
     descripcion: string;
     espacio: string;
     frecuencia: string;
-    constructor(){}
+    constructor() { }
 }
 
 export class Salida {
@@ -64,7 +68,7 @@ export class Salida {
     razon: string;
     fechaLlegada: Date;
     lugar: string;
-    constructor(){}
+    constructor() { }
 }
 
 export class Reserva {
@@ -73,5 +77,13 @@ export class Reserva {
     actividad: string;
     fechaFinal: Date;
     espacio: string;
-    constructor(){}
+    constructor() { }
+}
+
+export class CambioPassword {
+    viejaContrasena: string;
+    nuevaContrasena: string;
+    repetirContrasena: string;
+    identificacion: number;
+    constructor() { }
 }

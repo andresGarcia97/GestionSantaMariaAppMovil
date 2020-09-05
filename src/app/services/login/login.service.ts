@@ -2,10 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { LOGIN_ERRONEO, LOGIN_EXITOSO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
-import { User } from '../../models/interfaces';
-import { AlertsService } from '../alerts/alerts.service';
+import { Token, User } from '../../models/interfaces';
 
 const LOGIN = environment.LOCALHOST.concat('login');
 
@@ -18,27 +16,23 @@ export class LoginService {
   token: string = null;
 
   constructor(private http: HttpClient, private storage: Storage
-    , private navCrtl: NavController, private alertas: AlertsService) { }
+    , private navCrtl: NavController) { }
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  public async login(usuario: User): Promise<boolean> {
-    this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
-      .subscribe(async (data: string) => {
+  public async login(usuario: User): Promise<any> {
+    return this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
+      .subscribe(async (data: any) => {
         await this.guardarToken(data);
-        this.alertas.showToast(LOGIN_EXITOSO, 'success');
-        this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
-        return true;
-      }, async error => {
+        return Promise.resolve();
+      }, async () => {
         await this.borrarStorage();
-        this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
-        return false;
+        return Promise.reject();
       });
-    return false;
   }
 
-  public async guardarToken(token: string) {
-    await this.storage.set('token', token);
+  public async guardarToken(token: Token) {
+    await this.storage.set('token', token.token);
   }
 
   public async borrarStorage() {
@@ -47,11 +41,6 @@ export class LoginService {
 
   public async cargarToken() {
     this.token = await this.storage.get('token') || null;
-  }
-
-  public async obtenerValorToken(): Promise<string> {
-    await this.cargarToken();
-    return this.token.toString();
   }
 
   public async validarToken(): Promise<boolean> {
@@ -79,4 +68,5 @@ export class LoginService {
     this.borrarStorage();
     this.navCrtl.navigateRoot('/login', { animated: true });
   }
+
 }

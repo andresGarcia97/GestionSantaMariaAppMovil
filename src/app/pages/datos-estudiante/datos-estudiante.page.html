@@ -2,46 +2,54 @@
 
 <ion-content>
    <ion-card>
-      <ion-list lines="full">
-         <ion-item color="primary">
-            <ion-label position="stacked" multiple="true">Universidad</ion-label>
-            <ion-select value={{universidadActual}} placeholder="Seleccione Su Universidad" (ionChange)="obtenerUniversidad($event)">
-               <ion-select-option value={{uco}}>{{uco}}</ion-select-option>
-               <ion-select-option value={{udea}}>{{udea}}</ion-select-option>
-            </ion-select>
-         </ion-item>
-         <ion-item>
-            <ion-label>Firma</ion-label>
-         </ion-item>
-         <ion-item>
-            <ion-grid>
-               <ion-row>
-                  <ion-col>
-                     <ion-button shape="round" expand="full" (click)="galeria()">
-                        <ion-icon slot="start" name="images-outline"></ion-icon>
-                        <ion-label>Galeria</ion-label>
-                     </ion-button>
-                  </ion-col>
-                  <ion-col>
-                     <ion-button shape="round" expand="full" (click)="enviar()">
-                        <ion-icon name="send-outline"></ion-icon>
-                        <ion-label>Enviar</ion-label>
-                     </ion-button>
-                  </ion-col>
-               </ion-row>
-            </ion-grid>
-         </ion-item>
-      </ion-list>
+      <ion-card-header>
+         <ion-label>
+            No se permiten firmas de más de 1MB
+         </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+         <ion-list lines="full">
+            <ion-item color="primary">
+               <ion-label position="stacked" multiple="true">Universidad</ion-label>
+               <ion-select value={{universidadActual}} placeholder="Seleccione Su Universidad"
+                  (ionChange)="obtenerUniversidad($event)">
+                  <ion-select-option value={{uco}}>{{uco}}</ion-select-option>
+                  <ion-select-option value={{udea}}>{{udea}}</ion-select-option>
+               </ion-select>
+            </ion-item>
+            <ion-item>
+               <ion-label>Firma</ion-label>
+            </ion-item>
+            <ion-item>
+               <ion-grid>
+                  <ion-row>
+                     <ion-col>
+                        <ion-button shape="round" expand="full" (click)="galeria()">
+                           <ion-icon slot="start" name="images-outline"></ion-icon>
+                           <ion-label>Galeria</ion-label>
+                        </ion-button>
+                     </ion-col>
+                     <ion-col>
+                        <ion-button shape="round" expand="full" (click)="enviar()">
+                           <ion-icon name="send-outline"></ion-icon>
+                           <ion-label>Enviar</ion-label>
+                        </ion-button>
+                     </ion-col>
+                  </ion-row>
+               </ion-grid>
+            </ion-item>
+         </ion-list>
+      </ion-card-content>
    </ion-card>
 
-   <ion-card>
+   <ion-card *ngIf="firmaActual">
       <img [src]="image"><img>
       <ion-card-header>
          <ion-card-title>Firma Actual</ion-card-title>
       </ion-card-header>
    </ion-card>
 
-    <ion-card>
+   <ion-card *ngIf="nuevaFirma">
       <img [src]="base64Image"><img>
       <ion-card-header>
          <ion-card-title>Firma Nueva</ion-card-title>

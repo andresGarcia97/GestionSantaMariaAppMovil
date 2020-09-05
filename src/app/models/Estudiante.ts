@@ -1,4 +1,4 @@
-import { Materia, InasistenciaAlimentacion, LavadoLoza, Labor, Salida } from './interfaces';
+import { InasistenciaAlimentacion, Labor, Materia, Salida } from './interfaces';
 
 export class Estudent {
     identificacion: number;
