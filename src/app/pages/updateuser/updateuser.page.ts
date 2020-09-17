@@ -14,8 +14,8 @@ import { AlertsService } from '../../services/alerts/alerts.service';
 })
 export class UpdateuserPage implements OnInit {
 
-  protected usuario: Estudent;
-  protected actualizacion = new User();
+  usuario: Estudent;
+  actualizacion = new User();
   mostrarInfo = false;
 
   constructor(private userService: UsuarioService, public alerts: AlertsService

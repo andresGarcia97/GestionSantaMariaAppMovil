@@ -80,7 +80,6 @@
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors
-   * -------------------------------------------
    */
 
   body {
@@ -150,10 +149,9 @@
 
   /*
    * iOS Dark Theme
-   * -------------------------------------------
    */
 
-  .ios body {
+  .ios body.dark {
     --ion-background-color: #000000;
     --ion-background-color-rgb: 0,0,0;
 
@@ -185,13 +183,11 @@
     --ion-item-background: #000000;
   }
 
-
   /*
    * Material Design Dark Theme
-   * -------------------------------------------
    */
 
-  .md body {
+  .md body.dark {
     --ion-background-color: #121212;
     --ion-background-color-rgb: 18,18,18;
 

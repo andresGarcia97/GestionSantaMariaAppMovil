@@ -29,16 +29,13 @@ export class DatosEstudiantePage implements OnInit {
   firmaActual = false;
   nuevaFirma = false;
   sizeImage: any;
+  botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
     private alertas: AlertsService, private logoutForced: LoginService) { }
 
-  obtenerUniversidad(event) {
-    this.estudiante.universidad = event.detail.value;
-    return this.estudiante;
-  }
-
   async ngOnInit() {
+    this.botonEnviar = false;
     await this.datosEstudiante.obtenerEstudiante();
     await this.datosEstudiante.obtenerFirma();
     await this.datosEstudiante.obtenerUniversidad();
@@ -48,6 +45,11 @@ export class DatosEstudiantePage implements OnInit {
     this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
     await this.mostrarfirmaActual();
     await this.mostrarUniversidadActual();
+  }
+
+  obtenerUniversidad(event) {
+    this.estudiante.universidad = event.detail.value;
+    return this.estudiante;
   }
 
   async mostrarfirmaActual() {
@@ -112,6 +114,7 @@ export class DatosEstudiantePage implements OnInit {
       this.alertas.presentAlert(MENSAJE_ADVERTENCIA, ERROR_IMAGEN_MUY_PESADA);
     }
     else {
+      this.botonEnviar = true;
       (await this.datosEstudiante.agregarFirmaYUniversidad(this.estudiante))
         .subscribe(async () => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
@@ -122,6 +125,7 @@ export class DatosEstudiantePage implements OnInit {
             this.base64Image = new Image();
             await this.ngOnInit();
           }, 400);
+          this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);
@@ -136,6 +140,7 @@ export class DatosEstudiantePage implements OnInit {
           else {
             this.alertas.presentAlert(MENSAJE_ERROR, ACTUALIZACION_FIRMA_UNIVERSIDAD_ERRONEA);
           }
+          this.botonEnviar = false;
         });
     }
   }

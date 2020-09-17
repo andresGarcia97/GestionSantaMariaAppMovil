@@ -30,12 +30,14 @@ export class UpdateMateriaPage implements OnInit {
   nuevoHorario = new Horario();
   materias: Materia[] = [];
   usuario = new User();
+  botonEnviar = false;
 
   constructor(private alerts: AlertsService, private modalCtrl: ModalController
     , private materiaService: MateriasService, private datosEstudiante: EstudianteService
     , private logoutForced: LoginService) { }
 
   async ngOnInit() {
+    this.botonEnviar = false;
     this.nuevoHorario.horaInicial = new Date();
     this.nuevoHorario.horaFinal = new Date();
     const materiaString = JSON.stringify(this.viejaMateria);
@@ -131,12 +133,14 @@ export class UpdateMateriaPage implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
     }
     else {
+      this.botonEnviar = true;
       this.materias.push(this.viejaMateria);
       this.materias.push(this.nuevaMateria);
       (await this.materiaService.updateMateria(this.materias)).
         subscribe(async () => {
           await this.datosEstudiante.getEstudiante(this.nuevaMateria.estudiante);
           this.alerts.showToast(ACTUALIZACION_MATERIA_EXITOSA, 'success');
+          this.botonEnviar = false;
           this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {
@@ -150,6 +154,7 @@ export class UpdateMateriaPage implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_MATERIA_ERRONEA);
           }
+          this.botonEnviar = false;
         });
       this.materias = [];
     }

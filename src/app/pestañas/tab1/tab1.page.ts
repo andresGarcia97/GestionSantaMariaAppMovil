@@ -29,11 +29,13 @@ export class Tab1Page implements OnInit {
   personal = MOTIVO_PERSONAL;
   recreativo = MOTIVO_RECREATIVO;
   yearMinimo = this.fechaLlegada.getFullYear();
+  botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService
     , private salidaService: SalidasService, private logoutForced: LoginService) { }
 
   async ngOnInit() {
+    this.botonEnviar = false;
     this.mostrarLista = false;
     this.nuevaSalida.fechaSalida = new Date();
     this.nuevaSalida.fechaLlegada = new Date();
@@ -140,6 +142,7 @@ export class Tab1Page implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, INFO_TODAVIA_NO_TIENE_FIRMA);
     }
     else {
+      this.botonEnviar = true;
       (await this.salidaService.createSalida(this.nuevaSalida))
         .subscribe(async () => {
           this.alerts.showToast(GUARDAR_SALIDA_EXITO, 'success');
@@ -148,6 +151,7 @@ export class Tab1Page implements OnInit {
           setTimeout(async () => {
             await this.ngOnInit();
           }, 100);
+          this.botonEnviar = false;
         }, error => {
           if (error.status === 401) {
             this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
@@ -156,6 +160,7 @@ export class Tab1Page implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_SALIDA_ERROR);
           }
+          this.botonEnviar = false;
         });
     }
   }

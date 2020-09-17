@@ -30,7 +30,7 @@
                         </ion-button>
                      </ion-col>
                      <ion-col>
-                        <ion-button shape="round" expand="full" (click)="enviar()">
+                        <ion-button shape="round" expand="full" (click)="enviar()" [disabled]="botonEnviar">
                            <ion-icon name="send-outline"></ion-icon>
                            <ion-label>Enviar</ion-label>
                         </ion-button>

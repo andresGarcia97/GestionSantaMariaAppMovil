@@ -42,6 +42,7 @@ export class Tab3Page implements OnInit {
   fechaComparacion = new Date();
   mostrarLista = false;
   yearMinimo = this.fechaInicial.getFullYear();
+  botonEnviar = false;
 
   constructor(private alerts: AlertsService, private datosEstudiante: EstudianteService
     , private pickerController: PickerController, private reservasService: ReservasService
@@ -49,6 +50,7 @@ export class Tab3Page implements OnInit {
     , private logoutForced: LoginService) { }
 
   async ngOnInit() {
+    this.botonEnviar = false;
     this.mostrarLista = false;
     this.reservaConsultas.fechaInicial = new Date();
     await this.reservasService.getReservas(this.reservaConsultas);
@@ -197,6 +199,7 @@ export class Tab3Page implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
+      this.botonEnviar = true;
       (await this.reservasService.saveReserva(this.nuevaReserva))
         .subscribe(async () => {
           await this.reservasService.getReservas(this.reservaConsultas);
@@ -204,8 +207,9 @@ export class Tab3Page implements OnInit {
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
+          this.botonEnviar = false;
           this.alerts.showToast(GUARDAR_RESERVA_EXITO, 'success');
-        }, async error => {
+        }, error => {
           if (error.status === 400) {
             this.alerts.presentAlert(MENSAJE_ERROR, error.error);
           }
@@ -215,6 +219,7 @@ export class Tab3Page implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_RESERVA_ERROR);
           }
+          this.botonEnviar = false;
         });
     }
   }

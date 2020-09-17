@@ -35,11 +35,13 @@ export class Tab4Page implements OnInit {
   nuevosHorarios: Horario[] = [];
   usuario = new User();
   mostrarListaMaterias = false;
+  botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService, private materiaService: MateriasService
     , private modalCtrl: ModalController, private alertController: AlertController, private logoutForced: LoginService) { }
 
   async ngOnInit() {
+    this.botonEnviar = false;
     this.mostrarListaMaterias = false;
     this.nuevoHorario.horaInicial = new Date();
     this.nuevoHorario.horaFinal = new Date();
@@ -139,6 +141,7 @@ export class Tab4Page implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MATERIA_CANTIDAD_HORARIOS);
     }
     else {
+      this.botonEnviar = true;
       this.nuevaMateria.horarios = this.nuevosHorarios;
       (await this.materiaService.createMateria(this.nuevaMateria)).
         subscribe(async () => {
@@ -150,6 +153,7 @@ export class Tab4Page implements OnInit {
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
+          this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {
             this.alerts.presentAlert(MENSAJE_ERROR, error.error);
@@ -160,6 +164,7 @@ export class Tab4Page implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_MATERIA_ERROR);
           }
+          this.botonEnviar = false;
         });
     }
   }
@@ -171,12 +176,12 @@ export class Tab4Page implements OnInit {
       componentProps: { viejaMateria: materia }
     });
     modalUpdate.onWillDismiss()
-    .then(async () => {
-      this.mostrarListaMaterias = false;
-      setTimeout(async () => {
-        await this.mostrarListaButton();
-      }, 500);
-    });
+      .then(async () => {
+        this.mostrarListaMaterias = false;
+        setTimeout(async () => {
+          await this.mostrarListaButton();
+        }, 500);
+      });
     await modalUpdate.present();
   }
 

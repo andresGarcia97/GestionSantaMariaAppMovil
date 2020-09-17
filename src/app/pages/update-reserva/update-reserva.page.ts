@@ -32,10 +32,13 @@ export class UpdateReservaPage implements OnInit {
   yearMinimo = this.fechaInicial.getFullYear();
   actualizacionReserva = new Reserva();
   reservas: Reserva[] = [];
+  botonEnviar = false;
+
   constructor(private modalCtrl: ModalController, private logoutForced: LoginService
     , private alerts: AlertsService, private reservasService: ReservasService) { }
 
   ngOnInit() {
+    this.botonEnviar = false;
     this.actualizacionReserva.fechaInicial = new Date();
     this.actualizacionReserva.fechaFinal = new Date();
     this.actualizacionReserva.actividad = this.viejaReserva.actividad;
@@ -107,12 +110,14 @@ export class UpdateReservaPage implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
     }
     else {
+      this.botonEnviar = true;
       this.reservas.push(this.viejaReserva);
       this.reservas.push(this.actualizacionReserva);
       (await this.reservasService.updateReserva(this.reservas))
         .subscribe(async () => {
           await this.reservasService.getReservas(this.actualizacionReserva);
           this.alerts.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
+          this.botonEnviar = false;
           this.modalCtrl.dismiss();
         }, async error => {
           if (error.status === 400) {
@@ -126,6 +131,7 @@ export class UpdateReservaPage implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, ACTUALIZACION_RESERVA_ERRONEA);
           }
+          this.botonEnviar = false;
         });
     }
   }

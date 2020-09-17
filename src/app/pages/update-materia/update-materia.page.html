@@ -103,7 +103,7 @@
               <ion-button (click)="cancelarUpdate()" expand="full" shape="round">cancelar</ion-button>
             </ion-col>
             <ion-col>
-              <ion-button (click)="actualizarMateria()" expand="full" shape="round">Actualizar</ion-button>
+              <ion-button (click)="actualizarMateria()" expand="full" shape="round" [disabled]="botonEnviar">Actualizar</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>

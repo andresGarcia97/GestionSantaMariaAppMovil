@@ -51,7 +51,7 @@
             </ion-button>
           </ion-col>
           <ion-col>
-            <ion-button expand="full " shape="round" (click)="crearMateria()">
+            <ion-button expand="full " shape="round" (click)="crearMateria()" [disabled]="botonEnviar">
               Crear Materia
             </ion-button>
           </ion-col>
@@ -67,17 +67,17 @@
           <ion-item color="primary">
             <ion-grid>
               <ion-row>
-                <ion-col>
+                <ion-col size="5">
                   <ion-label>Materia</ion-label>
                 </ion-col>
-                <ion-col>
-                  <ion-label>  Dia</ion-label>
+                <ion-col size="3">
+                  <ion-label>Dia</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Inicio</ion-label>
+                  <ion-label>Inicio</ion-label>
                 </ion-col>
                 <ion-col>
-                  <ion-label>Hora Fin</ion-label>
+                  <ion-label>Fin</ion-label>
                 </ion-col>
               </ion-row>
             </ion-grid>

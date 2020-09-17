@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PickerController } from '@ionic/angular';
-import { ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, INFO_TODAVIA_NO_TIENE_FIRMA, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import {
+  ERROR_HORA_INASITENCIA, GUARDAR_INASISTENCIA_ERROR, GUARDAR_INASISTENCIA_EXITO, INFO_TODAVIA_NO_TIENE_FIRMA,
+  LOGOUT_FORZADO, MENSAJE_ERROR
+} from 'src/app/models/mensajes';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { LoginService } from 'src/app/services/login/login.service';
@@ -24,21 +27,23 @@ export class Tab2Page implements OnInit {
     [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA]
   ];
 
-  public saveInasistencias: InasistenciaAlimentacion[] = [];
-  public InasistenciasUsuario: InasistenciaAlimentacion[] = [];
-  public fechaInasistencia = new Date();
-  public yearMInimo = this.fechaInasistencia.getFullYear();
-  public mesMInimo = this.fechaInasistencia.getMonth();
-  public diaMinimo = this.fechaInasistencia.getDate();
-  public inasistencia = new InasistenciaAlimentacion();
-  public mostrarLista = false;
-  public usuario = new User();
+  saveInasistencias: InasistenciaAlimentacion[] = [];
+  InasistenciasUsuario: InasistenciaAlimentacion[] = [];
+  fechaInasistencia = new Date();
+  yearMInimo = this.fechaInasistencia.getFullYear();
+  mesMInimo = this.fechaInasistencia.getMonth();
+  diaMinimo = this.fechaInasistencia.getDate();
+  inasistencia = new InasistenciaAlimentacion();
+  mostrarLista = false;
+  usuario = new User();
+  botonEnviar = false;
 
   constructor(private pickerController: PickerController, private alerts: AlertsService
     , private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService
     , private logoutForced: LoginService) { }
 
   async ngOnInit() {
+    this.botonEnviar = false;
     this.mostrarLista = false;
     await this.mostrarListaButton();
     this.inasistencia.fecha = new Date();
@@ -162,6 +167,7 @@ export class Tab2Page implements OnInit {
       this.alerts.presentAlert(MENSAJE_ERROR, INFO_TODAVIA_NO_TIENE_FIRMA);
     }
     else {
+      this.botonEnviar = true;
       this.saveInasistencias = [];
       this.saveInasistencias.push(this.inasistencia);
       const fecha = this.inasistencia.fecha;
@@ -174,6 +180,7 @@ export class Tab2Page implements OnInit {
           setTimeout(async () => {
             await this.mostrarListaButton();
           }, 500);
+          this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {
             this.alerts.presentAlert(MENSAJE_ERROR, error.error);
@@ -185,6 +192,7 @@ export class Tab2Page implements OnInit {
           else {
             this.alerts.presentAlert(MENSAJE_ERROR, GUARDAR_INASISTENCIA_ERROR);
           }
+          this.botonEnviar = false;
         });
     }
   }
