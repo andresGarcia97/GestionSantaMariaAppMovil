@@ -43,10 +43,6 @@ export class MenuComponent {
   constructor(private login: LoginService, private notificaciones: AlertsService,
     private menuCtrl: MenuController) { }
 
-  toggleDarkMode = () => {
-    document.body.classList.toggle('dark');
-  }
-
   public logout() {
     this.login.logout();
     this.menuCtrl.close('first');

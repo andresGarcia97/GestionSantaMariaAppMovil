@@ -70,10 +70,7 @@ export class Tab3Page implements OnInit {
       this.mostrarLista = true;
       return this.reservas;
     }
-    else {
-      this.mostrarLista = false;
-      this.alerts.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
-    }
+    this.mostrarLista = false;
   }
 
   public cambioFechaInicial(event) {

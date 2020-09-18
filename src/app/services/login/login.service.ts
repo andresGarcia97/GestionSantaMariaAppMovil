@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Token, User } from '../../models/interfaces';
 
 const LOGIN = environment.LOCALHOST.concat('login');
+const tokenName = 'S_T_A_A_I';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ const LOGIN = environment.LOCALHOST.concat('login');
 
 export class LoginService {
 
-  token: string = null;
+  public token: string = null;
 
   constructor(private http: HttpClient, private storage: Storage
     , private navCrtl: NavController) { }
@@ -32,7 +33,7 @@ export class LoginService {
   }
 
   public async guardarToken(token: Token) {
-    await this.storage.set('token', token.token);
+    await this.storage.set(tokenName, token.token);
   }
 
   public async borrarStorage() {
@@ -40,7 +41,7 @@ export class LoginService {
   }
 
   public async cargarToken() {
-    this.token = await this.storage.get('token') || null;
+    this.token = await this.storage.get(tokenName) || null;
   }
 
   public async validarToken(): Promise<boolean> {

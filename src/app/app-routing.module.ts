@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes, CanActivate } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { UsuarioGuard } from './guards/usuario-guard/usuario-guard.guard';
 
 const routes: Routes = [
@@ -30,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: 'main',
-    loadChildren: () => import('./pestañas/tabs/tabs.module').then(m => m.TabsPageModule),
+    loadChildren: () => import('./mainTabs/tabs/tabs.module').then(m => m.TabsPageModule),
     canLoad: [UsuarioGuard]
   },
   {

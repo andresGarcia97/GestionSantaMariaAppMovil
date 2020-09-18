@@ -18,23 +18,23 @@ import {
 })
 export class Tab1Page implements OnInit {
 
-  salidas: Salida[] = [];
-  mostrarLista = false;
-  nuevaSalida = new Salida();
-  usuario = new User();
-  fechaLlegada = new Date();
-  fechaSalida = new Date();
-  fechaComparacion = new Date();
-  academico = MOTIVO_ACADEMICO;
-  personal = MOTIVO_PERSONAL;
-  recreativo = MOTIVO_RECREATIVO;
-  yearMinimo = this.fechaLlegada.getFullYear();
-  botonEnviar = false;
+  protected salidas: Salida[] = [];
+  protected mostrarLista = false;
+  protected nuevaSalida = new Salida();
+  private usuario = new User();
+  protected fechaLlegada = new Date();
+  protected fechaSalida = new Date();
+  private fechaComparacion = new Date();
+  protected academico = MOTIVO_ACADEMICO;
+  protected personal = MOTIVO_PERSONAL;
+  protected recreativo = MOTIVO_RECREATIVO;
+  protected yearMinimo = this.fechaLlegada.getFullYear();
+  protected  botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService
     , private salidaService: SalidasService, private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.botonEnviar = false;
     this.mostrarLista = false;
     this.nuevaSalida.fechaSalida = new Date();
