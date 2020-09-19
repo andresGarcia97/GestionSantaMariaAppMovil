@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Reserva } from 'src/app/models/interfaces';
-import { INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
+import { INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, INFO_LISTA_VACIA_RESERVAS, LOGOUT_FORZADO, MENSAJE_ERROR } from 'src/app/models/mensajes';
 import { environment } from 'src/environments/environment';
 import { AlertsService } from '../alerts/alerts.service';
 import { LoginService } from '../login/login.service';
@@ -31,13 +31,14 @@ export class ReservasService {
     return this.http.post<Reserva[]>(OBTENER_RESERVAS_FUTURAS, reserva, options)
       .subscribe(async (data: Reserva[]) => {
         await this.guardarReservas(data);
+        this.alerts.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
       }, async error => {
         if (error.status === 401) {
           this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
           this.loginToken.logout();
         }
         else {
-          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, 'warning', 1000);
+          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_RESERVAS, 'secondary', 1000);
         }
       });
   }

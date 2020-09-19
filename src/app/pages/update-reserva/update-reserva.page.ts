@@ -14,30 +14,29 @@ import { ACTUALIZACION_RESERVA_ERRONEA, ACTUALIZACION_RESERVA_EXITOSA } from '..
 
 @Component({
   selector: 'app-update-reserva',
-  templateUrl: './update-reserva.page.html',
-  styleUrls: ['./update-reserva.page.scss'],
+  templateUrl: './update-reserva.page.html'
 })
 export class UpdateReservaPage implements OnInit {
 
   @Input() viejaReserva: Reserva;
 
-  motivoYLugar = [
+  protected motivoYLugar = [
     [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_ACADEMICO],
     [LUGAR_LAVANDERIA, LUGAR_AUDITORIO, LUGAR_SALA_TV, LUGAR_SALA_INFORMATICA, LUGAR_SALON_AMARILLO, LUGAR_SALON4, LUGAR_SALON3]
   ];
 
-  fechaInicial = new Date();
-  fechaFinal = new Date();
-  fechaComparacion = new Date();
-  yearMinimo = this.fechaInicial.getFullYear();
-  actualizacionReserva = new Reserva();
-  reservas: Reserva[] = [];
-  botonEnviar = false;
+  protected fechaInicial = new Date();
+  protected fechaFinal = new Date();
+  protected fechaComparacion = new Date();
+  protected yearMinimo = this.fechaInicial.getFullYear();
+  protected actualizacionReserva = new Reserva();
+  protected reservas: Reserva[] = [];
+  protected botonEnviar = false;
 
   constructor(private modalCtrl: ModalController, private logoutForced: LoginService
     , private alerts: AlertsService, private reservasService: ReservasService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.botonEnviar = false;
     this.actualizacionReserva.fechaInicial = new Date();
     this.actualizacionReserva.fechaFinal = new Date();
@@ -136,7 +135,7 @@ export class UpdateReservaPage implements OnInit {
     }
   }
 
-  cancelarUpdate() {
+  protected cancelarUpdate() {
     this.modalCtrl.dismiss();
   }
 

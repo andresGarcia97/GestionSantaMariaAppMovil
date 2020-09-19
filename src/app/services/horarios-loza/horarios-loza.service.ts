@@ -34,7 +34,7 @@ export class HorariosLozaService {
           this.loginToken.logout();
         }
         else {
-          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'warning', 1000);
+          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'secondary', 1000);
         }
       });
   }

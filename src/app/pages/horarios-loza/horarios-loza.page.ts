@@ -7,29 +7,33 @@ import { HorariosLozaService } from '../../services/horarios-loza/horarios-loza.
 
 @Component({
   selector: 'app-horarios-loza',
-  templateUrl: './horarios-loza.page.html',
-  styleUrls: ['./horarios-loza.page.scss'],
+  templateUrl: './horarios-loza.page.html'
 })
 export class HorariosLozaPage implements OnInit {
 
-  horariosLoza: LavadoLoza[] = [];
-  mostrarHorarios = false;
-  mostrarTurnoEstudiante = false;
-  dia = 'LUNES';
-  diasYTurnos: TurnoLoza[] = [];
-  usuario = new User();
+  protected horariosLoza: LavadoLoza[] = [];
+  protected mostrarHorarios = false;
+  protected mostrarTurnoEstudiante = false;
+  protected dia = 'LUNES';
+  protected diasYTurnos: TurnoLoza[] = [];
+  private usuario = new User();
 
   constructor(private alerta: AlertsService, private horariosLozaService: HorariosLozaService,
     private datosEstudiante: EstudianteService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.mostrarHorarios = false;
-    await this.horariosLozaService.getHorariosLoza();
-    await this.mostrarHorariosLoza();
-    await this.mensajeTurnosDeLoza();
+    await this.horariosLozaService.getHorariosLoza()
+      .then(async () => {
+        await this.mostrarHorariosLoza();
+      })
+      .catch(() => { })
+      .finally(async () => {
+        await this.mostrarHorariosLoza();
+      });
   }
 
-  public async mensajeTurnosDeLoza() {
+  private async mensajeTurnosDeLoza() {
     this.mostrarTurnoEstudiante = await this.filtrarEstudiante();
     if (this.mostrarTurnoEstudiante) {
       return this.mostrarTurnoEstudiante;
@@ -54,9 +58,8 @@ export class HorariosLozaPage implements OnInit {
       this.mostrarHorarios = false;
       await this.alerta.showToast(INFO_TODAVIA_NO_HAY_HORARIOS_LOZA, 'secondary', 1500);
     }
-    else {
-      this.mostrarHorarios = true;
-    }
+    await this.mensajeTurnosDeLoza();
+    this.mostrarHorarios = true;
   }
 
   public segmentChanged(event) {
@@ -75,7 +78,7 @@ export class HorariosLozaPage implements OnInit {
     return this.usuario;
   }
 
-  async filtrarEstudiante(): Promise<boolean> {
+  private async filtrarEstudiante(): Promise<boolean> {
     await this.obtenerEstudiante();
     let horariosEstudiante = false;
     this.horariosLoza.forEach(horario => {

@@ -17,8 +17,7 @@ import { InasistenciaService } from '../../services/inasistencias/inasistencia.s
 
 @Component({
   selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  templateUrl: 'tab2.page.html'
 })
 export class Tab2Page implements OnInit {
 
@@ -27,16 +26,16 @@ export class Tab2Page implements OnInit {
     [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA]
   ];
 
-  saveInasistencias: InasistenciaAlimentacion[] = [];
-  InasistenciasUsuario: InasistenciaAlimentacion[] = [];
-  fechaInasistencia = new Date();
-  yearMInimo = this.fechaInasistencia.getFullYear();
-  mesMInimo = this.fechaInasistencia.getMonth();
-  diaMinimo = this.fechaInasistencia.getDate();
-  inasistencia = new InasistenciaAlimentacion();
-  mostrarLista = false;
-  usuario = new User();
-  botonEnviar = false;
+  protected saveInasistencias: InasistenciaAlimentacion[] = [];
+  protected InasistenciasUsuario: InasistenciaAlimentacion[] = [];
+  protected fechaInasistencia = new Date();
+  protected yearMInimo = this.fechaInasistencia.getFullYear();
+  protected mesMInimo = this.fechaInasistencia.getMonth();
+  protected diaMinimo = this.fechaInasistencia.getDate();
+  protected inasistencia = new InasistenciaAlimentacion();
+  protected mostrarLista = false;
+  protected usuario = new User();
+  protected botonEnviar = false;
 
   constructor(private pickerController: PickerController, private alerts: AlertsService
     , private inasitenciaService: InasistenciaService, private datosEstudiante: EstudianteService

@@ -9,19 +9,18 @@ import { AlertsService } from '../../services/alerts/alerts.service';
 
 @Component({
   selector: 'app-updateuser',
-  templateUrl: './updateuser.page.html',
-  styleUrls: ['./updateuser.page.scss'],
+  templateUrl: './updateuser.page.html'
 })
 export class UpdateuserPage implements OnInit {
 
-  usuario: Estudent;
-  actualizacion = new User();
-  mostrarInfo = false;
+  protected usuario: Estudent;
+  protected actualizacion = new User();
+  protected mostrarInfo = false;
 
   constructor(private userService: UsuarioService, public alerts: AlertsService
     , private datosEstudiante: EstudianteService, private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.mostrarInfo = false;
     await this.datosEstudiante.obtenerEstudiante();
     this.usuario = this.datosEstudiante.estudiante;

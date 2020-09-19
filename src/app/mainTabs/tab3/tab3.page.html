@@ -78,7 +78,7 @@
       </ion-segment>
       <ion-card-header>
         <ion-list>
-          <ion-item color="primary">
+          <ion-item color="warning">
             <ion-grid>
               <ion-row>
                 <ion-col>
@@ -124,9 +124,11 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-  <ion-refresher slot="fixed" (ionRefresh)="actualizarContenido($event)">
-    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Actualizar Reservas"
-      refreshingSpinner="circles" refreshingText="Actualizando...">
-    </ion-refresher-content>
-  </ion-refresher>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="warning">
+      <ion-icon name="refresh-outline" (click)="actualizarContenido()"></ion-icon>    
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

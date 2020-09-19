@@ -1,19 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sub-header',
-  templateUrl: './sub-header.component.html',
-  styleUrls: ['./sub-header.component.scss'],
+  templateUrl: './sub-header.component.html'
 })
-export class SubHeaderComponent implements OnInit {
-
+export class SubHeaderComponent {
 
   @Input() subMenu: string;
 
   constructor(private menuCtrl: MenuController) { }
-
-  ngOnInit() {}
 
   public mostrarMenu(){
     this.menuCtrl.toggle('first');

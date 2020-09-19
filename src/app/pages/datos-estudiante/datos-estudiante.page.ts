@@ -15,44 +15,43 @@ import {
 
 @Component({
   selector: 'app-datos-estudiante',
-  templateUrl: './datos-estudiante.page.html',
-  styleUrls: ['./datos-estudiante.page.scss'],
+  templateUrl: './datos-estudiante.page.html'
 })
 export class DatosEstudiantePage implements OnInit {
 
-  uco = UNIVERSIDAD_UCO;
-  udea = UNIVERSIDAD_UDEA;
-  universidadActual = UNIVERSIDAD_UCO;
-  base64Image: any;
-  estudiante: Estudent = new Estudent();
-  image: any;
-  firmaActual = false;
-  nuevaFirma = false;
-  sizeImage: any;
-  botonEnviar = false;
+  protected uco = UNIVERSIDAD_UCO;
+  protected udea = UNIVERSIDAD_UDEA;
+  protected universidadActual = UNIVERSIDAD_UCO;
+  protected base64Image: any;
+  private estudiante = new Estudent();
+  protected image: any;
+  protected firmaActual = false;
+  protected nuevaFirma = false;
+  protected sizeImage: any;
+  protected botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private camera: Camera,
     private alertas: AlertsService, private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
+    this.firmaActual = false;
+    this.nuevaFirma = false;
     this.botonEnviar = false;
     await this.datosEstudiante.obtenerEstudiante();
-    await this.datosEstudiante.obtenerFirma();
-    await this.datosEstudiante.obtenerUniversidad();
     this.estudiante.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.estudiante.tipoUsuario = this.datosEstudiante.estudiante.tipoUsuario;
-    this.estudiante.firma = this.datosEstudiante.firma;
-    this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
     await this.mostrarfirmaActual();
     await this.mostrarUniversidadActual();
   }
 
-  obtenerUniversidad(event) {
+  public obtenerUniversidad(event) {
     this.estudiante.universidad = event.detail.value;
     return this.estudiante;
   }
 
-  async mostrarfirmaActual() {
+  private async mostrarfirmaActual() {
+    await this.datosEstudiante.obtenerFirma();
+    this.estudiante.firma = this.datosEstudiante.firma;
     if (!this.estudiante.firma) {
       this.alertas.showToast(INFO_TODAVIA_NO_TIENE_FIRMA, 'secondary');
     }
@@ -64,7 +63,9 @@ export class DatosEstudiantePage implements OnInit {
     }
   }
 
-  async mostrarUniversidadActual() {
+  private async mostrarUniversidadActual() {
+    await this.datosEstudiante.obtenerUniversidad();
+    this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
     if (!this.estudiante.universidad) {
       this.alertas.showToast(INFO_TODAVIA_NO_TIENE_UNIVERSIDAD, 'secondary');
     }
@@ -97,7 +98,7 @@ export class DatosEstudiantePage implements OnInit {
       this.nuevaFirma = true;
       return this.base64Image;
     }, () => {
-      this.alertas.showToast(ERROR_AL_CARGAR_LA_IMAGEN, 'warning');
+      this.alertas.showToast(ERROR_AL_CARGAR_LA_IMAGEN, 'secondary');
     });
   }
 
@@ -105,7 +106,7 @@ export class DatosEstudiantePage implements OnInit {
     return ((this.estudiante.firma.length * (3 / 4)) - 2) / 1000;
   }
 
-  async enviar() {
+  public async enviar() {
     if (!this.estudiante.firma || !this.estudiante.firma) {
       this.alertas.presentAlert(MENSAJE_ERROR, ERROR_FALTA_FIRMA_UNIVERSIDAD);
     }
@@ -119,17 +120,16 @@ export class DatosEstudiantePage implements OnInit {
         .subscribe(async () => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           await this.datosEstudiante.getEstudiante(this.estudiante);
-          this.nuevaFirma = false;
           this.firmaActual = false;
+          this.nuevaFirma = false;
+          this.base64Image = new Image();
+          this.image = new Image();
+          this.estudiante = new Estudent();
           setTimeout(async () => {
-            this.base64Image = new Image();
             await this.ngOnInit();
-          }, 400);
+          }, 300);
           this.botonEnviar = false;
         }, error => {
-          if (error.status === 400) {
-            this.alertas.presentAlert(MENSAJE_ERROR, error.error);
-          }
           if (error.status === 400) {
             this.alertas.presentAlert(MENSAJE_ERROR, error.error);
           }

@@ -8,8 +8,7 @@ import { UsuarioService } from 'src/app/services/user/usuario.service';
 
 @Component({
   selector: 'app-changue-password',
-  templateUrl: './changue-password.page.html',
-  styleUrls: ['./changue-password.page.scss'],
+  templateUrl: './changue-password.page.html'
 })
 export class ChanguePasswordPage implements OnInit {
 
@@ -18,7 +17,7 @@ export class ChanguePasswordPage implements OnInit {
   constructor(private datosEstudiante: EstudianteService, private usuarioService: UsuarioService
     , private alertas: AlertsService, private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     await this.datosEstudiante.obtenerEstudiante();
     this.contrasenas.identificacion = this.datosEstudiante.estudiante.identificacion;
     return this.contrasenas;

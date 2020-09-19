@@ -17,26 +17,25 @@ import {
 
 @Component({
   selector: 'app-update-materia',
-  templateUrl: './update-materia.page.html',
-  styleUrls: ['./update-materia.page.scss'],
+  templateUrl: './update-materia.page.html'
 })
 export class UpdateMateriaPage implements OnInit {
 
   @Input() viejaMateria: Materia;
 
-  lunes = DIA_LUNES; martes = DIA_MARTES; miercoles = DIA_MIERCOLES;
-  jueves = DIA_JUEVES; viernes = DIA_VIERNES; sabado = DIA_SABADO; domingo = DIA_DOMINGO;
-  nuevaMateria = new Materia();
-  nuevoHorario = new Horario();
-  materias: Materia[] = [];
-  usuario = new User();
-  botonEnviar = false;
+  protected lunes = DIA_LUNES; martes = DIA_MARTES; miercoles = DIA_MIERCOLES;
+  protected jueves = DIA_JUEVES; viernes = DIA_VIERNES; sabado = DIA_SABADO; domingo = DIA_DOMINGO;
+  protected nuevaMateria = new Materia();
+  protected nuevoHorario = new Horario();
+  protected materias: Materia[] = [];
+  protected usuario = new User();
+  protected botonEnviar = false;
 
   constructor(private alerts: AlertsService, private modalCtrl: ModalController
     , private materiaService: MateriasService, private datosEstudiante: EstudianteService
     , private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.botonEnviar = false;
     this.nuevoHorario.horaInicial = new Date();
     this.nuevoHorario.horaFinal = new Date();
@@ -50,13 +49,13 @@ export class UpdateMateriaPage implements OnInit {
     return this.nuevaMateria;
   }
 
-  cambioHoraInicial(event) {
+  public cambioHoraInicial(event) {
     this.nuevoHorario.horaInicial = new Date(event.detail.value);
   }
-  cambioHoraFinal(event) {
+  public cambioHoraFinal(event) {
     this.nuevoHorario.horaFinal = new Date(event.detail.value);
   }
-  obtenerDia(event) {
+  public obtenerDia(event) {
     this.nuevoHorario.dia = event.detail.value;
   }
 
@@ -98,7 +97,7 @@ export class UpdateMateriaPage implements OnInit {
     return this.nuevoHorario;
   }
 
-  crearHorario() {
+  protected crearHorario() {
     if (this.validarNombre()) {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }
@@ -121,11 +120,11 @@ export class UpdateMateriaPage implements OnInit {
     }
   }
 
-  cancelarUpdate() {
+  public cancelarUpdate() {
     this.modalCtrl.dismiss();
   }
 
-  async actualizarMateria() {
+  public async actualizarMateria() {
     if (this.validarNombre()) {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_NOMBRE_MATERIA);
     }

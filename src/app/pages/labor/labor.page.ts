@@ -6,8 +6,7 @@ import { Labor, User } from '../../models/interfaces';
 
 @Component({
   selector: 'app-labor',
-  templateUrl: './labor.page.html',
-  styleUrls: ['./labor.page.scss'],
+  templateUrl: './labor.page.html'
 })
 export class LaborPage implements OnInit {
 

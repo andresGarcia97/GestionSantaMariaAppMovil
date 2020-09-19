@@ -19,23 +19,22 @@ import { MateriasService } from '../../services/materias/materias.service';
 
 @Component({
   selector: 'app-tab4',
-  templateUrl: './tab4.page.html',
-  styleUrls: ['./tab4.page.scss'],
+  templateUrl: './tab4.page.html'
 })
 export class Tab4Page implements OnInit {
 
   @ViewChild('lista') itemLista: IonList;
 
-  lunes = DIA_LUNES; martes = DIA_MARTES; miercoles = DIA_MIERCOLES;
-  jueves = DIA_JUEVES; viernes = DIA_VIERNES; sabado = DIA_SABADO; domingo = DIA_DOMINGO;
-  nuevaMateria = new Materia();
-  nuevoHorario = new Horario();
-  materias: Materia[] = [];
-  horarios: Horario[] = [];
-  nuevosHorarios: Horario[] = [];
-  usuario = new User();
-  mostrarListaMaterias = false;
-  botonEnviar = false;
+  protected lunes = DIA_LUNES; martes = DIA_MARTES; miercoles = DIA_MIERCOLES;
+  protected jueves = DIA_JUEVES; viernes = DIA_VIERNES; sabado = DIA_SABADO; domingo = DIA_DOMINGO;
+  protected nuevaMateria = new Materia();
+  protected nuevoHorario = new Horario();
+  protected materias: Materia[] = [];
+  protected horarios: Horario[] = [];
+  protected nuevosHorarios: Horario[] = [];
+  protected usuario = new User();
+  protected mostrarListaMaterias = false;
+  protected botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService, private materiaService: MateriasService
     , private modalCtrl: ModalController, private alertController: AlertController, private logoutForced: LoginService) { }

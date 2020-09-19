@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="warning">
     <ion-title>Actualizar Reserva</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -8,7 +8,7 @@
   <ion-card>
     <ion-card-header>
       <ion-list>
-        <ion-item color="primary">
+        <ion-item color="warning">
           <ion-grid>
             <ion-row>
               <ion-col>
@@ -64,14 +64,14 @@
           <ion-label>Fecha Inicial</ion-label>
           <ion-datetime display-format="MMM DD HH mm" [min]="yearMinimo" cancelText="Cancelar!" done-text="Aceptar"
             [ngModel]="fechaInicial.toISOString()" (ionChange)="cambioFechaInicial( $event )"
-            monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
+            monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC" minuteValues="0,15,30,45">
           </ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>Fecha Final</ion-label>
           <ion-datetime display-format="MMM DD HH mm" [min]="yearMinimo" cancelText="Cancelar!" done-text="Aceptar"
             [ngModel]="fechaFinal.toISOString()" (ionChange)="cambioFechaFinal( $event )"
-            monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
+            monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC" minuteValues="0,15,30,45">
           </ion-datetime>
         </ion-item>
       </ion-list>

@@ -15,13 +15,12 @@ import { LUGAR_AUDITORIO, LUGAR_LAVANDERIA, LUGAR_SALA_INFORMATICA, LUGAR_SALA_T
 import { Reserva, User } from '../../models/interfaces';
 import {
   ERROR_FECHAS_DIFERENTE_DIA, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA, ERROR_FECHA_INICIAL_MAYOR_QUE_FECHA_FINAL,
-  ERROR_FECHA_INICIAL_PASADA, INFO_LISTA_VACIA_RESERVAS
+  ERROR_FECHA_INICIAL_PASADA
 } from '../../models/mensajes';
 
 @Component({
   selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  templateUrl: 'tab3.page.html'
 })
 export class Tab3Page implements OnInit {
 
@@ -32,17 +31,17 @@ export class Tab3Page implements OnInit {
     [LUGAR_LAVANDERIA, LUGAR_AUDITORIO, LUGAR_SALA_TV, LUGAR_SALA_INFORMATICA, LUGAR_SALON_AMARILLO, LUGAR_SALON4, LUGAR_SALON3]
   ];
 
-  lugar = ''; // muestra todas las reservas en el pipe
-  reservas: Reserva[] = [];
-  nuevaReserva = new Reserva();
-  reservaConsultas = new Reserva();
-  usuario = new User();
-  fechaInicial = new Date();
-  fechaFinal = new Date();
-  fechaComparacion = new Date();
-  mostrarLista = false;
-  yearMinimo = this.fechaInicial.getFullYear();
-  botonEnviar = false;
+  protected lugar = ''; // muestra todas las reservas en el pipe
+  protected reservas: Reserva[] = [];
+  protected nuevaReserva = new Reserva();
+  private reservaConsultas = new Reserva();
+  private usuario = new User();
+  protected fechaInicial = new Date();
+  protected fechaFinal = new Date();
+  private fechaComparacion = new Date();
+  protected mostrarLista = false;
+  protected yearMinimo = this.fechaInicial.getFullYear();
+  protected botonEnviar = false;
 
   constructor(private alerts: AlertsService, private datosEstudiante: EstudianteService
     , private pickerController: PickerController, private reservasService: ReservasService
@@ -178,7 +177,7 @@ export class Tab3Page implements OnInit {
     return false;
   }
 
-  async crearReserva() {
+  public async crearReserva() {
     this.fechaComparacion = new Date();
     if (this.validarCampos()) {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_MOTIVO_LUGAR_FALTANTES);
@@ -221,7 +220,7 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  async editarReserva(reserva: Reserva) {
+  public async editarReserva(reserva: Reserva) {
     this.itemLista.closeSlidingItems();
     const modalUpdate = await this.modalCtrl.create({
       component: UpdateReservaPage,
@@ -239,7 +238,7 @@ export class Tab3Page implements OnInit {
     await modalUpdate.present();
   }
 
-  async eliminarReserva(reserva: Reserva) {
+  public async eliminarReserva(reserva: Reserva) {
     this.itemLista.closeSlidingItems();
     const alert = await this.alertController.create({
       header: 'Confirmación',
@@ -283,10 +282,7 @@ export class Tab3Page implements OnInit {
     this.logoutForced.logout();
   }
 
-  async actualizarContenido(event) {
-    setTimeout(async () => {
-      await this.ngOnInit();
-      event.target.complete();
-    }, 1500);
+  public async actualizarContenido() {
+    await this.ngOnInit();
   }
 }
