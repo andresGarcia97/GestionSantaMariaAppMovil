@@ -25,7 +25,8 @@ export class LoginPage {
     }, 400);
     setTimeout(async () => {
       const loginSuccess = await this.loginService.validarToken();
-      if (loginSuccess) {
+      const payload = await this.loginService.verificarPayload(this.autenticacion.identificacion.toString());
+      if (loginSuccess && payload) {
         this.alertas.showToast(LOGIN_EXITOSO, 'success', 1000);
         this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
       }

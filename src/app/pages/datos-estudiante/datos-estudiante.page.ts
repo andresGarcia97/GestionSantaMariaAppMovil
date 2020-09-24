@@ -37,11 +37,11 @@ export class DatosEstudiantePage implements OnInit {
     this.firmaActual = false;
     this.nuevaFirma = false;
     this.botonEnviar = false;
+    await this.mostrarfirmaActual();
+    await this.mostrarUniversidadActual();
     await this.datosEstudiante.obtenerEstudiante();
     this.estudiante.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.estudiante.tipoUsuario = this.datosEstudiante.estudiante.tipoUsuario;
-    await this.mostrarfirmaActual();
-    await this.mostrarUniversidadActual();
   }
 
   public obtenerUniversidad(event) {

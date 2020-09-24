@@ -40,6 +40,28 @@ export class LoginService {
     await this.storage.clear();
   }
 
+  private async parseJwt(): Promise<string> {
+    await this.cargarToken();
+    if (this.token != null) {
+      const deleteBearer = this.token.substring(7);
+      const base64Url = deleteBearer.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload).sub;
+    }
+    return '';
+  }
+
+  public async verificarPayload(identificacion: string): Promise<boolean> {
+    const idUsuario = await this.parseJwt();
+    if (idUsuario.includes(identificacion)) {
+      return true;
+    }
+    return false;
+  }
+
   public async cargarToken() {
     this.token = await this.storage.get(tokenName) || null;
   }

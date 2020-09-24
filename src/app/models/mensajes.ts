@@ -46,7 +46,6 @@ export const ERROR_MATERIA_CANTIDAD_HORARIOS = 'La Materia debe tener como minim
 export const ERROR_FALTA_FIRMA_UNIVERSIDAD = 'Falta la firma o la universidad';
 export const ERROR_AL_CARGAR_LA_IMAGEN = 'No se pudo cargar ninguna imagen';
 export const ERROR_IMAGEN_MUY_PESADA = 'La firma no puede pesar más de un 1MB';
-export const ERROR_OBTENIENDO_ESTUDIANTE = 'Error durante la consulta del usario';
 
 export const INFO_LISTA_VACIA = 'No tiene ';
 export const INFO_LISTA_VACIA_RESERVAS = 'No hay Reservaciones proximas';
