@@ -22,8 +22,8 @@ export class LoginService {
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   public async login(usuario: User): Promise<any> {
-    return this.http.post<string>(LOGIN, usuario, { headers: this.headersjson })
-      .subscribe(async (data: any) => {
+    return this.http.post<Token>(LOGIN, usuario, { headers: this.headersjson })
+      .subscribe(async (data: Token) => {
         await this.guardarToken(data);
         return Promise.resolve();
       }, async () => {

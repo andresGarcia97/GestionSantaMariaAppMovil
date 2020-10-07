@@ -22,12 +22,13 @@ export class HorariosLozaService {
   constructor(private http: HttpClient, private storage: Storage,
     private alerts: AlertsService, private loginToken: LoginService) { }
 
-  public async getHorariosLoza() {
+  public async getHorariosLoza(): Promise<any> {
     await this.loginToken.cargarToken();
     const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
     return this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, options)
       .subscribe(async (data: LavadoLoza[]) => {
         await this.guardarHorarios(data);
+        return Promise.resolve();
       }, async error => {
         if (error.status === 401) {
           this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
@@ -36,6 +37,7 @@ export class HorariosLozaService {
         else {
           this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'secondary', 1000);
         }
+        return Promise.reject();
       });
   }
 

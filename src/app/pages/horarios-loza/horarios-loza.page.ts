@@ -23,8 +23,10 @@ export class HorariosLozaPage implements OnInit {
 
   public async ngOnInit() {
     this.mostrarHorarios = false;
-    await this.horariosLozaService.getHorariosLoza();
-    await this.mostrarHorariosLoza();
+    await this.horariosLozaService.getHorariosLoza()
+      .then(() => { })
+      .catch(() => { })
+      .finally(async () => { await this.mostrarHorariosLoza(); });
   }
 
   private async mensajeTurnosDeLoza() {

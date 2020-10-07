@@ -20,20 +20,19 @@ export class LoginPage {
 
   public async login() {
     await this.loginService.login(this.autenticacion);
-    setTimeout(async () => {
-      await this.estudianteService.getEstudiante(this.autenticacion);
-    }, 400);
-    setTimeout(async () => {
-      const loginSuccess = await this.loginService.validarToken();
-      const payload = await this.loginService.verificarPayload(this.autenticacion.identificacion.toString());
-      if (loginSuccess && payload) {
-        this.alertas.showToast(LOGIN_EXITOSO, 'success', 1000);
-        this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
-      }
-      else {
-        this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
-      }
-    }, 200);
+    const loginSuccess = await this.loginService.validarToken();
+    const payload = await this.loginService.verificarPayload(this.autenticacion.identificacion.toString());
+    await this.estudianteService.getEstudiante(this.autenticacion)
+      .finally(() => {
+        const acceso = loginSuccess && payload;
+        if (acceso) {
+          this.alertas.showToast(LOGIN_EXITOSO, 'success', 1000);
+          this.navCrtl.navigateRoot('/main/tabs/tab1', { animated: true });
+        }
+        else {
+          this.alertas.presentAlert(MENSAJE_ERROR, LOGIN_ERRONEO);
+        }
+      });
   }
 }
 
