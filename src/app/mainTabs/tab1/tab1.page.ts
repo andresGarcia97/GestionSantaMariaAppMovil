@@ -4,7 +4,7 @@ import { AlertsService } from 'src/app/services/alerts/alerts.service';
 import { EstudianteService } from 'src/app/services/estudiante/estudiante.service';
 import { LoginService } from 'src/app/services/login/login.service';
 import { SalidasService } from 'src/app/services/salidas/salidas.service';
-import { HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from '../../models/constantes';
+import { HORA_MAXIMA_SALIDA, HORA_MINIMA_SALIDA, MOTIVO_ACADEMICO, MOTIVO_MEDICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from '../../models/constantes';
 import { Salida, User } from '../../models/interfaces';
 import {
   ERROR_FECHAS_PASADAS, ERROR_FECHA_LLEGADA_MENOR_QUE_SALIDA, ERROR_HORAS_INVALIDAS, ERROR_MOTIVO_LUGAR_FALTANTES,
@@ -27,6 +27,7 @@ export class Tab1Page implements OnInit {
   protected academico = MOTIVO_ACADEMICO;
   protected personal = MOTIVO_PERSONAL;
   protected recreativo = MOTIVO_RECREATIVO;
+  protected medico = MOTIVO_MEDICO;
   protected yearMinimo = this.fechaLlegada.getFullYear();
   protected  botonEnviar = false;
 

@@ -1,8 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonList, ModalController, PickerController } from '@ionic/angular';
-import { HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, HORA_MINUTOS_EN_PUNTO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO } from 'src/app/models/constantes';
 import {
-  BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA, ERROR_MOTIVO_LUGAR_FALTANTES,
+  HORA_MAXIMA_LAVANDERIA, HORA_MAXIMA_RESERVA, HORA_MINIMA_RESERVA, HORA_MINUTOS_EN_PUNTO,
+  MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
+} from 'src/app/models/constantes';
+import {
+  BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA,
+  ERROR_HORA_RESERVA_LAVANDERIA, ERROR_MOTIVO_LUGAR_FALTANTES,
   GUARDAR_RESERVA_ERROR,
   GUARDAR_RESERVA_EXITO, LOGOUT_FORZADO, MENSAJE_ERROR
 } from 'src/app/models/mensajes';
@@ -28,7 +32,7 @@ export class Tab3Page implements OnInit {
 
   motivoYLugar = [
     [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_ACADEMICO],
-    [LUGAR_LAVANDERIA, LUGAR_AUDITORIO, LUGAR_SALA_TV, LUGAR_SALA_INFORMATICA, LUGAR_SALON_AMARILLO, LUGAR_SALON4, LUGAR_SALON3]
+    [LUGAR_LAVANDERIA, LUGAR_SALA_TV, LUGAR_AUDITORIO, LUGAR_SALA_INFORMATICA, LUGAR_SALON_AMARILLO, LUGAR_SALON4, LUGAR_SALON3]
   ];
 
   protected lugar = ''; // muestra todas las reservas en el pipe
@@ -84,7 +88,7 @@ export class Tab3Page implements OnInit {
       columns: this.getColumns(numColumns, numOptions, this.motivoYLugar),
       buttons: [
         {
-          text: 'Cancelar',
+          text: 'Cancelar!',
           role: 'cancel',
         },
         {
@@ -177,6 +181,16 @@ export class Tab3Page implements OnInit {
     return false;
   }
 
+  private validarReservaLavanderia(): boolean {
+    if (LUGAR_LAVANDERIA.includes(this.nuevaReserva.espacio) &&
+      (this.nuevaReserva.fechaFinal.getHours() >= HORA_MAXIMA_LAVANDERIA ||
+        this.nuevaReserva.fechaInicial.getHours() >= HORA_MAXIMA_LAVANDERIA)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   public async crearReserva() {
     this.fechaComparacion = new Date();
     if (this.validarCampos()) {
@@ -193,6 +207,9 @@ export class Tab3Page implements OnInit {
     }
     else if (this.validarLogicaFechas()) {
       this.alerts.presentAlert(MENSAJE_ERROR, ERROR_FECHAS_INCUMPLEN_HORAS_RESERVA);
+    }
+    else if (this.validarReservaLavanderia()) {
+      this.alerts.presentAlert(MENSAJE_ERROR, ERROR_HORA_RESERVA_LAVANDERIA);
     }
     else {
       this.botonEnviar = true;

@@ -9,7 +9,7 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 import { LoginService } from 'src/app/services/login/login.service';
 import {
   HORA_ALMUERZO, HORA_CENA, HORA_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA,
-  MOMENTO_DESAYUNO, MOTIVO_ACADEMICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
+  MOMENTO_DESAYUNO, MOTIVO_ACADEMICO, MOTIVO_MEDICO, MOTIVO_PERSONAL, MOTIVO_RECREATIVO
 } from '../../models/constantes';
 import { InasistenciaAlimentacion, User } from '../../models/interfaces';
 import { ERROR_FECHA_PASADA, ERROR_MOTIVO_HORA_FALTANTES, INFO_LISTA_VACIA } from '../../models/mensajes';
@@ -22,8 +22,8 @@ import { InasistenciaService } from '../../services/inasistencias/inasistencia.s
 export class Tab2Page implements OnInit {
 
   motivoYHora = [
-    [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO],
-    [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA]
+    [MOTIVO_PERSONAL, MOTIVO_ACADEMICO, MOTIVO_RECREATIVO, MOTIVO_MEDICO],
+    [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA, MOMENTO_DESAYUNO]
   ];
 
   protected saveInasistencias: InasistenciaAlimentacion[] = [];

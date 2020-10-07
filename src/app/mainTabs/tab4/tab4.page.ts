@@ -6,7 +6,8 @@ import { EstudianteService } from 'src/app/services/estudiante/estudiante.servic
 import { LoginService } from 'src/app/services/login/login.service';
 import {
   DIA_DOMINGO, DIA_JUEVES, DIA_LUNES, DIA_MARTES, DIA_MIERCOLES, DIA_SABADO, DIA_VIERNES,
-  HORA_MAXIMA_MATERIA, HORA_MINIMA_MATERIA
+  HORA_MAXIMA_FIN_MATERIA,
+  HORA_MAXIMA_INICIO_MATERIA, HORA_MINIMA_INICIO_MATERIA as HORA_MINIMA_INICIO_MATERIA
 } from '../../models/constantes';
 import { Horario, Materia, User } from '../../models/interfaces';
 import {
@@ -87,10 +88,10 @@ export class Tab4Page implements OnInit {
   }
 
   private validarHoras(): boolean {
-    if (this.nuevoHorario.horaFinal.getHours() > HORA_MAXIMA_MATERIA ||
-      this.nuevoHorario.horaInicial.getHours() >= HORA_MAXIMA_MATERIA ||
-      this.nuevoHorario.horaFinal.getHours() <= HORA_MINIMA_MATERIA ||
-      this.nuevoHorario.horaInicial.getHours() < HORA_MINIMA_MATERIA) {
+    if (this.nuevoHorario.horaFinal.getHours() > HORA_MAXIMA_FIN_MATERIA ||
+      this.nuevoHorario.horaInicial.getHours() >= HORA_MAXIMA_FIN_MATERIA ||
+      this.nuevoHorario.horaFinal.getHours() <= HORA_MINIMA_INICIO_MATERIA ||
+      this.nuevoHorario.horaInicial.getHours() < HORA_MINIMA_INICIO_MATERIA) {
       return true;
     }
     return false;
@@ -198,7 +199,6 @@ export class Tab4Page implements OnInit {
           text: 'Aceptar',
           handler: async () => {
             materia.estudiante = this.usuario;
-            this.mostrarListaMaterias = false;
             (await this.materiaService.deleteMateria(materia))
               .subscribe(async () => {
                 this.alerts.showToast(BORRADO_EXITOSO_MATERIA, 'secondary');

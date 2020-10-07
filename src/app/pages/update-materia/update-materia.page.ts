@@ -7,7 +7,8 @@ import { LoginService } from 'src/app/services/login/login.service';
 import { MateriasService } from 'src/app/services/materias/materias.service';
 import {
   DIA_DOMINGO, DIA_JUEVES, DIA_LUNES, DIA_MARTES, DIA_MIERCOLES, DIA_SABADO, DIA_VIERNES,
-  HORA_MAXIMA_MATERIA, HORA_MINIMA_MATERIA
+  HORA_MAXIMA_FIN_MATERIA,
+  HORA_MAXIMA_INICIO_MATERIA, HORA_MINIMA_INICIO_MATERIA
 } from '../../models/constantes';
 import { Horario, Materia, User } from '../../models/interfaces';
 import {
@@ -74,10 +75,10 @@ export class UpdateMateriaPage implements OnInit {
   }
 
   private validarHoras(): boolean {
-    if (this.nuevoHorario.horaFinal.getHours() > HORA_MAXIMA_MATERIA ||
-      this.nuevoHorario.horaInicial.getHours() >= HORA_MAXIMA_MATERIA ||
-      this.nuevoHorario.horaFinal.getHours() <= HORA_MINIMA_MATERIA ||
-      this.nuevoHorario.horaInicial.getHours() < HORA_MINIMA_MATERIA) {
+    if (this.nuevoHorario.horaFinal.getHours() > HORA_MAXIMA_FIN_MATERIA ||
+      this.nuevoHorario.horaInicial.getHours() >= HORA_MAXIMA_FIN_MATERIA ||
+      this.nuevoHorario.horaFinal.getHours() <= HORA_MINIMA_INICIO_MATERIA ||
+      this.nuevoHorario.horaInicial.getHours() < HORA_MINIMA_INICIO_MATERIA) {
       return true;
     }
     return false;
