@@ -48,12 +48,17 @@
       <ion-grid>
         <ion-row>
           <ion-card-subtitle>
-            Solo se permiten reservas despues de las 05 y antes de las 21 (en punto) :
+            - Solo se permiten reservas entre las 05 y las 20.
           </ion-card-subtitle>
         </ion-row>
         <ion-row>
           <ion-card-subtitle>
-            Solo se pueden cambiar las fechas
+            - Tenga en cuenta que la lavanderia solo esta disponible hasta antes de las 19
+          </ion-card-subtitle>
+        </ion-row>
+        <ion-row>
+          <ion-card-subtitle>
+            - Solo se pueden cambiar las fechas
           </ion-card-subtitle>
         </ion-row>
       </ion-grid>
@@ -82,7 +87,8 @@
               <ion-button (click)="cancelarUpdate()" expand="full" shape="round">cancelar</ion-button>
             </ion-col>
             <ion-col>
-              <ion-button (click)="aceptarUpdate()" expand="full" shape="round" [disabled]="botonEnviar">Actualizar</ion-button>
+              <ion-button (click)="aceptarUpdate()" expand="full" shape="round" [disabled]="botonEnviar">Actualizar
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>

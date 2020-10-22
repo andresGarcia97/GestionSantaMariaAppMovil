@@ -107,7 +107,7 @@ export class Tab2Page implements OnInit {
       columns: this.getColumns(numColumns, numOptions, this.motivoYHora),
       buttons: [
         {
-          text: 'Cancelar',
+          text: 'Cancelar!',
           role: 'cancel',
         },
         {

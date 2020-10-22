@@ -1,18 +1,14 @@
 <ion-content>
 
   <ion-slides class="mainSlide">
-
     <ion-slide>
-
       <form #formulario="ngForm" (ngSubmit)="login()">
         <ion-grid fixed>
-
           <ion-row>
             <ion-col>
               <img src="../../../assets/img/logouco.png">
             </ion-col>
           </ion-row>
-
           <ion-row>
             <ion-col>
               <ion-list>
@@ -27,7 +23,6 @@
               </ion-list>
             </ion-col>
           </ion-row>
-
           <ion-row>
             <ion-col>
               <ion-button type="submit" color="secondary" shape="round" [disabled]="formulario.invalid">
@@ -35,21 +30,12 @@
               </ion-button>
             </ion-col>
           </ion-row>
-
         </ion-grid>
       </form>
-
     </ion-slide>
 
     <ion-slide>
       <ion-card>
-        <ion-card-header color="warning">
-          Aviso
-        </ion-card-header>
-        <ion-card-content>
-          para actualizar información ajena a los cambios del estudiante
-          es preciso salir y volver a loguearse
-        </ion-card-content>
         <ion-card-header color="primary">
           Realizadores
         </ion-card-header>
@@ -64,6 +50,7 @@
             Diego Alejandro - Asesor/Profesor UCO
           </ion-item>
         </ion-list>
+        <br>
         <ion-card-header color="secondary">
           Licencias de Codigo Abierto
         </ion-card-header>
@@ -86,7 +73,5 @@
         </ion-list>
       </ion-card>
     </ion-slide>
-
   </ion-slides>
-
 </ion-content>
