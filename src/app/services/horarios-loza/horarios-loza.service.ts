@@ -9,6 +9,7 @@ import { LoginService } from '../login/login.service';
 
 const ENDPOINT_LAVADO_LOZA = environment.LOCALHOST.concat('lavadoloza/');
 const OBTENER_HORARIOS_LOZA = ENDPOINT_LAVADO_LOZA.concat('horarios');
+const lozaStorage = 'horariosLoza';
 
 @Injectable({
   providedIn: 'root'
@@ -22,31 +23,29 @@ export class HorariosLozaService {
   constructor(private http: HttpClient, private storage: Storage,
     private alerts: AlertsService, private loginToken: LoginService) { }
 
-  public async getHorariosLoza(): Promise<any> {
-    await this.loginToken.cargarToken();
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
-    return this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, options)
-      .subscribe(async (data: LavadoLoza[]) => {
-        await this.guardarHorarios(data);
-        return Promise.resolve();
-      }, async error => {
-        if (error.status === 401) {
-          this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
-          this.loginToken.logout();
-        }
-        else {
-          this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'secondary', 1000);
-        }
-        return Promise.reject();
-      });
+  public async getHorariosLoza() {
+    try {
+      await this.loginToken.cargarToken();
+      const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+      const peticion = await this.http.get<LavadoLoza[]>(OBTENER_HORARIOS_LOZA, options).toPromise();
+      await this.guardarHorarios(peticion);
+    } catch (error) {
+      if (error.status === 401) {
+        this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);
+        this.loginToken.logout();
+      }
+      else {
+        this.alerts.showToast(INFO_ERROR_ACTUALIZAR_HORARIOS_LOZA, 'secondary', 1000);
+      }
+    }
   }
 
   public async guardarHorarios(horarios: LavadoLoza[]) {
-    await this.storage.set('horariosLoza', JSON.stringify(horarios));
+    await this.storage.set(lozaStorage, JSON.stringify(horarios));
   }
 
   private async cargarHorarios() {
-    this.horariosString = await this.storage.get('horariosLoza') || null;
+    this.horariosString = await this.storage.get(lozaStorage) || null;
     return this.horariosString;
   }
 

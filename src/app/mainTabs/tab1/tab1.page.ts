@@ -44,7 +44,7 @@ export class Tab1Page implements OnInit {
       await this.datosEstudiante.obtenerEstudiante();
       this.usuario.identificacion = this.datosEstudiante.estudiante.identificacion;
       this.nuevaSalida.estudianteSalida = this.usuario;
-    }, 400);
+    }, 300);
   }
 
   public async mostrarListaButton() {

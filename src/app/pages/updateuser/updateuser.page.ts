@@ -53,7 +53,7 @@ export class UpdateuserPage implements OnInit {
         this.alerts.showToast(ACTUALIZACION_USUARIO_EXITOSA, 'success');
         setTimeout(async () => {
           await this.ngOnInit();
-        }, 500);
+        }, 400);
       }, error => {
         if (error.status === 401) {
           this.alerts.presentAlert(MENSAJE_ERROR, LOGOUT_FORZADO);

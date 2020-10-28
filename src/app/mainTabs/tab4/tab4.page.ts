@@ -152,7 +152,7 @@ export class Tab4Page implements OnInit {
           this.nuevaMateria = new Materia();
           setTimeout(async () => {
             await this.mostrarListaButton();
-          }, 500);
+          }, 400);
           this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {
@@ -180,7 +180,7 @@ export class Tab4Page implements OnInit {
         this.mostrarListaMaterias = false;
         setTimeout(async () => {
           await this.mostrarListaButton();
-        }, 500);
+        }, 400);
       });
     await modalUpdate.present();
   }
@@ -206,7 +206,7 @@ export class Tab4Page implements OnInit {
                 this.mostrarListaMaterias = false;
                 setTimeout(async () => {
                   await this.mostrarListaButton();
-                }, 500);
+                }, 400);
               }, error => {
                 if (error.status === 400) {
                   this.alerts.presentAlert(MENSAJE_ERROR, error.error);

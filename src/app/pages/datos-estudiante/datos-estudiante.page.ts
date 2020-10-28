@@ -106,6 +106,18 @@ export class DatosEstudiantePage implements OnInit {
     return ((this.estudiante.firma.length * (3 / 4)) - 2) / 1000;
   }
 
+  private resetCampos() {
+    this.firmaActual = false;
+    this.nuevaFirma = false;
+    this.base64Image = null;
+    this.base64Image = new Image();
+    this.image = null;
+    this.image = new Image();
+    this.estudiante = null;
+    this.estudiante = new Estudent();
+    return;
+  }
+
   public async enviar() {
     if (!this.estudiante.firma || !this.estudiante.firma) {
       this.alertas.presentAlert(MENSAJE_ERROR, ERROR_FALTA_FIRMA_UNIVERSIDAD);
@@ -120,14 +132,10 @@ export class DatosEstudiantePage implements OnInit {
         .subscribe(async () => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           await this.datosEstudiante.getEstudiante(this.estudiante);
-          this.firmaActual = false;
-          this.nuevaFirma = false;
-          this.base64Image = new Image();
-          this.image = new Image();
-          this.estudiante = new Estudent();
+          this.resetCampos();
           setTimeout(async () => {
             await this.ngOnInit();
-          }, 300);
+          }, 200);
           this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {

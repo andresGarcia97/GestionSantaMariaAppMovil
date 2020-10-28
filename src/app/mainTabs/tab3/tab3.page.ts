@@ -8,7 +8,7 @@ import {
   BORRADO_EXITOSO_RESERVA, BORRADO_FALLIDO_RESERVA, CONFIRMACION_BORRAR_RESERVA,
   ERROR_HORA_RESERVA_LAVANDERIA, ERROR_MOTIVO_LUGAR_FALTANTES,
   GUARDAR_RESERVA_ERROR,
-  GUARDAR_RESERVA_EXITO, LOGOUT_FORZADO, MENSAJE_ERROR
+  GUARDAR_RESERVA_EXITO, INFO_LISTA_VACIA_RESERVAS, LOGOUT_FORZADO, MENSAJE_ERROR
 } from 'src/app/models/mensajes';
 import { UpdateReservaPage } from 'src/app/pages/update-reserva/update-reserva.page';
 import { AlertsService } from 'src/app/services/alerts/alerts.service';
@@ -73,7 +73,11 @@ export class Tab3Page implements OnInit {
       this.mostrarLista = true;
       return this.reservas;
     }
-    this.mostrarLista = false;
+    else {
+      this.alerts.showToast(INFO_LISTA_VACIA_RESERVAS, 'secondary');
+      this.mostrarLista = false;
+      return;
+    }
   }
 
   public cambioFechaInicial(event) {
@@ -219,7 +223,7 @@ export class Tab3Page implements OnInit {
           this.mostrarLista = false;
           setTimeout(async () => {
             await this.mostrarListaButton();
-          }, 500);
+          }, 400);
           this.botonEnviar = false;
           this.alerts.showToast(GUARDAR_RESERVA_EXITO, 'success');
         }, error => {
@@ -250,7 +254,7 @@ export class Tab3Page implements OnInit {
         this.mostrarLista = false;
         setTimeout(async () => {
           await this.mostrarListaButton();
-        }, 500);
+        }, 400);
       });
     await modalUpdate.present();
   }
@@ -274,7 +278,7 @@ export class Tab3Page implements OnInit {
                 this.mostrarLista = false;
                 setTimeout(async () => {
                   await this.mostrarListaButton();
-                }, 500);
+                }, 400);
                 this.alerts.showToast(BORRADO_EXITOSO_RESERVA, 'secondary');
               }, async error => {
                 if (error.status === 400) {

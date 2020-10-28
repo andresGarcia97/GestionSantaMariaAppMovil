@@ -9,6 +9,7 @@ import { LoginService } from '../login/login.service';
 const ENDPOINT_ESTUDIANTE = environment.LOCALHOST.concat('estudiante/');
 const OBTENER_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('buscarestudiante');
 const AGREGAR_FIRMA_ESTUDIANTE = ENDPOINT_ESTUDIANTE.concat('agregardatos');
+const estudianteStorage = 'estudiante';
 
 @Injectable({
   providedIn: 'root'
@@ -27,16 +28,14 @@ export class EstudianteService {
 
   constructor(private http: HttpClient, private storage: Storage, private loginToken: LoginService) { }
 
-  public async getEstudiante(estudiante: User): Promise<any> {
+  public async getEstudiante(estudiante: User) {
     await this.loginToken.cargarToken();
     const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
     return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options)
       .subscribe(async (data: Estudent) => {
         await this.guardarEstudiante(data);
-        return Promise.resolve();
       }, async () => {
         await this.borrarEstudiante();
-        return Promise.reject();
       });
   }
 
@@ -47,11 +46,11 @@ export class EstudianteService {
   }
 
   public async guardarEstudiante(estudiante: Estudent) {
-    await this.storage.set('estudiante', JSON.stringify(estudiante));
+    await this.storage.set(estudianteStorage, JSON.stringify(estudiante));
   }
 
   private async cargarEstudiante() {
-    this.estudianteString = await this.storage.get('estudiante') || null;
+    this.estudianteString = await this.storage.get(estudianteStorage) || null;
   }
 
   public async obtenerEstudiante(): Promise<Estudent> {
@@ -97,7 +96,7 @@ export class EstudianteService {
   }
 
   public async borrarEstudiante() {
-    this.storage.remove('estudiante');
+    this.storage.remove(estudianteStorage);
   }
 
 }

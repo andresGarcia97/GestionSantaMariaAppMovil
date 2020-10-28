@@ -178,7 +178,7 @@ export class Tab2Page implements OnInit {
           this.mostrarLista = false;
           setTimeout(async () => {
             await this.mostrarListaButton();
-          }, 500);
+          }, 400);
           this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {

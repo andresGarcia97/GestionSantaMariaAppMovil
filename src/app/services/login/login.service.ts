@@ -7,6 +7,7 @@ import { Token, User } from '../../models/interfaces';
 
 const LOGIN = environment.LOCALHOST.concat('login');
 const tokenName = 'S_T_A_A_I';
+const loginPath = '/login';
 
 @Injectable({
   providedIn: 'root'
@@ -21,15 +22,13 @@ export class LoginService {
 
   private headersjson = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  public async login(usuario: User): Promise<any> {
-    return this.http.post<Token>(LOGIN, usuario, { headers: this.headersjson })
-      .subscribe(async (data: Token) => {
-        await this.guardarToken(data);
-        return Promise.resolve();
-      }, async () => {
-        await this.borrarStorage();
-        return Promise.reject();
-      });
+  public async login(usuario: User) {
+    try {
+      const token = await this.http.post<Token>(LOGIN, usuario, { headers: this.headersjson }).toPromise();
+      await this.guardarToken(token);
+    } catch (error) {
+      await this.borrarStorage();
+    }
   }
 
   public async guardarToken(token: Token) {
@@ -71,13 +70,13 @@ export class LoginService {
     await this.cargarToken();
 
     if (!this.token) {
-      this.navCrtl.navigateRoot('/login', { animated: true });
+      this.navCrtl.navigateRoot(loginPath, { animated: true });
       return Promise.resolve(false);
     }
 
     return new Promise<boolean>(resolve => {
       if (this.token === null) {
-        this.navCrtl.navigateRoot('/login', { animated: true });
+        this.navCrtl.navigateRoot(loginPath, { animated: true });
         resolve(false);
       }
       else {
@@ -89,7 +88,7 @@ export class LoginService {
   public logout() {
     this.token = null;
     this.borrarStorage();
-    this.navCrtl.navigateRoot('/login', { animated: true });
+    this.navCrtl.navigateRoot(loginPath, { animated: true });
   }
 
 }
