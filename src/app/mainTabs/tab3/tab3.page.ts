@@ -52,7 +52,7 @@ export class Tab3Page implements OnInit {
     , private modalCtrl: ModalController, private alertController: AlertController
     , private logoutForced: LoginService) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     this.botonEnviar = false;
     this.mostrarLista = false;
     this.reservaConsultas.fechaInicial = new Date();
@@ -219,13 +219,10 @@ export class Tab3Page implements OnInit {
       this.botonEnviar = true;
       (await this.reservasService.saveReserva(this.nuevaReserva))
         .subscribe(async () => {
-          await this.reservasService.getReservas(this.reservaConsultas);
-          this.mostrarLista = false;
-          setTimeout(async () => {
-            await this.mostrarListaButton();
-          }, 400);
-          this.botonEnviar = false;
           this.alerts.showToast(GUARDAR_RESERVA_EXITO, 'success');
+          setTimeout(async () => {
+            await this.ngOnInit();
+          }, 300);
         }, error => {
           if (error.status === 400) {
             this.alerts.presentAlert(MENSAJE_ERROR, error.error);
@@ -251,10 +248,9 @@ export class Tab3Page implements OnInit {
     });
     modalUpdate.onWillDismiss()
       .then(async () => {
-        this.mostrarLista = false;
         setTimeout(async () => {
-          await this.mostrarListaButton();
-        }, 400);
+          await this.ngOnInit();
+        }, 300);
       });
     await modalUpdate.present();
   }
@@ -274,12 +270,10 @@ export class Tab3Page implements OnInit {
           handler: async () => {
             (await this.reservasService.deleteReserva(reserva))
               .subscribe(async () => {
-                await this.reservasService.getReservas(this.reservaConsultas);
-                this.mostrarLista = false;
-                setTimeout(async () => {
-                  await this.mostrarListaButton();
-                }, 400);
                 this.alerts.showToast(BORRADO_EXITOSO_RESERVA, 'secondary');
+                setTimeout(async () => {
+                  await this.ngOnInit();
+                }, 300);
               }, async error => {
                 if (error.status === 400) {
                   this.alerts.presentAlert(MENSAJE_ERROR, error.error);

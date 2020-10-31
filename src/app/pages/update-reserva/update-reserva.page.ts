@@ -114,10 +114,8 @@ export class UpdateReservaPage implements OnInit {
       this.reservas.push(this.actualizacionReserva);
       (await this.reservasService.updateReserva(this.reservas))
         .subscribe(async () => {
-          await this.reservasService.getReservas(this.actualizacionReserva);
           this.alerts.showToast(ACTUALIZACION_RESERVA_EXITOSA, 'success');
-          this.botonEnviar = false;
-          this.modalCtrl.dismiss();
+          this.cancelarUpdate();
         }, async error => {
           if (error.status === 400) {
             this.alerts.presentAlert(MENSAJE_ERROR, error.error);
