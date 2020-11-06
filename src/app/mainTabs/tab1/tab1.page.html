@@ -11,9 +11,9 @@
             <ion-list lines="full">
                 <ion-item color="primary">
                     <ion-label>Fecha de Salida</ion-label>
-                    <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH" [min]="yearMinimo"
+                    <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH mm" [min]="yearMinimo"
                         cancelText="Cancelar!" done-text="Aceptar" [ngModel]="fechaSalida.toISOString()"
-                        (ionChange)="cambioFechaSalida( $event )"
+                        (ionChange)="cambioFechaSalida( $event )" minuteValues="0,15,30,45"
                         monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
                     </ion-datetime>
                 </ion-item>
@@ -24,9 +24,9 @@
                 </ion-item>
                 <ion-item color="primary">
                     <ion-label>Fecha de LLegada</ion-label>
-                    <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH" [min]="yearMinimo"
+                    <ion-datetime placeholder="Fecha Inasitencia" display-format="MMM DD HH mm" [min]="yearMinimo"
                         cancelText="Cancelar!" done-text="Aceptar" [ngModel]="fechaLlegada.toISOString()"
-                        (ionChange)="cambioFechaLlegada( $event )"
+                        (ionChange)="cambioFechaLlegada( $event )" minuteValues="0,15,30,45"
                         monthShortNames="ENE,FEB, MAR, ABR, MAY,JUN,JUL,AGO,SEP,OCT,NOV,DIC">
                     </ion-datetime>
                 </ion-item>
@@ -82,8 +82,8 @@
                                 <ion-label class="ion-text-wrap">{{salida.lugar}}</ion-label>
                             </ion-col>
                             <ion-col size="4">
-                                <ion-label class="ion-text-wrap">{{salida.fechaSalida | date:'MM/dd'}}</ion-label>
-                                <ion-label class="ion-text-wrap">{{salida.fechaLlegada | date: 'MM/dd'}}</ion-label>
+                                <ion-label class="ion-text-wrap">{{salida.fechaSalida | date:'MM/dd - HH:mm'}}</ion-label>
+                                <ion-label class="ion-text-wrap">{{salida.fechaLlegada | date: 'MM/dd - HH:mm'}}</ion-label>
                             </ion-col>
                         </ion-row>
                     </ion-grid>
