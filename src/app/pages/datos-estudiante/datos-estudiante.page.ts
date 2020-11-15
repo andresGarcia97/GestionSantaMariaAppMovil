@@ -34,17 +34,16 @@ export class DatosEstudiantePage implements OnInit {
     private alertas: AlertsService, private logoutForced: LoginService) { }
 
   public async ngOnInit() {
-    this.firmaActual = false;
-    this.nuevaFirma = false;
-    this.botonEnviar = false;
+    this.resetCampos();
     await this.mostrarfirmaActual();
-    await this.mostrarUniversidadActual();
     await this.datosEstudiante.obtenerEstudiante();
     this.estudiante.identificacion = this.datosEstudiante.estudiante.identificacion;
     this.estudiante.tipoUsuario = this.datosEstudiante.estudiante.tipoUsuario;
+    await this.mostrarUniversidadActual();
+    this.botonEnviar = false;
   }
 
-  public obtenerUniversidad(event) {
+  public obtenerUniversidad(event: any) {
     this.estudiante.universidad = event.detail.value;
     return this.estudiante;
   }
@@ -66,7 +65,7 @@ export class DatosEstudiantePage implements OnInit {
   private async mostrarUniversidadActual() {
     await this.datosEstudiante.obtenerUniversidad();
     this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
-    if (!this.estudiante.universidad) {
+    if (!this.estudiante.universidad || 0 === this.estudiante.universidad.length) {
       this.alertas.showToast(INFO_TODAVIA_NO_TIENE_UNIVERSIDAD, 'secondary');
     }
     else if (this.estudiante.universidad.includes(UNIVERSIDAD_UCO)) {
@@ -109,13 +108,9 @@ export class DatosEstudiantePage implements OnInit {
   private resetCampos() {
     this.firmaActual = false;
     this.nuevaFirma = false;
-    this.base64Image = null;
     this.base64Image = new Image();
-    this.image = null;
     this.image = new Image();
-    this.estudiante = null;
     this.estudiante = new Estudent();
-    return;
   }
 
   public async enviar() {
@@ -132,10 +127,7 @@ export class DatosEstudiantePage implements OnInit {
         .subscribe(async () => {
           this.alertas.showToast(ACTUALIZACION_FIRMA_UNIVERSIDAD_EXITOSA, 'success');
           await this.datosEstudiante.getEstudiante(this.estudiante);
-          this.resetCampos();
-          setTimeout(async () => {
-            await this.ngOnInit();
-          }, 200);
+          await this.ngOnInit();
           this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {

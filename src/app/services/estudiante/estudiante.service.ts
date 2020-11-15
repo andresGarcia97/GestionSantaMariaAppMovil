@@ -31,15 +31,15 @@ export class EstudianteService {
   public async getEstudiante(estudiante: User) {
     await this.loginToken.cargarToken();
     const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
-    return this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options)
-      .subscribe(async (data: Estudent) => {
-        await this.guardarEstudiante(data);
-      }, async () => {
-        await this.borrarEstudiante();
-      });
+    try {
+      const data = await this.http.post<Estudent>(OBTENER_ESTUDIANTE, estudiante, options).toPromise();
+      await this.guardarEstudiante(data);
+    } catch (error) {
+      await this.borrarEstudiante();
+    }
   }
 
-  public async agregarFirmaYUniversidad(estudiante: Estudent){
+  public async agregarFirmaYUniversidad(estudiante: Estudent) {
     await this.loginToken.cargarToken();
     const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
     return this.http.post<string>(AGREGAR_FIRMA_ESTUDIANTE, estudiante, options);

@@ -51,13 +51,13 @@ export class Tab4Page implements OnInit {
     this.nuevaMateria.estudiante = this.usuario;
   }
 
-  cambioHoraInicial(event) {
+  cambioHoraInicial(event: any) {
     this.nuevoHorario.horaInicial = new Date(event.detail.value);
   }
-  cambioHoraFinal(event) {
+  cambioHoraFinal(event: any) {
     this.nuevoHorario.horaFinal = new Date(event.detail.value);
   }
-  obtenerDia(event) {
+  obtenerDia(event: any) {
     this.nuevoHorario.dia = event.detail.value;
   }
 
@@ -152,7 +152,7 @@ export class Tab4Page implements OnInit {
           this.nuevaMateria = new Materia();
           setTimeout(async () => {
             await this.mostrarListaButton();
-          }, 400);
+          }, 300);
           this.botonEnviar = false;
         }, error => {
           if (error.status === 400) {

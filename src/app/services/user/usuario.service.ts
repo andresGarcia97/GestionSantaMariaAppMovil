@@ -16,15 +16,15 @@ export class UsuarioService {
 
   constructor(private http: HttpClient, private loginToken: LoginService) { }
 
+  options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
+
   public async update(usuario: User) {
     await this.loginToken.cargarToken();
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
-    return this.http.put<User>(ACTUALIZAR_USUARIO, usuario, options);
+    return this.http.put<User>(ACTUALIZAR_USUARIO, usuario, this.options);
   }
 
   public async updatePassword(newPassword: CambioPassword) {
     await this.loginToken.cargarToken();
-    const options = { headers: new HttpHeaders({ 'Content-Type': 'application/json', Authorization: this.loginToken.token }) };
-    return this.http.put(CAMBIAR_CONTRASEÑA, newPassword, options);
+    return this.http.put(CAMBIAR_CONTRASEÑA, newPassword, this.options);
   }
 }
