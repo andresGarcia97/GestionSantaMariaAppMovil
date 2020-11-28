@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  LOCALHOST: 'http://192.168.1.4:8080/',
+  LOCALHOST: 'https://gestionsantamariaback.herokuapp.com/',
 };
 /*
  * For easier debugging in development mode, you can import the following file

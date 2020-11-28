@@ -13,11 +13,11 @@
             <ion-col>
               <ion-list>
                 <ion-item>
-                  <ion-input placeholder="Identificación" name="identificacion" type="number" required required
-                    minlength='3' [(ngModel)]="autenticacion.identificacion"></ion-input>
+                  <ion-input placeholder="Identificación" name="identificacion" type="number" required minlength='6'
+                    [(ngModel)]="autenticacion.identificacion" maxlength='10'></ion-input>
                 </ion-item>
                 <ion-item>
-                  <ion-input placeholder="Contraseña" name="password" type="password" required minlength='4'
+                  <ion-input placeholder="Contraseña" name="password" type="password" required minlength='6'
                     [(ngModel)]="autenticacion.contrasena"></ion-input>
                 </ion-item>
               </ion-list>

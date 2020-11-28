@@ -29,7 +29,7 @@ export class Tab1Page implements OnInit {
   protected recreativo = MOTIVO_RECREATIVO;
   protected medico = MOTIVO_MEDICO;
   protected yearMinimo = this.fechaLlegada.getFullYear();
-  protected  botonEnviar = false;
+  protected botonEnviar = false;
 
   constructor(private datosEstudiante: EstudianteService, private alerts: AlertsService
     , private salidaService: SalidasService, private logoutForced: LoginService) { }
@@ -59,15 +59,15 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  public obtenerMotivo(event) {
+  public obtenerMotivo(event: any) {
     this.nuevaSalida.razon = event.detail.value;
   }
 
-  public cambioFechaLlegada(event) {
+  public cambioFechaLlegada(event: any) {
     this.nuevaSalida.fechaLlegada = new Date(event.detail.value);
   }
 
-  public cambioFechaSalida(event) {
+  public cambioFechaSalida(event: any) {
     this.nuevaSalida.fechaSalida = new Date(event.detail.value);
   }
 
@@ -89,8 +89,8 @@ export class Tab1Page implements OnInit {
 
   private validarLogicaFechas(): boolean {
     if (this.nuevaSalida.fechaSalida.getHours() >= HORA_MAXIMA_SALIDA ||
-      this.nuevaSalida.fechaLlegada.getHours() >= HORA_MAXIMA_SALIDA ||
-      this.nuevaSalida.fechaSalida.getHours() <= HORA_MINIMA_SALIDA ||
+      this.nuevaSalida.fechaLlegada.getHours() > HORA_MAXIMA_SALIDA ||
+      this.nuevaSalida.fechaSalida.getHours() < HORA_MINIMA_SALIDA ||
       this.nuevaSalida.fechaLlegada.getHours() <= HORA_MINIMA_SALIDA) {
       return true;
     }

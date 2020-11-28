@@ -80,10 +80,10 @@ export class Tab3Page implements OnInit {
     }
   }
 
-  public cambioFechaInicial(event) {
+  public cambioFechaInicial(event: any) {
     this.nuevaReserva.fechaInicial = new Date(event.detail.value);
   }
-  public cambioFechaFinal(event) {
+  public cambioFechaFinal(event: any) {
     this.nuevaReserva.fechaFinal = new Date(event.detail.value);
   }
 
@@ -106,7 +106,7 @@ export class Tab3Page implements OnInit {
     });
     await picker.present();
   }
-  private getColumns(numColumns, numOptions, columnOptions) {
+  private getColumns(numColumns: any, numOptions: any, columnOptions: any) {
     const columns = [];
     for (let i = 0; i < numColumns; i++) {
       columns.push({
@@ -116,7 +116,7 @@ export class Tab3Page implements OnInit {
     }
     return columns;
   }
-  private getColumnOptions(columnIndex, numOptions, columnOptions) {
+  private getColumnOptions(columnIndex: any, numOptions: any, columnOptions: any) {
     const options = [];
     for (let i = 0; i < numOptions; i++) {
       options.push({
@@ -127,7 +127,7 @@ export class Tab3Page implements OnInit {
     return options;
   }
 
-  public segmentChanged(event) {
+  public segmentChanged(event: any) {
     const valorFiltro = event.detail.value;
     if (valorFiltro === '') {
       this.lugar = '';

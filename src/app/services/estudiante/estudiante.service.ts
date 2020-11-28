@@ -24,7 +24,6 @@ export class EstudianteService {
   public salidas: Salida[] = [];
   public materias: Materia[] = [];
   public firma = '';
-  public universidad = '';
 
   constructor(private http: HttpClient, private storage: Storage, private loginToken: LoginService) { }
 
@@ -91,8 +90,7 @@ export class EstudianteService {
 
   public async obtenerUniversidad(): Promise<string> {
     await this.cargarEstudiante();
-    this.universidad = JSON.parse(this.estudianteString).universidad;
-    return this.universidad;
+    return JSON.parse(this.estudianteString).universidad;
   }
 
   public async borrarEstudiante() {

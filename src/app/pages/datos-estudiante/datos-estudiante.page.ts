@@ -63,18 +63,18 @@ export class DatosEstudiantePage implements OnInit {
   }
 
   private async mostrarUniversidadActual() {
-    await this.datosEstudiante.obtenerUniversidad();
-    this.estudiante.universidad = this.datosEstudiante.estudiante.universidad;
-    if (!this.estudiante.universidad || 0 === this.estudiante.universidad.length) {
-      this.alertas.showToast(INFO_TODAVIA_NO_TIENE_UNIVERSIDAD, 'secondary');
-    }
-    else if (this.estudiante.universidad.includes(UNIVERSIDAD_UCO)) {
+    this.estudiante.universidad = await this.datosEstudiante.obtenerUniversidad();
+    if (this.estudiante.universidad.includes(UNIVERSIDAD_UCO)) {
       this.universidadActual = this.uco;
       return this.universidadActual;
     }
     else if (this.estudiante.universidad.includes(UNIVERSIDAD_UDEA)) {
       this.universidadActual = this.udea;
       return this.universidadActual;
+    }
+    else {
+      this.estudiante.universidad = this.universidadActual;
+      this.alertas.showToast(INFO_TODAVIA_NO_TIENE_UNIVERSIDAD, 'secondary');
     }
   }
 

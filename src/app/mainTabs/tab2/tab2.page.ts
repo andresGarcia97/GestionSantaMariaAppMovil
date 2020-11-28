@@ -26,7 +26,6 @@ export class Tab2Page implements OnInit {
     [MOMENTO_DESAYUNO, MOMENTO_ALMUERZO, MOMENTO_CENA, MOMENTO_DESAYUNO]
   ];
 
-  protected saveInasistencias: InasistenciaAlimentacion[] = [];
   protected InasistenciasUsuario: InasistenciaAlimentacion[] = [];
   protected fechaInasistencia = new Date();
   protected yearMInimo = this.fechaInasistencia.getFullYear();
@@ -63,7 +62,7 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  public cambioFecha(event) {
+  public cambioFecha(event: any) {
     this.inasistencia.fecha = new Date(event.detail.value);
   }
 
@@ -122,7 +121,7 @@ export class Tab2Page implements OnInit {
     await picker.present();
   }
 
-  private getColumns(numColumns, numOptions, columnOptions) {
+  private getColumns(numColumns: any, numOptions: any, columnOptions: any) {
     const columns = [];
     for (let i = 0; i < numColumns; i++) {
       columns.push({
@@ -133,7 +132,7 @@ export class Tab2Page implements OnInit {
     return columns;
   }
 
-  private getColumnOptions(columnIndex, numOptions, columnOptions) {
+  private getColumnOptions(columnIndex: any, numOptions: any, columnOptions: any) {
     const options = [];
     for (let i = 0; i < numOptions; i++) {
       options.push({
@@ -167,11 +166,11 @@ export class Tab2Page implements OnInit {
     }
     else {
       this.botonEnviar = true;
-      this.saveInasistencias = [];
-      this.saveInasistencias.push(this.inasistencia);
+      const saveInasistencias = [];
+      saveInasistencias.push(this.inasistencia);
       const fecha = this.inasistencia.fecha;
       this.reiniciarInasistencia(fecha);
-      (await this.inasitenciaService.createInasistencia(this.saveInasistencias))
+      (await this.inasitenciaService.createInasistencia(saveInasistencias))
         .subscribe(async () => {
           this.alerts.showToast(GUARDAR_INASISTENCIA_EXITO, 'success');
           await this.datosEstudiante.getEstudiante(this.usuario);
